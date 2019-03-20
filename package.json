@@ -1,0 +1,46 @@
+{
+  "name": "tatum-middleware",
+  "version": "1.0.0",
+  "author": "Samuel Sramko, samuel.sramko@tatum.io",
+  "description": "Tatum Middleware available for Tatum Core OpenBanking API to simplify usage.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tatumio/tatum-middleware.git"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "API_URL=http://localhost:8080 nodemon src/index.js",
+    "test": "mocha"
+  },
+  "keywords": [
+    "Tatum",
+    "OpenBanking",
+    "Tatum Middleware",
+    "Tatum Core"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bip39": "2.5.0",
+    "bitcoin-transaction": "^1.2.1",
+    "bitcoinjs-lib": "^3.3.2",
+    "body-parser": "1.18.3",
+    "ethereumjs-wallet": "0.6.3",
+    "express": "4.16.4",
+    "express-swagger-generator": "^1.1.13",
+    "hdkey": "1.1.1",
+    "web3": "1.0.0-beta.35"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.1.0",
+    "mocha": "^6.0.2"
+  }
+}
