@@ -31,7 +31,7 @@ run Tatum Middleware from private LAN with limited access from outside world, si
 data to be transferred and there is high risk of loss of funds.
 
 ## API docs
-Swagger UI is for latest version is available here - <a target="_blank" href="https://sandbox.tatum.io/middleware">https://sandbox.tatum.io/middleware</a>
+Swagger UI for latest version is available here - <a target="_blank" href="https://sandbox.tatum.io/middleware">https://sandbox.tatum.io/middleware</a>
 
 ### API endpoints
 <!-- markdown-swagger -->
