@@ -139,12 +139,12 @@ router.post('/transfer', ({body}, res) => {
         })
         .catch((error) => {
           console.log(error)
-          res.status(500).send(error)
+          res.status(500).send(error.toString())
         })
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.toString())
     })
 })
 
@@ -182,7 +182,7 @@ router.post('/erc20/deploy', ({body}, res) => {
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.toString())
     })
 })
 
@@ -203,12 +203,12 @@ router.post('/erc20/transfer', async ({body}, res) => {
     data: tokenByteCode
   })
 
+  //TODO: nonce for outgoing transactions....
   const tx = {
     from: 0,
     to: tokenAddress,
     data: contract.methods.transfer(to, amount + '000000000000000000').encodeABI(),
-    gasPrice: web3.utils.toWei('1', 'wei'),
-    nonce: await web3.eth.getTransactionCount(web3.eth.defaultAccount)
+    gasPrice: web3.utils.toWei('1', 'wei')
   }
 
   web3.eth.estimateGas(tx)
@@ -225,12 +225,12 @@ router.post('/erc20/transfer', async ({body}, res) => {
         })
         .catch((error) => {
           console.log(error)
-          res.status(500).send(error)
+          res.status(500).send(error.toString())
         })
     })
     .catch((error) => {
       console.log(error)
-      res.status(500).send(error)
+      res.status(500).send(error.toString())
     })
 })
 
