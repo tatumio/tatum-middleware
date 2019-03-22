@@ -193,7 +193,7 @@ router.post('/erc20/deploy', ({body}, res) => {
  * @param {Erc20Transfer.model} erc20.body.required
  * @returns {object} 200 - tx hash
  */
-router.post('/erc20/transfer', ({body}, res) => {
+router.post('/erc20/transfer', async ({body}, res) => {
   const {tokenAddress, fromPriv, to, amount, chain} = body
 
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`)
@@ -207,18 +207,26 @@ router.post('/erc20/transfer', ({body}, res) => {
     from: 0,
     to: tokenAddress,
     data: contract.methods.transfer(to, amount + '000000000000000000').encodeABI(),
+    gasPrice: web3.utils.toWei('1', 'wei'),
+    nonce: await web3.eth.getTransactionCount(web3.eth.defaultAccount)
   }
 
-  tx.gasLimit = 1900000
-  tx.gasPrice = web3.utils.toWei('1', 'wei')
-  web3.eth.sendTransaction(tx)
-    .then((receipt) => {
-      console.log(receipt)
-      if (receipt.status) {
-        res.json({txHash: receipt.transactionHash})
-      } else {
-        res.status(500).send(receipt)
-      }
+  web3.eth.estimateGas(tx)
+    .then(gasLimit => {
+      tx.gasLimit = gasLimit
+      web3.eth.sendTransaction(tx)
+        .then((receipt) => {
+          console.log(receipt)
+          if (receipt.status) {
+            res.json({txHash: receipt.transactionHash})
+          } else {
+            res.status(500).send(receipt)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          res.status(500).send(error)
+        })
     })
     .catch((error) => {
       console.log(error)
