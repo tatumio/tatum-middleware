@@ -19,7 +19,7 @@ const {INFURA_KEY} = require('../constants')
 
 /**
  * @typedef WalletGenerate
- * @property {string} chain - chain
+ * @property {string} chain - chain - 'mainnet' or 'ropsten'
  */
 
 /**
@@ -30,14 +30,14 @@ const {INFURA_KEY} = require('../constants')
 
 /**
  * @typedef XPrivEth
- *  @property {string} chain.required - chain - ETH for Mainnet or Ropsten for Ropsten
+ *  @property {string} chain.required - chain - 'mainnet' or 'ropsten'
  * @property {string} mnemonic.required - mnemonic to generate private key from
  * @property {integer} index.required - derivation index of private key
  */
 
 /**
  * @typedef EthTransfer
- * @property {string} chain.required - chain - ETH for Mainnet or Ropsten for Ropsten
+ * @property {string} chain.required - chain - 'mainnet' or 'ropsten'
  * @property {string} fromPriv.required - private key of address to send funds from
  * @property {string} to.required - address to send funds to
  * @property {number} amount.required - amount to send
@@ -45,7 +45,7 @@ const {INFURA_KEY} = require('../constants')
 
 /**
  * @typedef Erc20Transfer
- * @property {string} chain.required - chain - ETH for Mainnet or Ropsten for Ropsten
+ * @property {string} chain.required - chain - 'mainnet' or 'ropsten'
  * @property {string} fromPriv.required - private key of address to send ERC20 from
  * @property {string} to.required - address to send ERC20 token
  * @property {number} amount.required - amount of ERC20 to send
@@ -54,7 +54,7 @@ const {INFURA_KEY} = require('../constants')
 
 /**
  * @typedef Erc20Deploy
- * @property {string} chain.required - chain - ETH for Mainnet or Ropsten for Ropsten
+ * @property {string} chain.required - chain - 'mainnet' or 'ropsten'
  * @property {string} fromPriv.required - private key of address to deploy smart contract from
  * @property {string} data.required - smart contract byte code
  * @property {number} gasLimit.required - gas limit
@@ -65,7 +65,7 @@ const {INFURA_KEY} = require('../constants')
  * Generate wallet.
  * @route POST /eth/wallet
  * @group ETH - Operations with Ethereum blockchain
- * @param {WalletGenerate.model} chain.body.required - chain - ETH for Mainnet or Ropsten for Ropsten
+ * @param {WalletGenerate.model} chain.body.required - chain - 'mainnet' or 'ropsten'
  * @returns {Wallet.model} 200 - Object containing mnemonic, xpriv and xpub for generated wallet.
  */
 router.post('/wallet', (req, res) => {
@@ -121,7 +121,7 @@ router.post('/transfer', ({body}, res) => {
   const tx = {
     from: 0,
     to,
-    amount,
+    value: amount,
     gasPrice: web3.utils.toWei('1', 'wei')
   }
 
@@ -149,7 +149,7 @@ router.post('/transfer', ({body}, res) => {
 })
 
 /**
- * Deploy ETH / Ropsten ETH ERC20 Smart Contract
+ * Deploy ETH / Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.
  * @route POST /eth/erc20/deploy
  * @group ETH - Operations with Ethereum blockchain
  * @param {Erc20Deploy.model} erc20deploy.body.required
@@ -172,6 +172,7 @@ router.post('/erc20/deploy', ({body}, res) => {
     .then((receipt) => {
       console.log(receipt)
       if (receipt.status) {
+        const response = {}
         response.tx = receipt.transactionHash
         response.contractAddress = receipt.contractAddress
         res.json(response)
@@ -205,7 +206,7 @@ router.post('/erc20/transfer', ({body}, res) => {
   const tx = {
     from: 0,
     to: tokenAddress,
-    data: contract.methods.transfer(to, amount).encodeABI(),
+    data: contract.methods.transfer(to, amount + '000000000000000000').encodeABI(),
   }
 
   tx.gasLimit = 1900000

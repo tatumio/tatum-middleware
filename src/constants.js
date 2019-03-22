@@ -1,7 +1,7 @@
 const TBTC = 'TBTC'
-const ROPSTEN = 'ROPSTEN'
+const ROPSTEN = 'ropsten'
 const BTC = 'BTC'
-const ETH = 'ETH'
+const ETH = 'mainnet'
 const ETH_DERIVATION_PATH = 'm/44\'/60\'/0\'/0'
 const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0'
 const TESTNET_DERIVATION_PATH = 'm/44\'/1\'/0\'/0'
@@ -15,5 +15,6 @@ module.exports = {
   ETH,
   ETH_DERIVATION_PATH,
   BTC_DERIVATION_PATH,
-  TESTNET_DERIVATION_PATH
+  TESTNET_DERIVATION_PATH,
+  INFURA_KEY
 }
