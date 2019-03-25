@@ -9,6 +9,10 @@ const axiosInstance = axios.create({
   baseURL: process.env.API_URL
 })
 
+module.exports = {
+  axios: axiosInstance
+}
+
 const ethRouter = require('./api/ethRouter')
 const btcRouter = require('./api/btcRouter')
 
@@ -30,7 +34,15 @@ const options = {
     consumes: [
       'application/json',
     ],
-    schemes: ['http', 'https']
+    schemes: ['http', 'https'],
+    securityDefinitions: {
+      apiKey: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-client-secret',
+        description: "",
+      }
+    }
   },
   basedir: __dirname, //app absolute path
   files: ['./**/*.js'] //Path to the API handle folder

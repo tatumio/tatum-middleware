@@ -32,6 +32,7 @@ data to be transferred and there is high risk of loss of funds.
 
 ## API docs
 Swagger UI for latest version is available here - <a target="_blank" href="https://sandbox.tatum.io/middleware">https://sandbox.tatum.io/middleware</a>
+Local Swagger UI available at `/api-docs`. 
 
 ### API endpoints
 <!-- markdown-swagger -->
