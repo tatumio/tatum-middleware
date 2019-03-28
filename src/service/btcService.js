@@ -26,6 +26,26 @@ const calculateAddress = (xpub, chain, index) => {
   return w.derivePath("" + index).keyPair.getAddress()
 }
 
+const prepareTransaction = (vin, vinIndex, addresses, amounts, out, currency, amount, fee, mnemonic) => {
+  const {xpub} = generateWallet(currency, mnemonic)
+  const network = currency === BTC ? bitcoin.networks.bitcoin : bitcoin.networks.testnet
+  const tx = new bitcoin.TransactionBuilder(network)
+  vin.forEach((v, i) => tx.addInput(v, vinIndex[i]))
+
+  const amountWeHave = amounts.reduce((acc, val) => acc + val)
+  const amountToKeep = amountWeHave - fee - amount
+  tx.addOutput(out, Math.round(amount * 100000000))
+  tx.addOutput(calculateAddress(xpub, currency, 0), Math.round(amountToKeep * 100000000))
+
+  addresses.forEach(({derivationKey}, i) => {
+    const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(currency, mnemonic, derivationKey), network)
+    tx.sign(i, ecPair)
+  })
+
+  return tx.build().toHex()
+}
+
+
 const calculatePrivateKey = (chain, mnemonic, i) => {
   let path, network
   switch (chain) {
@@ -45,5 +65,6 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
 module.exports = {
   generateWallet,
   calculateAddress,
-  calculatePrivateKey
+  calculatePrivateKey,
+  prepareTransaction
 }
