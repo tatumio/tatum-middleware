@@ -95,6 +95,7 @@ router.post('/wallet/xpriv', ({body}, res) => {
  * @property {string} mnemonic.required - private key of address to send funds from - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
  */
 
+//TODO: returns error codes
 /**
  * Send BTC / TBTC from address to address
  * @route POST /btc/withdrawal
@@ -150,11 +151,11 @@ router.post('/withdrawal', async ({headers, body}, res) => {
       .catch(({response}) => {
         console.error(response.data)
         res.status(response.status).json({
+          ...response.data,
           txId,
           id,
           error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
-          code: 'withdrawal.not.completed',
-          ...response.data
+          code: 'withdrawal.not.completed'
         })
       })
   } catch (e) {
@@ -172,10 +173,10 @@ router.post('/withdrawal', async ({headers, body}, res) => {
       code: 'withdrawal.hex.cancelled'
     }))
       .catch(({response}) => res.status(response.status).json({
+        ...response.data,
         error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
         code: 'withdrawal.hex.not.cancelled',
-        id,
-        ...response.data
+        id
       }))
   }
 })

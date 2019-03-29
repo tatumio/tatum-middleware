@@ -1,14 +1,17 @@
 'use strict';
 const express = require('express')
 const Web3 = require('web3')
+const _ = require('lodash')
+const BN = require('bn.js')
 
 const router = express.Router()
 const tokenABI = require('../contracts/token_abi')
 const tokenByteCode = require('../contracts/token_bytecode')
 const commonService = require('../service/commonService')
 const ethService = require('../service/ethService')
+const {axios} = require('../index')
 
-const {INFURA_KEY} = require('../constants')
+const {INFURA_KEY, ETH} = require('../constants')
 
 /**
  * @typedef Wallet
@@ -38,27 +41,40 @@ const {INFURA_KEY} = require('../constants')
 /**
  * @typedef EthTransfer
  * @property {string} chain.required - chain - 'mainnet' or 'ropsten' - eg: ropsten
- * @property {string} fromPriv.required - private key of address to send funds from - eg: 0xb57a97798843d277ad0c58ca36b3549ac4de555f38aec6ec7f59af3d3becd54e
- * @property {string} to.required - address to send funds to - eg: 0x3ab334951f5d39ee16b4e7d9b44524ae2ba58a00
- * @property {number} amount.required - amount to send in wei - 1 ETH is 10^18 wei - eg: 1000000000000000000
+ * @property {string} mnemonic.required - mnemonic to generate private key of sender - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
+ * @property {integer} index.required - derivation index of sender address of sender - eg: 0
+ * @property {string} senderAccountId.required - Sender account ID - eg: 7c21ed165e294db78b95f0f181086d6f
+ * @property {string} targetAddress.required - Blockchain address to send assets - eg: 0x687422eEA2cB73B5d3e242bA5456b782919AFc85
+ * @property {integer} amount.required - Amount to be sent in wei - eg: 100000
+ * @property {string} senderNote - Note visible to owner of withdrawing account - eg: Sender note
+ * @property {boolean} force - Force payment, even if it is non-compliant - eg: false
  */
 
 /**
  * @typedef Erc20Transfer
- * @property {string} chain.required - chain - 'mainnet' or 'ropsten' - eg: ropsten
- * @property {string} fromPriv.required - private key of address to send ERC20 from eg: 0xb57a97798843d277ad0c58ca36b3549ac4de555f38aec6ec7f59af3d3becd54e
- * @property {string} to.required - address to send ERC20 token - eg: 0x3ab334951f5d39ee16b4e7d9b44524ae2ba58a00
- * @property {number} amount.required - amount of ERC20 to send - eg: 123
+ ** @property {string} chain.required - chain - 'mainnet' or 'ropsten' - eg: ropsten
+ * @property {string} mnemonic.required - mnemonic to generate private key of sender - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
+ * @property {integer} index.required - derivation index of sender address of sender - eg: 0
+ * @property {string} senderAccountId.required - Sender account ID - eg: 7c21ed165e294db78b95f0f181086d6f
+ * @property {string} targetAddress.required - Blockchain address to send assets - eg: 0x687422eEA2cB73B5d3e242bA5456b782919AFc85
+ * @property {string} currency.required - ERC20 symbol - eg: MY_SYMBOL
+ * @property {integer} amount.required - Amount to be sent in wei - eg: 100000
+ * @property {string} senderNote - Note visible to owner of withdrawing account - eg: Sender note
+ * @property {boolean} force - Force payment, even if it is non-compliant - eg: false
  * @property {string} tokenAddress.required - address of ERC20 token - eg: 0x687422eEA2cB73B5d3e242bA5456b782919AFc85
  */
 
 /**
  * @typedef Erc20Deploy
  * @property {string} chain.required - chain - 'mainnet' or 'ropsten' - eg: ropsten
- * @property {string} fromPriv.required - private key of address to deploy smart contract from - eg: 0xb57a97798843d277ad0c58ca36b3549ac4de555f38aec6ec7f59af3d3becd54e
- * @property {string} data.required - smart contract byte code
- * @property {number} gasLimit.required - gas limit in gas price - eg: 1900000
- * @property {string} gasPrice.required - gas price - eg: 1
+ * @property {string} mnemonic.required - mnemonic to generate private key of deployer of ERC20 - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
+ * @property {integer} index.required - derivation index of deployer address of ERC20 - eg: 0
+ * @property {integer} payIndex.required - derivation index of address to pay for deployment of ERC20 - eg: 0
+ * @property {integer} customerId.required - ID of customer to create ERC20 for - eg: 5
+ * @property {string} name.required - name of the ERC20 token - eg: My ERC20 Token
+ * @property {string} symbol.required - symbol of the ERC20 token - eg: MT
+ * @property {integer} supply.required - max supply of ERC20 token - eg: 10000000
+ * @property {enum} basePair.required - Base pair for ERC20 token. 1 token will be equal to 1 unit of base pair. Transaction value will be calculated according to this base pair. - eg: BTC,ETH,USD,CZK,EUR
  */
 
 /**
@@ -101,7 +117,7 @@ router.post('/wallet/xpriv', ({body}, res) => {
   const {index, mnemonic, chain} = body
   const i = parseInt(index)
   const privateKey = ethService.calculatePrivateKey(chain, mnemonic, i)
-  res.json(privateKey)
+  res.json({privateKey})
 })
 
 /**
@@ -110,32 +126,79 @@ router.post('/wallet/xpriv', ({body}, res) => {
  * @group ETH - Operations with Ethereum blockchain
  * @param {EthTransfer.model} transfer.body.required
  * @returns {TxHash.model} 200 - txHash of successful transaction
+ * @security apiKey
  */
-router.post('/transfer', ({body}, res) => {
-  const {fromPriv, to, amount, chain} = body
+router.post('/transfer', ({body, headers}, res) => {
+  const {mnemonic, chain, index, ...withdrawal} = body
+  const {amount, targetAddress} = withdrawal
 
+  const i = parseInt(index)
+  const fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i)
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`)
   web3.eth.accounts.wallet.add(fromPriv)
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address
+  withdrawal.sourceAddress = web3.eth.accounts.wallet[0].address
 
   const tx = {
     from: 0,
-    to,
+    to: targetAddress,
     value: amount,
     gasPrice: web3.utils.toWei('1', 'wei')
   }
 
   web3.eth.estimateGas(tx)
-    .then(gasLimit => {
+    .then(async gasLimit => {
       tx.gasLimit = gasLimit
+      withdrawal.amount = web3.utils.fromWei(amount + '', 'ether')
+      withdrawal.fee = web3.utils.fromWei(gasLimit + '', 'ether')
+      withdrawal.currency = chain === ETH ? 'ETH' : 'TETH'
+      let resp
+      try {
+        resp = await axios({
+          method: 'POST',
+          headers: {
+            'content-type': headers['content-type'] || 'application/json',
+            'accept': headers['accept'] || 'application/json',
+            'x-client-secret': headers['x-client-secret']
+          },
+          url: `api/v1/withdrawal`,
+          data: withdrawal
+        })
+      } catch ({response}) {
+        console.error(response.data)
+        res.status(response.status).send(response.data)
+        return
+      }
+      const {id} = resp.data
+
       web3.eth.sendTransaction(tx)
-        .then((receipt) => {
-          console.log(receipt)
-          if (receipt.status) {
-            res.json({txHash: receipt.transactionHash})
-          } else {
-            res.status(500).send(receipt)
-          }
+        .on('transactionHash', (txId) => {
+
+          axios({
+            method: 'PUT',
+            headers: {
+              'content-type': headers['content-type'] || 'application/json',
+              'accept': headers['accept'] || 'application/json',
+              'x-client-secret': headers['x-client-secret']
+            },
+            url: `api/v1/withdrawal/${id}/${txId}`,
+            data: withdrawal
+          })
+            .then(() => res.json({txId}))
+            .catch(({response}) => {
+              console.error(response.data)
+              res.status(response.status).json({
+                txId,
+                id,
+                error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
+                code: 'withdrawal.not.completed',
+                ...response.data
+              })
+            })
+        })
+        .on('error', (error) => {
+          console.log(error)
+          res.status(500).send(error.toString())
         })
         .catch((error) => {
           console.log(error)
@@ -154,36 +217,84 @@ router.post('/transfer', ({body}, res) => {
  * @group ETH - Operations with Ethereum blockchain
  * @param {Erc20Deploy.model} erc20deploy.body.required
  * @returns {Erc20.model} 200 - information about ERC20 smart contract
+ * @security apiKey
  */
-router.post('/erc20/deploy', ({body}, res) => {
-  const {fromPriv, gasLimit, gasPrice, data, chain} = body
+router.post('/erc20/deploy', async ({body, headers}, res) => {
+  const {mnemonic, payIndex, chain, customerId, ...erc20} = body
+  const {symbol} = erc20
 
+  const i = parseInt(payIndex)
+  const fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i)
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`)
   web3.eth.accounts.wallet.add(fromPriv)
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address
 
-  const tx = {
-    from: 0,
-    data,
-    gasLimit,
-    gasPrice
+  erc20.chain = chain === ETH ? 'ETH' : 'TETH'
+  erc20.xpub = ethService.generateWallet(chain, mnemonic).xpub
+
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        'accept': headers['accept'] || 'application/json',
+        'x-client-secret': headers['x-client-secret']
+      },
+      url: `api/v1/erc20/${customerId}`,
+      data: erc20
+    })
+
+    console.log(response.data)
+    const {data, gasLimit, gasPrice, accountId} = response.data
+    const tx = {
+      from: 0,
+      data,
+      gasLimit,
+      gasPrice
+    }
+    web3.eth.sendTransaction(tx)
+      .then((receipt) => {
+        console.log(receipt)
+        if (receipt.status) {
+          const result = {accountId}
+          result.tx = receipt.transactionHash
+          result.contractAddress = receipt.contractAddress
+
+          axios({
+            method: 'POST',
+            headers: {
+              'content-type': headers['content-type'] || 'application/json',
+              'accept': headers['accept'] || 'application/json',
+              'x-client-secret': headers['x-client-secret']
+            },
+            url: `api/v1/erc20/${symbol}/${result.contractAddress}`,
+          })
+            .then(() => res.json(result))
+            .catch(({resp}) => {
+              console.error(resp.data)
+              res.status(resp.status).json({
+                ...response,
+                ...resp.data,
+                error: 'Unable to set contract address for ERC20 symbol to Tatum Core, manual update is necessary.',
+                code: 'erc20.not.completed'
+              })
+            })
+        } else {
+          res.status(500).send(receipt)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        res.status(500).json({
+          error: 'Unable to deploy ERC20 to blockchain.',
+          code: 'erc20.not.deployed',
+          reason: error.toString()
+        })
+      })
+  } catch (e) {
+    console.error(e.response.data)
+    res.status(e.response.status).json(e.response.data)
   }
-  web3.eth.sendTransaction(tx)
-    .then((receipt) => {
-      console.log(receipt)
-      if (receipt.status) {
-        const response = {}
-        response.tx = receipt.transactionHash
-        response.contractAddress = receipt.contractAddress
-        res.json(response)
-      } else {
-        res.status(500).send(receipt)
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-      res.status(500).send(error.toString())
-    })
 })
 
 /**
@@ -192,10 +303,14 @@ router.post('/erc20/deploy', ({body}, res) => {
  * @group ETH - Operations with Ethereum blockchain
  * @param {Erc20Transfer.model} erc20.body.required
  * @returns {TxHash.model} 200 - txHash of successful transaction
+ * @security apiKey
  */
-router.post('/erc20/transfer', async ({body}, res) => {
-  const {tokenAddress, fromPriv, to, amount, chain} = body
+router.post('/erc20/transfer', async ({body, headers}, res) => {
+  const {mnemonic, chain, index, tokenAddress, ...withdrawal} = body
+  const {amount, targetAddress} = withdrawal
 
+  const i = parseInt(index)
+  const fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i)
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`)
   web3.eth.accounts.wallet.add(fromPriv)
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address
@@ -203,31 +318,62 @@ router.post('/erc20/transfer', async ({body}, res) => {
     data: tokenByteCode
   })
 
-  //TODO: nonce for outgoing transactions....
   const tx = {
     from: 0,
     to: tokenAddress,
-    //TODO: do the proper multiplication, decimal would not work
-    data: contract.methods.transfer(to, amount + '000000000000000000').encodeABI(),
-    gasPrice: web3.utils.toWei('1', 'wei')
+    data: contract.methods.transfer(targetAddress, new BN(amount, 10).mul(new BN(10).pow(new BN(18))).toString(16)).encodeABI(),
+    gasPrice: web3.utils.toWei('1', 'wei'),
   }
 
-  web3.eth.estimateGas(tx)
-    .then(gasLimit => {
-      tx.gasLimit = gasLimit
-      web3.eth.sendTransaction(tx)
-        .then((receipt) => {
-          console.log(receipt)
-          if (receipt.status) {
-            res.json({txHash: receipt.transactionHash})
-          } else {
-            res.status(500).send(receipt)
-          }
+  tx.gasLimit = 200000
+  withdrawal.fee = web3.utils.fromWei(tx.gasLimit + '', 'ether')
+  let resp
+  try {
+    resp = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        'accept': headers['accept'] || 'application/json',
+        'x-client-secret': headers['x-client-secret']
+      },
+      url: `api/v1/withdrawal`,
+      data: withdrawal
+    })
+  } catch ({response}) {
+    console.error(response.data)
+    res.status(response.status).send(response.data)
+    return
+  }
+  const {id} = resp.data
+
+  web3.eth.sendTransaction(tx)
+    .on('transactionHash', (txId) => {
+
+      axios({
+        method: 'PUT',
+        headers: {
+          'content-type': headers['content-type'] || 'application/json',
+          'accept': headers['accept'] || 'application/json',
+          'x-client-secret': headers['x-client-secret']
+        },
+        url: `api/v1/withdrawal/${id}/${txId}`,
+        data: withdrawal
+      })
+        .then(() => res.json({txId}))
+        .catch(({response}) => {
+          console.error(response.data)
+          res.status(response.status).json({
+            txId,
+            id,
+            error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
+            code: 'withdrawal.not.completed',
+            ...response.data
+          })
         })
-        .catch((error) => {
-          console.log(error)
-          res.status(500).send(error.toString())
-        })
+    })
+    .on('error', (error) => {
+      console.log(error)
+      res.status(500).send(error.toString())
     })
     .catch((error) => {
       console.log(error)
