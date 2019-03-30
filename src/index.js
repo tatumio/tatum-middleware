@@ -22,7 +22,7 @@ const app = express()
 const options = {
   swaggerDefinition: {
     info: {
-      description: 'Tatum Middleware available for Tatum Core OpenBanking API to simplify usage.',
+      description: 'Tatum Middleware is a client to Tatum Blockchain API Core.',
       title: 'Tatum Middleware',
       version: '1.0.0',
     },

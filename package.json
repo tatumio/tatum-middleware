@@ -2,7 +2,7 @@
   "name": "tatum-middleware",
   "version": "1.0.0",
   "author": "Samuel Sramko, samuel.sramko@tatum.io",
-  "description": "Tatum Middleware available for Tatum Core OpenBanking API to simplify usage.",
+  "description": "Tatum Middleware is a client to Tatum Blockchain API Core.",
   "repository": {
     "type": "git",
     "url": "https://github.com/tatumio/tatum-middleware.git"
