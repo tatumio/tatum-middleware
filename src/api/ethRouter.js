@@ -53,10 +53,10 @@ const {INFURA_KEY, ETH} = require('../constants')
 /**
  * @typedef Erc20Transfer
  ** @property {string} chain.required - chain - 'mainnet' or 'ropsten' - eg: ropsten
- * @property {string} mnemonic.required - mnemonic to generate private key of sender - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
- * @property {integer} index.required - derivation index of sender address of sender - eg: 0
+ * @property {string} mnemonic.required - mnemonic to generate private key of holder of ERC20 token - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
+ * @property {integer} index.required - derivation index of sender address of holder of ERC20 token - eg: 0
  * @property {string} senderAccountId.required - Sender account ID - eg: 7c21ed165e294db78b95f0f181086d6f
- * @property {string} targetAddress.required - Blockchain address to send assets - eg: 0x687422eEA2cB73B5d3e242bA5456b782919AFc85
+ * @property {string} targetAddress.required - Blockchain address to send ERC20 token to - eg: 0x687422eEA2cB73B5d3e242bA5456b782919AFc85
  * @property {string} currency.required - ERC20 symbol - eg: MY_SYMBOL
  * @property {integer} amount.required - Amount to be sent in wei - eg: 100000
  * @property {string} senderNote - Note visible to owner of withdrawing account - eg: Sender note
@@ -141,7 +141,7 @@ router.post('/transfer', ({body, headers}, res) => {
 
   const tx = {
     from: 0,
-    to: targetAddress,
+    to: targetAddress.trim(),
     value: amount,
     gasPrice: web3.utils.toWei('1', 'wei')
   }
@@ -170,6 +170,10 @@ router.post('/transfer', ({body, headers}, res) => {
         return
       }
       const {id} = resp.data
+      if (!id) {
+        res.sendStatus(200)
+        return
+      }
 
       web3.eth.sendTransaction(tx)
         .on('transactionHash', (txId) => {
@@ -244,7 +248,6 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
       data: erc20
     })
 
-    console.log(response.data)
     const {data, gasLimit, gasPrice, accountId} = response.data
     const tx = {
       from: 0,
@@ -254,7 +257,6 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     }
     web3.eth.sendTransaction(tx)
       .then((receipt) => {
-        console.log(receipt)
         if (receipt.status) {
           const result = {accountId}
           result.tx = receipt.transactionHash
@@ -284,7 +286,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
         }
       })
       .catch((error) => {
-        console.log(error)
+        console.error(error)
         res.status(500).json({
           error: 'Unable to deploy ERC20 to blockchain.',
           code: 'erc20.not.deployed',
@@ -314,66 +316,78 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`)
   web3.eth.accounts.wallet.add(fromPriv)
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address
+  withdrawal.sourceAddress = web3.eth.accounts.wallet[0].address
   const contract = new web3.eth.Contract(tokenABI, null, {
     data: tokenByteCode
   })
 
   const tx = {
     from: 0,
-    to: tokenAddress,
-    data: contract.methods.transfer(targetAddress, new BN(amount, 10).mul(new BN(10).pow(new BN(18))).toString(16)).encodeABI(),
-    gasPrice: web3.utils.toWei('1', 'wei'),
+    to: tokenAddress.trim(),
+    data: contract.methods.transfer(targetAddress.trim(), new BN(amount, 10).mul(new BN(10).pow(new BN(18))).toString(16)).encodeABI(),
+    gasPrice: web3.utils.toWei('1', 'wei')
   }
 
-  tx.gasLimit = 200000
-  withdrawal.fee = web3.utils.fromWei(tx.gasLimit + '', 'ether')
-  let resp
-  try {
-    resp = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        'accept': headers['accept'] || 'application/json',
-        'x-client-secret': headers['x-client-secret']
-      },
-      url: `api/v1/withdrawal`,
-      data: withdrawal
-    })
-  } catch ({response}) {
-    console.error(response.data)
-    res.status(response.status).send(response.data)
-    return
-  }
-  const {id} = resp.data
-
-  web3.eth.sendTransaction(tx)
-    .on('transactionHash', (txId) => {
-
-      axios({
-        method: 'PUT',
-        headers: {
-          'content-type': headers['content-type'] || 'application/json',
-          'accept': headers['accept'] || 'application/json',
-          'x-client-secret': headers['x-client-secret']
-        },
-        url: `api/v1/withdrawal/${id}/${txId}`,
-        data: withdrawal
-      })
-        .then(() => res.json({txId}))
-        .catch(({response}) => {
-          console.error(response.data)
-          res.status(response.status).json({
-            txId,
-            id,
-            error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
-            code: 'withdrawal.not.completed',
-            ...response.data
-          })
+  web3.eth.estimateGas(tx)
+    .then(async gasLimit => {
+      tx.gasLimit = gasLimit
+      withdrawal.fee = web3.utils.fromWei(tx.gasLimit + '', 'ether')
+      let resp
+      try {
+        resp = await axios({
+          method: 'POST',
+          headers: {
+            'content-type': headers['content-type'] || 'application/json',
+            'accept': headers['accept'] || 'application/json',
+            'x-client-secret': headers['x-client-secret']
+          },
+          url: `api/v1/withdrawal`,
+          data: withdrawal
         })
-    })
-    .on('error', (error) => {
-      console.log(error)
-      res.status(500).send(error.toString())
+      } catch ({response}) {
+        console.error(response.data)
+        res.status(response.status).send(response.data)
+        return
+      }
+      const {id} = resp.data
+
+      if (!id) {
+        res.sendStatus(200)
+        return
+      }
+      web3.eth.sendTransaction(tx)
+        .on('transactionHash', (txId) => {
+
+          axios({
+            method: 'PUT',
+            headers: {
+              'content-type': headers['content-type'] || 'application/json',
+              'accept': headers['accept'] || 'application/json',
+              'x-client-secret': headers['x-client-secret']
+            },
+            url: `api/v1/withdrawal/${id}/${txId}`,
+            data: withdrawal
+          })
+            .then(() => res.json({txId}))
+            .catch(({response}) => {
+              console.error(response.data)
+              res.status(response.status).json({
+                txId,
+                id,
+                error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
+                code: 'withdrawal.not.completed',
+                ...response.data
+              })
+            })
+        })
+        .on('error', (error) => {
+          console.log(error)
+          res.status(500).send(error.toString())
+        })
+        .catch((error) => {
+          console.log(error)
+          res.status(500).send(error.toString())
+        })
     })
     .catch((error) => {
       console.log(error)
