@@ -1,5 +1,5 @@
 # Tatum Middleware 
-Tatum Middleware available for Tatum Core OpenBanking API to simplify usage.
+Tatum Middleware is a client to Tatum Blockchain API Core.
 
 ## Install docker image
 Tatum Middleware docker image is available in Docker HUB under `tatumio/tatum-middleware` tag.
@@ -31,8 +31,7 @@ run Tatum Middleware from private LAN with limited access from outside world, si
 data to be transferred and there is high risk of loss of funds.
 
 ## API docs
-Swagger UI for latest version is available here - <a target="_blank" href="https://sandbox.tatum.io/middleware">https://sandbox.tatum.io/middleware</a>
-Local Swagger UI available at `/api-docs`. 
+Local Swagger UI available at `/api-docs` of your running docker container.
 
 ### API endpoints
 <!-- markdown-swagger -->
