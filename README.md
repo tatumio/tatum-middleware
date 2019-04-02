@@ -23,7 +23,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 ```docker run -e API_URL=https://sandbox.tatum.io -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
-Tatum Middleware wraps Tatum Core API described in <a target="_blank" href="https://developer.tatum.io">Developer Section</a>.<br/>
+Tatum Middleware wraps Tatum Core API as is described in <a target="_blank" href="https://www.tatum.io/apidoc.html#tatum-middleware-api">Developer Section</a>.<br/>
 On top of it, it brings simple utility functions such as creation of BIP44 compatible wallets, that are used within Tatum Core.<br/>
 Also, it gives developers simple options to send Ethereum and Bitcoin payments via local REST API.
 Some of the helpers methods sends mnemonic or private keys via HTTP protocol. It is highly recommended to
