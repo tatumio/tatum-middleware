@@ -70,7 +70,7 @@
             "description": "account",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/CreateAccountDto"
+              "$ref": "#\/definitions\/CreateAccount"
             }
           }
         ],
@@ -127,7 +127,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/AccountDto"
+              "$ref": "#\/definitions\/Account"
             }
           },
           "401": {
@@ -235,7 +235,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#\/definitions\/AccountDto"
+                "$ref": "#\/definitions\/Account"
               }
             }
           },
@@ -284,7 +284,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#\/definitions\/AddressDto"
+                "$ref": "#\/definitions\/Address"
               }
             }
           },
@@ -339,7 +339,7 @@
           {
             "name": "xpub",
             "in": "path",
-            "description": "Extended public key to derive address from.",
+            "description": "Extended public key to derive address from. There can be only 1 across all accounts and all accounts are generated from it. 0 indexed address is not used and is used for internal purposes (in case of BTC to ask for change for each blockchain transaction).",
             "required": true,
             "type": "string"
           }
@@ -348,7 +348,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/AddressDto"
+              "$ref": "#\/definitions\/Address"
             }
           },
           "201": {
@@ -397,7 +397,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/AccountBalanceDto"
+              "$ref": "#\/definitions\/AccountBalance"
             }
           },
           "401": {
@@ -440,7 +440,7 @@
             "description": "amount",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/BlockAmountDto"
+              "$ref": "#\/definitions\/BlockAmount"
             }
           },
           {
@@ -641,7 +641,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#\/definitions\/CustomerDto"
+                "$ref": "#\/definitions\/Customer"
               }
             }
           },
@@ -683,7 +683,7 @@
             "description": "customer",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/CustomerRegistrationDto"
+              "$ref": "#\/definitions\/CustomerRegistration"
             }
           }
         ],
@@ -741,7 +741,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/CustomerDto"
+              "$ref": "#\/definitions\/Customer"
             }
           },
           "401": {
@@ -784,7 +784,7 @@
             "description": "customer",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/CustomerUpdateDto"
+              "$ref": "#\/definitions\/CustomerUpdate"
             }
           },
           {
@@ -985,11 +985,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "erc20Dto",
-            "description": "erc20Dto",
+            "name": "erc20",
+            "description": "erc20",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/Erc20Dto"
+              "$ref": "#\/definitions\/Erc20"
             }
           },
           {
@@ -1004,7 +1004,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/Erc20ResponseDto"
+              "$ref": "#\/definitions\/Erc20Response"
             }
           },
           "201": {
@@ -1106,7 +1106,7 @@
             "description": "payment",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/PaymentDto"
+              "$ref": "#\/definitions\/Payment"
             }
           }
         ],
@@ -1159,7 +1159,7 @@
             "description": "filter",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/TransactionFilterDto"
+              "$ref": "#\/definitions\/TransactionFilter"
             }
           },
           {
@@ -1176,7 +1176,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#\/definitions\/TransactionDto"
+                "$ref": "#\/definitions\/Transaction"
               }
             }
           },
@@ -1223,7 +1223,7 @@
             "description": "filter",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/TransactionFilterDto"
+              "$ref": "#\/definitions\/TransactionFilter"
             }
           },
           {
@@ -1240,7 +1240,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#\/definitions\/TransactionDto"
+                "$ref": "#\/definitions\/Transaction"
               }
             }
           },
@@ -1282,11 +1282,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "apiKeyDto",
-            "description": "apiKeyDto",
+            "name": "apiKey",
+            "description": "apiKey",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/ApiKeyDto"
+              "$ref": "#\/definitions\/ApiKey"
             }
           }
         ],
@@ -1376,11 +1376,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "virtualCurrencyDto",
-            "description": "virtualCurrencyDto",
+            "name": "virtualCurrency",
+            "description": "virtualCurrency",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/VirtualCurrencyOperationDto"
+              "$ref": "#\/definitions\/VirtualCurrencyOperation"
             }
           }
         ],
@@ -1427,11 +1427,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "virtualCurrencyDto",
-            "description": "virtualCurrencyDto",
+            "name": "virtualCurrency",
+            "description": "virtualCurrency",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/VirtualCurrencyOperationDto"
+              "$ref": "#\/definitions\/VirtualCurrencyOperation"
             }
           }
         ],
@@ -1485,11 +1485,11 @@
           },
           {
             "in": "body",
-            "name": "virtualCurrencyDto",
-            "description": "virtualCurrencyDto",
+            "name": "virtualCurrency",
+            "description": "virtualCurrency",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/VirtualCurrencyDto"
+              "$ref": "#\/definitions\/VirtualCurrency"
             }
           }
         ],
@@ -1543,7 +1543,7 @@
             "description": "withdrawal",
             "required": true,
             "schema": {
-              "$ref": "#\/definitions\/WithdrawalDto"
+              "$ref": "#\/definitions\/Withdrawal"
             }
           }
         ],
@@ -1551,7 +1551,7 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#\/definitions\/WithdrawalHintDto"
+              "$ref": "#\/definitions\/WithdrawalHint"
             }
           },
           "201": {
@@ -1708,7 +1708,7 @@
           {
             "name": "chain",
             "in": "path",
-            "description": "chain - BTC for Mainnet or TBTC for Testnet3 - eg: BTC,TBTC",
+            "description": "chain - BTC for Mainnet or TBTC for Testnet3",
             "required": true,
             "type": "string",
             "enum": [
@@ -1739,7 +1739,7 @@
           "200": {
             "description": "Generated address",
             "schema": {
-              "$ref": "#\/definitions\/Address"
+              "$ref": "#\/definitions\/GeneratedAddress"
             }
           }
         }
@@ -1858,7 +1858,7 @@
           "200": {
             "description": "Generated address",
             "schema": {
-              "$ref": "#\/definitions\/Address"
+              "$ref": "#\/definitions\/GeneratedAddress"
             }
           }
         }
@@ -1945,7 +1945,7 @@
           "200": {
             "description": "information about ERC20 smart contract",
             "schema": {
-              "$ref": "#\/definitions\/Erc20"
+              "$ref": "#\/definitions\/Erc20Token"
             }
           }
         },
@@ -2000,7 +2000,7 @@
     }
   },
   "definitions": {
-    "AccountBalanceDto": {
+    "AccountBalance": {
       "type": "object",
       "properties": {
         "accountBalance": {
@@ -2012,13 +2012,13 @@
           "description": "Available balance on the account represents account balance minus blocked amount on the account. If the account is frozen or customer is disabled, the available balance will be 0. Available balance should be user do determine how much can customer send or withdraw from the account."
         }
       },
-      "title": "AccountBalanceDto"
+      "title": "AccountBalance"
     },
-    "AccountDto": {
+    "Account": {
       "type": "object",
       "properties": {
         "balance": {
-          "$ref": "#\/definitions\/AccountBalanceDto"
+          "$ref": "#\/definitions\/AccountBalance"
         },
         "created": {
           "type": "integer",
@@ -2048,9 +2048,9 @@
           "description": "Account ID."
         }
       },
-      "title": "AccountDto"
+      "title": "Account"
     },
-    "AddressDto": {
+    "Address": {
       "type": "object",
       "properties": {
         "address": {
@@ -2069,9 +2069,9 @@
           "description": "Extended public key to derive address from."
         }
       },
-      "title": "AddressDto"
+      "title": "Address"
     },
-    "ApiKeyDto": {
+    "ApiKey": {
       "type": "object",
       "properties": {
         "apiKey": {
@@ -2104,9 +2104,9 @@
           "description": "Whether this API key has write access."
         }
       },
-      "title": "ApiKeyDto"
+      "title": "ApiKey"
     },
-    "BlockAmountDto": {
+    "BlockAmount": {
       "type": "object",
       "properties": {
         "amount": {
@@ -2114,9 +2114,9 @@
           "description": "Amount to be blocked"
         }
       },
-      "title": "BlockAmountDto"
+      "title": "BlockAmount"
     },
-    "CreateAccountDto": {
+    "CreateAccount": {
       "type": "object",
       "properties": {
         "compliant": {
@@ -2139,9 +2139,9 @@
           "description": "Internal customer ID"
         }
       },
-      "title": "CreateAccountDto"
+      "title": "CreateAccount"
     },
-    "CustomerDto": {
+    "Customer": {
       "type": "object",
       "properties": {
         "customerCountry": {
@@ -2171,9 +2171,9 @@
           "description": "Country service provider has to be compliant with"
         }
       },
-      "title": "CustomerDto"
+      "title": "Customer"
     },
-    "CustomerRegistrationDto": {
+    "CustomerRegistration": {
       "type": "object",
       "properties": {
         "customerCountry": {
@@ -2198,9 +2198,9 @@
           "maxLength": 2147483647
         }
       },
-      "title": "CustomerRegistrationDto"
+      "title": "CustomerRegistration"
     },
-    "CustomerUpdateDto": {
+    "CustomerUpdate": {
       "type": "object",
       "properties": {
         "customerCountry": {
@@ -2219,9 +2219,9 @@
           "description": "Country service provider has to be compliant with. If empty, it will not be updated."
         }
       },
-      "title": "CustomerUpdateDto"
+      "title": "CustomerUpdate"
     },
-    "Erc20Dto": {
+    "Erc20": {
       "type": "object",
       "properties": {
         "basePair": {
@@ -2278,9 +2278,9 @@
           "maxLength": 2147483647
         }
       },
-      "title": "Erc20Dto"
+      "title": "Erc20"
     },
-    "Erc20ResponseDto": {
+    "Erc20Response": {
       "type": "object",
       "properties": {
         "accountId": {
@@ -2302,9 +2302,9 @@
           "description": "Gas price for creating ERC20 token."
         }
       },
-      "title": "Erc20ResponseDto"
+      "title": "Erc20Response"
     },
-    "MarketValueDto": {
+    "MarketValue": {
       "type": "object",
       "properties": {
         "date": {
@@ -2336,9 +2336,9 @@
           "description": "Value of transaction in given base pair."
         }
       },
-      "title": "MarketValueDto"
+      "title": "MarketValue"
     },
-    "PaymentDto": {
+    "Payment": {
       "type": "object",
       "properties": {
         "amount": {
@@ -2387,9 +2387,9 @@
           "description": "Note visible to sender"
         }
       },
-      "title": "PaymentDto"
+      "title": "Payment"
     },
-    "TransactionDto": {
+    "Transaction": {
       "type": "object",
       "properties": {
         "account": {
@@ -2433,7 +2433,7 @@
           "type": "array",
           "description": "List of market values of given transaction with all supported base pairs.",
           "items": {
-            "$ref": "#\/definitions\/MarketValueDto"
+            "$ref": "#\/definitions\/MarketValue"
           }
         },
         "operationType": {
@@ -2481,9 +2481,9 @@
           ]
         }
       },
-      "title": "TransactionDto"
+      "title": "Transaction"
     },
-    "TransactionFilterDto": {
+    "TransactionFilter": {
       "type": "object",
       "properties": {
         "account": {
@@ -2535,9 +2535,9 @@
           "description": "Date until to search for payments, default NULL means search until now"
         }
       },
-      "title": "TransactionFilterDto"
+      "title": "TransactionFilter"
     },
-    "VirtualCurrencyDto": {
+    "VirtualCurrency": {
       "type": "object",
       "properties": {
         "basePair": {
@@ -2571,9 +2571,9 @@
           "exclusiveMinimum": false
         }
       },
-      "title": "VirtualCurrencyDto"
+      "title": "VirtualCurrency"
     },
-    "VirtualCurrencyOperationDto": {
+    "VirtualCurrencyOperation": {
       "type": "object",
       "properties": {
         "accountId": {
@@ -2590,9 +2590,9 @@
           "exclusiveMinimum": false
         }
       },
-      "title": "VirtualCurrencyOperationDto"
+      "title": "VirtualCurrencyOperation"
     },
-    "WithdrawalDto": {
+    "Withdrawal": {
       "type": "object",
       "properties": {
         "amount": {
@@ -2640,16 +2640,16 @@
           "description": "Blockchain address to send assets"
         }
       },
-      "title": "WithdrawalDto"
+      "title": "Withdrawal"
     },
-    "WithdrawalHintDto": {
+    "WithdrawalHint": {
       "type": "object",
       "properties": {
         "addresses": {
           "type": "array",
           "description": "Addresses, from which withdrawal can be processed.",
           "items": {
-            "$ref": "#\/definitions\/AddressDto"
+            "$ref": "#\/definitions\/Address"
           }
         },
         "amounts": {
@@ -2660,16 +2660,16 @@
           }
         }
       },
-      "title": "WithdrawalHintDto"
+      "title": "WithdrawalHint"
     },
-    "WithdrawalResponseDto": {
+    "WithdrawalResponse": {
       "type": "object",
       "properties": {
         "addresses": {
           "type": "array",
           "description": "Addresses, from which withdrawal will be processed.",
           "items": {
-            "$ref": "#\/definitions\/AddressDto"
+            "$ref": "#\/definitions\/Address"
           }
         },
         "amounts": {
@@ -2699,7 +2699,7 @@
           }
         }
       },
-      "title": "WithdrawalResponseDto"
+      "title": "WithdrawalResponse"
     },
     "WalletGenerateBtc": {
       "required": null,
@@ -2711,7 +2711,7 @@
         }
       }
     },
-    "Address": {
+    "GeneratedAddress": {
       "required": null,
       "properties": {
         "address": {
@@ -2751,7 +2751,11 @@
         "chain": {
           "type": "string",
           "description": "chain - BTC for Mainnet or TBTC for Testnet3 ",
-          "example": "BTC"
+          "example": "BTC",
+          "enum": [
+            "BTC",
+            "TBTC"
+          ]
         },
         "mnemonic": {
           "type": "string",
@@ -2787,6 +2791,10 @@
         "currency": {
           "type": "string",
           "description": "Withdrawal currency ",
+          "enum": [
+            "BTC",
+            "TBTC"
+          ],
           "example": "TBTC"
         },
         "amount": {
@@ -2836,12 +2844,16 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "'mainnet' or 'ropsten' ",
-          "example": "ropsten"
+          "description": "chain - 'mainnet' or 'ropsten' ",
+          "example": "ropsten",
+          "enum": [
+            "mainnet",
+            "ropsten"
+          ]
         }
       }
     },
-    "Erc20": {
+    "Erc20Token": {
       "required": null,
       "properties": {
         "tx": {
@@ -2866,7 +2878,11 @@
         "chain": {
           "type": "string",
           "description": "chain - 'mainnet' or 'ropsten' ",
-          "example": "ropsten"
+          "example": "ropsten",
+          "enum": [
+            "mainnet",
+            "ropsten"
+          ]
         },
         "mnemonic": {
           "type": "string",
@@ -2893,7 +2909,11 @@
         "chain": {
           "type": "string",
           "description": "chain - 'mainnet' or 'ropsten' ",
-          "example": "ropsten"
+          "example": "ropsten",
+          "enum": [
+            "mainnet",
+            "ropsten"
+          ]
         },
         "mnemonic": {
           "type": "string",
@@ -3006,7 +3026,11 @@
         "chain": {
           "type": "string",
           "description": "chain - 'mainnet' or 'ropsten' ",
-          "example": "ropsten"
+          "example": "ropsten",
+          "enum": [
+            "mainnet",
+            "ropsten"
+          ]
         },
         "mnemonic": {
           "type": "string",
