@@ -1,0 +1,3066 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "REST API documentation for Tatum Middleware. Tatum Middleware is a client to Tatum Blockchain API Core.",
+    "version": "1.0.0",
+    "title": "Tatum Middleware API"
+  },
+  "host": "localhost:6543",
+  "basePath": "\/",
+  "tags": [
+    {
+      "name": "Account Endpoint",
+      "description": "Endpoint to handle operations on Tatum private accounts, such as generate deposit addresses, list accounts belonging to defined customer, generate blockchain addresses and link them to account etc."
+    },
+    {
+      "name": "Customer Endpoint",
+      "description": "Endpoint used to handle customer operations, like creating new one, update information about customer, enable/disable etc."
+    },
+    {
+      "name": "ERC20 Endpoint",
+      "description": "Erc 20 Token Endpoint is used to create new ERC20 token in Ethereum blockchain and register it within Tatum. Then you will be able to send and receive created ERC20 tokens as you would with Bitcoin or Ethereum."
+    },
+    {
+      "name": "Settings Endpoint",
+      "description": "Endpoint used to add / remove API keys."
+    },
+    {
+      "name": "Payment Endpoint",
+      "description": "Endpoint used to create and list transactions within Tatum private's ledger."
+    },
+    {
+      "name": "Virtual Currency Endpoint",
+      "description": "Register and use Tatum private's virtual currencies. You cas create your own virtual currency and distribute it amongst your customers."
+    },
+    {
+      "name": "Withdrawal Endpoint",
+      "description": "Endpoint used to cancel / complete withdrawals made by your customers."
+    },
+    {
+      "name": "Bitcoin wallet helper Endpoint",
+      "description": "Operations with Bitcoin blockchain, such as wallet generation or sending transactions to blockchain."
+    },
+    {
+      "name": "Ethereum wallet helper Endpoint",
+      "description": "Operations with Ethereum blockchain, such a wallet generation or sending transactions to blockchain."
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "\/api\/v1\/account": {
+      "post": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Create new account",
+        "description": "Creates new account for the customer. This will create account on Tatum's private ledger.",
+        "operationId": "createAccount",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "account",
+            "description": "account",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/CreateAccountDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/detail\/{id}": {
+      "get": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Get account by ID",
+        "description": "Get account by ID.",
+        "operationId": "getAccountByPublicId",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/AccountDto"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/qr\/{currency}\/{address}": {
+      "get": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Generate QR code",
+        "description": "Creates QR code for given currency and address.",
+        "operationId": "getQRCode",
+        "produces": [
+          "image\/png"
+        ],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "description": "Blockchain address",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "currency",
+            "in": "path",
+            "description": "Digital asset",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "BTC",
+              "TBTC",
+              "ETH",
+              "TETH"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{customerId}": {
+      "get": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "List all customer accounts",
+        "description": "List all accounts associated with the customer.",
+        "operationId": "getAccountsByCustomerId",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "description": "Internal customer ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#\/definitions\/AccountDto"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/address": {
+      "get": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Get all deposit addresses for account",
+        "description": "Get all deposit addresses generated for account.",
+        "operationId": "getAllDepositAddresses",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#\/definitions\/AddressDto"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/address\/{xpub}": {
+      "post": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Create new deposit address",
+        "description": "Creates new deposit address for account. This method associate public blockchain's ledger address with account of Tatum's private ledger.",
+        "operationId": "generateDepositAddress",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "index",
+            "in": "query",
+            "description": "Derivation path index for concrete address. If not present, last used index for given xpub + 1 is used.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "xpub",
+            "in": "path",
+            "description": "Extended public key to derive address from.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/AddressDto"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/balance": {
+      "get": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Get account balance",
+        "description": "Get balance for the account.",
+        "operationId": "getAccountBalance",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/AccountBalanceDto"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/block": {
+      "put": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": " Block amount on account",
+        "description": "Blocked amount affects account available balance and does not allow to go with balance under the blocked amount.",
+        "operationId": "blockAmount",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "amount",
+            "description": "amount",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/BlockAmountDto"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/deactivate": {
+      "put": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Deactivate account",
+        "description": "Deactivate account. Only accounts with non-zero balance can be deactivated.",
+        "operationId": "deactivateAccount",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/freeze": {
+      "put": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Freeze account",
+        "description": "Freeze account will disable all outgoing payments. Deposits on account will remain available.",
+        "operationId": "freezeAccount",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/account\/{id}\/unfreeze": {
+      "put": {
+        "tags": [
+          "Account Endpoint"
+        ],
+        "summary": "Unfreeze account",
+        "description": "Unfreeze previously frozen account. Unfreezing non-frozen account will do no harm to the account.",
+        "operationId": "unfreezeAccount",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer": {
+      "get": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "List all customers",
+        "description": "List of all customers. Please limit calls as much as possible, especially if you have more customers",
+        "operationId": "findAll",
+        "produces": [
+          "application\/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#\/definitions\/CustomerDto"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Create new customer",
+        "description": "Creates new customer. Customer is just an envelope to accounts holder. Every customer can have unlimited accounts. In order to crate accounts and connect them to blockchain addresses, customer must be created.",
+        "operationId": "createCustomer",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "customer",
+            "description": "customer",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/CustomerRegistrationDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer\/{externalId}": {
+      "get": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Get customer details",
+        "description": "Using anonymized external ID you can access customer detail information including internal ID. Internal ID is needed to call other customer related methods.",
+        "operationId": "getCustomerByExternalId",
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "name": "externalId",
+            "in": "path",
+            "description": "Customer external ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/CustomerDto"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer\/{id}": {
+      "put": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Update customer",
+        "description": "This method is helpful in case your primary system will change ID's or customer will change the country he\/she is supposed to be in compliance with.",
+        "operationId": "updateCustomer",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "customer",
+            "description": "customer",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/CustomerUpdateDto"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer\/{id}\/deactivate": {
+      "put": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Deactivate customer",
+        "description": "Deactivate customer is not able to do any operation. Customer can be deactivated only when all their accounts are already deactivated.",
+        "operationId": "deactivateCustomer",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer\/{id}\/disable": {
+      "put": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Disable customer",
+        "description": "Disabled customer cannot perform end-user operations, such as create new accounts or send payments. Available balance on all accounts is set to 0. Account balance will stay untouched.",
+        "operationId": "disableCustomer",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/customer\/{id}\/enable": {
+      "put": {
+        "tags": [
+          "Customer Endpoint"
+        ],
+        "summary": "Enable customer",
+        "description": "Enabled customer can perform all operations. By default all customers are enabled.",
+        "operationId": "enableCustomer",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/erc20\/{id}": {
+      "post": {
+        "tags": [
+          "ERC20 Endpoint"
+        ],
+        "summary": "Create new ERC20 token",
+        "description": "Create new ERC20 token with given supply. Whole supply is stored in newly created account.",
+        "operationId": "createErc20Currency",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "erc20Dto",
+            "description": "erc20Dto",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Erc20Dto"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/Erc20ResponseDto"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/erc20\/{symbol}\/{address}": {
+      "post": {
+        "tags": [
+          "ERC20 Endpoint"
+        ],
+        "summary": "Set ERC20 token contract address",
+        "description": "Set contract address of ERC20 token. This must be done in order to communicate with ERC20 smart contract.",
+        "operationId": "storeErc20ContractAddress",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "description": "ERC20 contract address",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "in": "path",
+            "description": "ERC20 symbol name.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/payment": {
+      "post": {
+        "tags": [
+          "Payment Endpoint"
+        ],
+        "summary": "Send payment",
+        "description": "Send payment within the Tatum's ledger. All assets are settled instantly. This method will notmodify any blockchain connected to the accounts used within payment.",
+        "operationId": "sendPayment",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "payment",
+            "description": "payment",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/PaymentDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/payment\/account\/{id}": {
+      "post": {
+        "tags": [
+          "Payment Endpoint"
+        ],
+        "summary": "Find payments for account.",
+        "operationId": "getTransactionsByAccountId",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "filter",
+            "description": "filter",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/TransactionFilterDto"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Account ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#\/definitions\/TransactionDto"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/payment\/customer\/{id}": {
+      "post": {
+        "tags": [
+          "Payment Endpoint"
+        ],
+        "summary": "Find payments for customer across all accounts.",
+        "description": "Search payments across the whole system.",
+        "operationId": "getTransactionsByUserId",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "filter",
+            "description": "filter",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/TransactionFilterDto"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Internal customer ID",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#\/definitions\/TransactionDto"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/settings\/key": {
+      "post": {
+        "tags": [
+          "Settings Endpoint"
+        ],
+        "summary": "Create new API key",
+        "operationId": "addApiKey",
+        "consumes": [
+          "application\/json;charset=UTF-8"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "apiKeyDto",
+            "description": "apiKeyDto",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/ApiKeyDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/settings\/key\/{id}": {
+      "delete": {
+        "tags": [
+          "Settings Endpoint"
+        ],
+        "summary": "Remove existing API key",
+        "description": "Do not remove last used API key, otherwise you will not be able to use API.",
+        "operationId": "removeApiKey",
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of API key",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/virtualCurrency\/mint": {
+      "put": {
+        "tags": [
+          "Virtual Currency Endpoint"
+        ],
+        "summary": "Create new supply of virtual currency",
+        "description": "Create new supply of virtual currency linked with given accountId. Method increases total supply of currency.",
+        "operationId": "mintCurrency",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "virtualCurrencyDto",
+            "description": "virtualCurrencyDto",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/VirtualCurrencyOperationDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/virtualCurrency\/revoke": {
+      "put": {
+        "tags": [
+          "Virtual Currency Endpoint"
+        ],
+        "summary": "Destroy supply of virtual currency",
+        "description": "Destroy supply of virtual currency linked with given accountId. Method decreases total supply of currency.",
+        "operationId": "revokeCurrency",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "virtualCurrencyDto",
+            "description": "virtualCurrencyDto",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/VirtualCurrencyOperationDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/virtualCurrency\/{id}": {
+      "post": {
+        "tags": [
+          "Virtual Currency Endpoint"
+        ],
+        "summary": "Create new virtual currency",
+        "description": "Create new virtual currency with given supply stored in account. This will create Tatum internal virtual currency. For creation of ERC20 token, see \/erc20 API.",
+        "operationId": "createCurrency",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Customer internal ID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "virtualCurrencyDto",
+            "description": "virtualCurrencyDto",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/VirtualCurrencyDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/withdrawal\/hint": {
+      "post": {
+        "tags": [
+          "Withdrawal Endpoint"
+        ],
+        "summary": "Check withdrawal",
+        "description": "Check available addresses with enough balance to withdraw. Only for Ethereum based accounts.",
+        "operationId": "checkWithdrawal",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "withdrawal",
+            "description": "withdrawal",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/WithdrawalDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/WithdrawalHintDto"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/withdrawal\/{id}": {
+      "delete": {
+        "tags": [
+          "Withdrawal Endpoint"
+        ],
+        "summary": "Cancel withdrawal",
+        "description": "This method is helpful if you need to cancel withdrawal in case of blockchain transaction failed or is not yet processed. This does not cancel already broadcast blockchain transaction.",
+        "operationId": "cancelWithdrawal",
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of created withdrawal",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/api\/v1\/withdrawal\/{id}\/{txId}": {
+      "put": {
+        "tags": [
+          "Withdrawal Endpoint"
+        ],
+        "summary": "Complete withdrawal",
+        "description": "Invoke complete withdrawal as soon as blockchain transaction ID is available. Otherwise withdrawal will be processed automatically in next block and all other withdrawals will be pending.",
+        "operationId": "completeWithdrawal",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "*\/*"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of created withdrawal",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "txId",
+            "in": "path",
+            "description": "Blockchain transaction ID of created withdrawal",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "\/util\/v1\/btc\/wallet": {
+      "post": {
+        "parameters": [
+          {
+            "name": "chain",
+            "in": "body",
+            "description": "chain - BTC for Mainnet or TBTC for Testnet3",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/WalletGenerateBtc"
+            }
+          }
+        ],
+        "description": "Generate wallet.",
+        "tags": [
+          "Bitcoin wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Object containing mnemonic, xpriv and xpub for generated wallet.",
+            "schema": {
+              "$ref": "#\/definitions\/Wallet"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/btc\/wallet\/xpub\/{chain}\/{xpub}\/{i}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "chain",
+            "in": "path",
+            "description": "chain - BTC for Mainnet or TBTC for Testnet3 - eg: BTC,TBTC",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "BTC",
+              "TBTC"
+            ]
+          },
+          {
+            "name": "xpub",
+            "in": "path",
+            "description": "xpub to generate address from",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "i",
+            "in": "path",
+            "description": "derivation index of address",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "description": "Calculate address from xpub on Testnet \/ Mainnet for given derivation index",
+        "tags": [
+          "Bitcoin wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated address",
+            "schema": {
+              "$ref": "#\/definitions\/Address"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/btc\/wallet\/xpriv": {
+      "post": {
+        "parameters": [
+          {
+            "name": "xpriv",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/XPrivBtc"
+            }
+          }
+        ],
+        "description": "Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation index",
+        "tags": [
+          "Bitcoin wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated private key",
+            "schema": {
+              "$ref": "#\/definitions\/PrivKey"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/btc\/withdrawal": {
+      "post": {
+        "parameters": [
+          {
+            "name": "transfer",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/WithdrawalBtc"
+            }
+          }
+        ],
+        "description": "Send BTC \/ TBTC from address to address",
+        "tags": [
+          "Bitcoin wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "txHash of successful transaction",
+            "schema": {
+              "$ref": "#\/definitions\/TxHash"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ]
+      }
+    },
+    "\/util\/v1\/eth\/wallet": {
+      "post": {
+        "parameters": [
+          {
+            "name": "chain",
+            "in": "body",
+            "description": "chain - 'mainnet' or 'ropsten'",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/WalletGenerateEth"
+            }
+          }
+        ],
+        "description": "Generate wallet.",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Object containing mnemonic, xpriv and xpub for generated wallet.",
+            "schema": {
+              "$ref": "#\/definitions\/Wallet"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/eth\/wallet\/xpub\/{pub}\/{i}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "pub",
+            "in": "path",
+            "description": "xpub to generate address from",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "i",
+            "in": "path",
+            "description": "derivation index of address",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "description": "Calculate address from xpub on Ropsten \/ Mainnet for given derivation index",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated address",
+            "schema": {
+              "$ref": "#\/definitions\/Address"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/eth\/wallet\/xpriv": {
+      "post": {
+        "parameters": [
+          {
+            "name": "xpriv",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/XPrivEth"
+            }
+          }
+        ],
+        "description": "Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation index",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Generated private key",
+            "schema": {
+              "$ref": "#\/definitions\/PrivKey"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/eth\/transfer": {
+      "post": {
+        "parameters": [
+          {
+            "name": "transfer",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/EthTransfer"
+            }
+          }
+        ],
+        "description": "Send ETH \/ Ropsten ETH from account to account",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "txHash of successful transaction",
+            "schema": {
+              "$ref": "#\/definitions\/TxHash"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ]
+      }
+    },
+    "\/util\/v1\/eth\/erc20\/deploy": {
+      "post": {
+        "parameters": [
+          {
+            "name": "erc20deploy",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Erc20Deploy"
+            }
+          }
+        ],
+        "description": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "information about ERC20 smart contract",
+            "schema": {
+              "$ref": "#\/definitions\/Erc20"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ]
+      }
+    },
+    "\/util\/v1\/eth\/erc20\/transfer": {
+      "post": {
+        "parameters": [
+          {
+            "name": "erc20",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Erc20Transfer"
+            }
+          }
+        ],
+        "description": "Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account",
+        "tags": [
+          "Ethereum wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "txHash of successful transaction",
+            "schema": {
+              "$ref": "#\/definitions\/TxHash"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "x-client-secret",
+      "in": "header",
+      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>how to create valid **x-client-secret** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>"
+    }
+  },
+  "definitions": {
+    "AccountBalanceDto": {
+      "type": "object",
+      "properties": {
+        "accountBalance": {
+          "type": "number",
+          "description": "Account balance represents all assets on the account"
+        },
+        "availableBalance": {
+          "type": "number",
+          "description": "Available balance on the account represents account balance minus blocked amount on the account. If the account is frozen or customer is disabled, the available balance will be 0. Available balance should be user do determine how much can customer send or withdraw from the account."
+        }
+      },
+      "title": "AccountBalanceDto"
+    },
+    "AccountDto": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#\/definitions\/AccountBalanceDto"
+        },
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1546410660486,
+          "description": "Time in UTC millis of account creation."
+        },
+        "currency": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Account currency.",
+          "enum": [
+            "BTC",
+            "ETH",
+            "TBTC",
+            "TETH"
+          ]
+        },
+        "frozen": {
+          "type": "boolean",
+          "example": false,
+          "description": "Indicates whether account is frozen or not."
+        },
+        "publicId": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Account ID."
+        }
+      },
+      "title": "AccountDto"
+    },
+    "AddressDto": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Blockchain address."
+        },
+        "derivationKey": {
+          "type": "integer",
+          "format": "int32",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Derivation key index for given address."
+        },
+        "xpub": {
+          "type": "string",
+          "description": "Extended public key to derive address from."
+        }
+      },
+      "title": "AddressDto"
+    },
+    "ApiKeyDto": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "API key."
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1,
+          "description": "ID of API key."
+        },
+        "name": {
+          "type": "string",
+          "example": "My Admin Write key.",
+          "description": "Name of API key."
+        },
+        "readAccess": {
+          "type": "boolean",
+          "description": "Whether this API key has read access. Should be true always for correct behavior."
+        },
+        "secret": {
+          "type": "string",
+          "example": "123123aksjfn2q8onfkan823f",
+          "description": "API key secret."
+        },
+        "writeAccess": {
+          "type": "boolean",
+          "description": "Whether this API key has write access."
+        }
+      },
+      "title": "ApiKeyDto"
+    },
+    "BlockAmountDto": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Amount to be blocked"
+        }
+      },
+      "title": "BlockAmountDto"
+    },
+    "CreateAccountDto": {
+      "type": "object",
+      "properties": {
+        "compliant": {
+          "type": "boolean",
+          "example": false,
+          "description": "Enable compliant checks."
+        },
+        "currency": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Account currency",
+          "enum": [
+            "BTC"
+          ]
+        },
+        "customerId": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1,
+          "description": "Internal customer ID"
+        }
+      },
+      "title": "CreateAccountDto"
+    },
+    "CustomerDto": {
+      "type": "object",
+      "properties": {
+        "customerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country customer has to be compliant with"
+        },
+        "enabled": {
+          "type": "boolean",
+          "example": true,
+          "description": "Indicates whether customer is enabled or not"
+        },
+        "externalId": {
+          "type": "string",
+          "example": 651234,
+          "description": "Customer external ID"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1,
+          "description": "Internal customer ID"
+        },
+        "providerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country service provider has to be compliant with"
+        }
+      },
+      "title": "CustomerDto"
+    },
+    "CustomerRegistrationDto": {
+      "type": "object",
+      "properties": {
+        "customerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country customer has to be compliant with",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "externalId": {
+          "type": "string",
+          "example": 123654,
+          "description": "Customer external ID. Use only anonymized identification you have in your system.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "providerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country service provider has to be compliant with",
+          "minLength": 1,
+          "maxLength": 2147483647
+        }
+      },
+      "title": "CustomerRegistrationDto"
+    },
+    "CustomerUpdateDto": {
+      "type": "object",
+      "properties": {
+        "customerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country customer has to be compliant with. If empty, it will not be updated."
+        },
+        "externalId": {
+          "type": "string",
+          "example": 123654,
+          "description": "External customer ID. If empty, it will not be updated."
+        },
+        "providerCountry": {
+          "type": "string",
+          "example": "US",
+          "description": "Country service provider has to be compliant with. If empty, it will not be updated."
+        }
+      },
+      "title": "CustomerUpdateDto"
+    },
+    "Erc20Dto": {
+      "type": "object",
+      "properties": {
+        "basePair": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Base pair for ERC20 token. Transaction value will be calculated according to this base pair.",
+          "enum": [
+            "BTC",
+            "ETH",
+            "USD",
+            "CZK",
+            "EUR"
+          ]
+        },
+        "chain": {
+          "type": "string",
+          "example": "TETH",
+          "description": "Chain for ERC20 token. Ethereum mainnet or Ropsten testnet are available.",
+          "enum": [
+            "ETH",
+            "TETH"
+          ]
+        },
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Derivation index for xpub to generate concrete deposit address."
+        },
+        "name": {
+          "type": "string",
+          "example": "VIRTUAL",
+          "description": "ERC20 token name.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "supply": {
+          "type": "number",
+          "example": 1000000,
+          "description": "Supply of ERC20 token.",
+          "minimum": 0,
+          "exclusiveMinimum": false
+        },
+        "symbol": {
+          "type": "string",
+          "example": "VIRTUAL",
+          "description": "ERC20 token symbol.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "xpub": {
+          "type": "string",
+          "description": "Extended public key (xpub), from which deposit ERC20 address will be generated.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        }
+      },
+      "title": "Erc20Dto"
+    },
+    "Erc20ResponseDto": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "description": "Account ID with type of currency like created ERC20 token symbol. Supply of ERC20 token will becredited as soon as ERC20 token is sent to Ethereum blockchain."
+        },
+        "data": {
+          "type": "string",
+          "description": "ERC20 token to be send as a Ethereum transaction payload."
+        },
+        "gasLimit": {
+          "type": "number",
+          "example": 18976523,
+          "description": "Estimated gas limit for creating ERC20 token."
+        },
+        "gasPrice": {
+          "type": "number",
+          "example": 1,
+          "description": "Gas price for creating ERC20 token."
+        }
+      },
+      "title": "Erc20ResponseDto"
+    },
+    "MarketValueDto": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1546411001267,
+          "description": "Date of validity of rate."
+        },
+        "pair": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Base pair.",
+          "enum": [
+            "BTC",
+            "ETH",
+            "USD",
+            "CZK",
+            "EUR"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "example": "CMC, https:\/\/coinmarketcap.com",
+          "description": "Source of base pair."
+        },
+        "value": {
+          "type": "number",
+          "example": 1235.56,
+          "description": "Value of transaction in given base pair."
+        }
+      },
+      "title": "MarketValueDto"
+    },
+    "PaymentDto": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "description": "Amount to be sent",
+          "minimum": 0,
+          "exclusiveMinimum": false
+        },
+        "anonymous": {
+          "type": "boolean",
+          "example": false,
+          "description": "Anonymous payment does not show sender account to recipient, default is false"
+        },
+        "compliant": {
+          "type": "boolean",
+          "example": false,
+          "description": "Enable compliant checks."
+        },
+        "paymentId": {
+          "type": "string",
+          "example": 9625,
+          "description": "Payment ID"
+        },
+        "recipientAccountId": {
+          "type": "string",
+          "example": "7c69db525e294db78b95f0f181124d6f",
+          "description": "Internal recipient account ID within Tatum platform",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "recipientNote": {
+          "type": "string",
+          "example": "Private note",
+          "description": "Note visible to both, sender and recipient"
+        },
+        "senderAccountId": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Internal sender account ID within Tatum platform",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "senderNote": {
+          "type": "string",
+          "example": "Sender note",
+          "description": "Note visible to sender"
+        }
+      },
+      "title": "PaymentDto"
+    },
+    "TransactionDto": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "type": "string",
+          "example": "7c69db525e294db78b95f0f181124d6f",
+          "description": "Source account - source of transaction(s)"
+        },
+        "amount": {
+          "type": "number",
+          "example": 0.1,
+          "description": "Amount in account's currency"
+        },
+        "anonymous": {
+          "type": "boolean",
+          "example": false,
+          "description": "Whether payment is anonymous. If true, counter account owner does not see source account."
+        },
+        "counterAccount": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Counter account - transaction(s) destination account"
+        },
+        "currency": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Payment currency"
+        },
+        "date": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1546411001267,
+          "description": "Payment datetime in UTC millis"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 9876812,
+          "description": "Internal payment ID"
+        },
+        "marketValues": {
+          "type": "array",
+          "description": "List of market values of given transaction with all supported base pairs.",
+          "items": {
+            "$ref": "#\/definitions\/MarketValueDto"
+          }
+        },
+        "operationType": {
+          "type": "string",
+          "example": "PAYMENT",
+          "description": "Type of operation",
+          "enum": [
+            "PAYMENT",
+            "WITHDRAWAL",
+            "FAILED",
+            "DEPOSIT"
+          ]
+        },
+        "paymentId": {
+          "type": "string",
+          "example": 65426,
+          "description": "Payment ID defined in payment order by sender"
+        },
+        "recipientNote": {
+          "type": "string",
+          "example": "Private note",
+          "description": "Note visible for both sender and recipient"
+        },
+        "reference": {
+          "type": "string",
+          "example": 1561683216,
+          "description": "Payment internal reference - unique identifier"
+        },
+        "senderNote": {
+          "type": "string",
+          "example": "Sender note",
+          "description": "Note visible for sender"
+        },
+        "transactionType": {
+          "type": "string",
+          "example": "CREDIT_PAYMENT",
+          "description": "Type of payment",
+          "enum": [
+            "FAILED",
+            "DEBIT_PAYMENT",
+            "CREDIT_PAYMENT",
+            "CREDIT_DEPOSIT",
+            "DEBIT_WITHDRAWAL",
+            "CANCEL_WITHDRAWAL"
+          ]
+        }
+      },
+      "title": "TransactionDto"
+    },
+    "TransactionFilterDto": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "type": "string",
+          "example": "7c69db525e294db78b95f0f181124d6f",
+          "description": "Source account - source of transaction(s)"
+        },
+        "counterAccount": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Counter account - transaction(s) destination account"
+        },
+        "from": {
+          "type": "string",
+          "format": "date",
+          "example": 1546411085054,
+          "description": "Starting date to search for payments from, default NULL means search all history"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "example": 500,
+          "description": "Maximum number of payments in the result, default 500",
+          "minimum": 1,
+          "maximum": 2000,
+          "exclusiveMinimum": false,
+          "exclusiveMaximum": false
+        },
+        "opType": {
+          "type": "string",
+          "example": "PAYMENT",
+          "description": "Type of operation",
+          "enum": [
+            "PAYMENT",
+            "WITHDRAWAL",
+            "FAILED",
+            "DEPOSIT"
+          ]
+        },
+        "paymentId": {
+          "type": "string",
+          "example": 65426,
+          "description": "Payment ID defined in payment order by sender"
+        },
+        "to": {
+          "type": "string",
+          "format": "date",
+          "example": 1546416085054,
+          "description": "Date until to search for payments, default NULL means search until now"
+        }
+      },
+      "title": "TransactionFilterDto"
+    },
+    "VirtualCurrencyDto": {
+      "type": "object",
+      "properties": {
+        "basePair": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Base pair for virtual currency. Transaction value will be calculated according to this base pair.",
+          "enum": [
+            "BTC",
+            "ETH",
+            "USD",
+            "CZK",
+            "EUR"
+          ]
+        },
+        "erc20": {
+          "type": "boolean",
+          "description": "If it is ERC20 token on Ethereum blockchain or virtual currency of Tatum platform."
+        },
+        "name": {
+          "type": "string",
+          "example": "VIRTUAL",
+          "description": "Virtual currency name. Must be prefixed with 'VC_'.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "supply": {
+          "type": "number",
+          "example": 1000000,
+          "description": "Supply of virtual currency.",
+          "minimum": 0,
+          "exclusiveMinimum": false
+        }
+      },
+      "title": "VirtualCurrencyDto"
+    },
+    "VirtualCurrencyOperationDto": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Virtual currency account.",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "amount": {
+          "type": "number",
+          "description": "Supply of virtual currency.",
+          "minimum": 0,
+          "exclusiveMinimum": false
+        }
+      },
+      "title": "VirtualCurrencyOperationDto"
+    },
+    "WithdrawalDto": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "example": 0.001,
+          "description": "Amount to be sent"
+        },
+        "currency": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Withdrawal currency",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "fee": {
+          "type": "number",
+          "example": 0.0005,
+          "description": "Fee to be submitted as a transaction fee to blockchain. If not present, it is set automatically to 0.0005 for BTC"
+        },
+        "force": {
+          "type": "boolean",
+          "example": false,
+          "description": "Force withdrawal, even if it is non-compliant"
+        },
+        "senderAccountId": {
+          "type": "string",
+          "example": "7c21ed165e294db78b95f0f181086d6f",
+          "description": "Sender account ID",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "senderNote": {
+          "type": "string",
+          "example": "Sender note",
+          "description": "Note visible to owner of withdrawing account"
+        },
+        "sourceAddress": {
+          "type": "string",
+          "example": "mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7",
+          "description": "Blockchain address to send assets from. Used only for ETH-based accounts."
+        },
+        "targetAddress": {
+          "type": "string",
+          "example": "mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7",
+          "description": "Blockchain address to send assets"
+        }
+      },
+      "title": "WithdrawalDto"
+    },
+    "WithdrawalHintDto": {
+      "type": "object",
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "description": "Addresses, from which withdrawal can be processed.",
+          "items": {
+            "$ref": "#\/definitions\/AddressDto"
+          }
+        },
+        "amounts": {
+          "type": "array",
+          "description": "Balance for each address.",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "title": "WithdrawalHintDto"
+    },
+    "WithdrawalResponseDto": {
+      "type": "object",
+      "properties": {
+        "addresses": {
+          "type": "array",
+          "description": "Addresses, from which withdrawal will be processed.",
+          "items": {
+            "$ref": "#\/definitions\/AddressDto"
+          }
+        },
+        "amounts": {
+          "type": "array",
+          "description": "Amounts for each address\/vIn to be withdrawn.",
+          "items": {
+            "type": "number"
+          }
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 5432,
+          "description": "ID of withdrawal"
+        },
+        "vin": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vinIndex": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "title": "WithdrawalResponseDto"
+    },
+    "WalletGenerateBtc": {
+      "required": null,
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain ",
+          "example": "BTC"
+        }
+      }
+    },
+    "Address": {
+      "required": null,
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Generated address ",
+          "example": "mtQygZAEbmgBCPJNMYRjGxa4C3kgTNdmXM"
+        }
+      }
+    },
+    "PrivKey": {
+      "required": null,
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Generated private key ",
+          "example": "cTmS2jBWXgFaXZ2xG9jhn67TiyTshnMp3UedamzEhGm6BZV1vLgQ"
+        }
+      }
+    },
+    "TxHash": {
+      "required": null,
+      "properties": {
+        "txHash": {
+          "type": "string",
+          "description": "txHash of successful transaction ",
+          "example": "c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9"
+        }
+      }
+    },
+    "XPrivBtc": {
+      "required": [
+        "chain",
+        "mnemonic",
+        "index"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain - BTC for Mainnet or TBTC for Testnet3 ",
+          "example": "BTC"
+        },
+        "mnemonic": {
+          "type": "string",
+          "description": "mnemonic to generate private key from ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "index": {
+          "type": "integer",
+          "description": "derivation index of private key ",
+          "example": 4
+        }
+      }
+    },
+    "WithdrawalBtc": {
+      "required": [
+        "senderAccountId",
+        "targetAddress",
+        "currency",
+        "amount",
+        "mnemonic"
+      ],
+      "properties": {
+        "senderAccountId": {
+          "type": "string",
+          "description": "Sender account ID ",
+          "example": "7c21ed165e294db78b95f0f181086d6f"
+        },
+        "targetAddress": {
+          "type": "string",
+          "description": "Blockchain address to send assets ",
+          "example": "mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Withdrawal currency ",
+          "example": "TBTC"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Amount to be sent in btc ",
+          "example": "0.02"
+        },
+        "senderNote": {
+          "type": "string",
+          "description": "Note visible to owner of withdrawing account ",
+          "example": "Sender note"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Force withdrawal, even if it is non-compliant ",
+          "example": false
+        },
+        "mnemonic": {
+          "type": "string",
+          "description": "private key of address to send funds from ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        }
+      }
+    },
+    "Wallet": {
+      "required": null,
+      "properties": {
+        "mnemonic": {
+          "type": "string",
+          "description": "generated mnemonic for wallet ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "xpriv": {
+          "type": "string",
+          "description": "generated xpriv for wallet with derivation path according to BIP44 ",
+          "example": "xprvA1srLWNaGEkhdSJg6cLTMAziUpQcefpu2ZnKH2PXGiXEPKTdVPHjLFp4aZSSqSsaLMNrWXoj6TsyyUqh18T1hbiQkC42aWjXB9HnpmmqrYr"
+        },
+        "xpub": {
+          "type": "string",
+          "description": "generated xpub for wallet with derivation path according to BIP44 ",
+          "example": "xpub6EsCk1uU6cJzqvP9CdsTiJwT2rF748YkPnhv5Qo8q44DG7nn2vbyt48YRsNSUYS44jFCW9gwvD9kLQu9AuqXpTpM1c5hgg9PsuBLdeNncid"
+        }
+      }
+    },
+    "WalletGenerateEth": {
+      "required": null,
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "'mainnet' or 'ropsten' ",
+          "example": "ropsten"
+        }
+      }
+    },
+    "Erc20": {
+      "required": null,
+      "properties": {
+        "tx": {
+          "type": "string",
+          "description": "tx hash ",
+          "example": "0x93feef50a0754d5b815964ec41a744b8b60fd83bac7657386b21cd8a7c38a3b1"
+        },
+        "contractAddress": {
+          "type": "string",
+          "description": "address of generated smart contract ",
+          "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        }
+      }
+    },
+    "XPrivEth": {
+      "required": [
+        "chain",
+        "mnemonic",
+        "index"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain - 'mainnet' or 'ropsten' ",
+          "example": "ropsten"
+        },
+        "mnemonic": {
+          "type": "string",
+          "description": "mnemonic to generate private key from ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "index": {
+          "type": "integer",
+          "description": "derivation index of private key ",
+          "example": 0
+        }
+      }
+    },
+    "EthTransfer": {
+      "required": [
+        "chain",
+        "mnemonic",
+        "index",
+        "senderAccountId",
+        "targetAddress",
+        "amount"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain - 'mainnet' or 'ropsten' ",
+          "example": "ropsten"
+        },
+        "mnemonic": {
+          "type": "string",
+          "description": "mnemonic to generate private key of sender ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "index": {
+          "type": "integer",
+          "description": "derivation index of sender address of sender ",
+          "example": 0
+        },
+        "senderAccountId": {
+          "type": "string",
+          "description": "Sender account ID ",
+          "example": "7c21ed165e294db78b95f0f181086d6f"
+        },
+        "targetAddress": {
+          "type": "string",
+          "description": "Blockchain address to send assets ",
+          "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Amount to be sent in wei ",
+          "example": 100000
+        },
+        "senderNote": {
+          "type": "string",
+          "description": "Note visible to owner of withdrawing account ",
+          "example": "Sender note"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Force payment, even if it is non-compliant ",
+          "example": false
+        }
+      }
+    },
+    "Erc20Transfer": {
+      "required": [
+        "mnemonic",
+        "index",
+        "senderAccountId",
+        "targetAddress",
+        "currency",
+        "amount",
+        "tokenAddress"
+      ],
+      "properties": {
+        "mnemonic": {
+          "type": "string",
+          "description": "mnemonic to generate private key of holder of ERC20 token ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "index": {
+          "type": "integer",
+          "description": "derivation index of sender address of holder of ERC20 token ",
+          "example": 0
+        },
+        "senderAccountId": {
+          "type": "string",
+          "description": "Sender account ID ",
+          "example": "7c21ed165e294db78b95f0f181086d6f"
+        },
+        "targetAddress": {
+          "type": "string",
+          "description": "Blockchain address to send ERC20 token to ",
+          "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        },
+        "currency": {
+          "type": "string",
+          "description": "ERC20 symbol ",
+          "example": "MY_SYMBOL"
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Amount to be sent in wei ",
+          "example": 100000
+        },
+        "senderNote": {
+          "type": "string",
+          "description": "Note visible to owner of withdrawing account ",
+          "example": "Sender note"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Force payment, even if it is non-compliant ",
+          "example": false
+        },
+        "tokenAddress": {
+          "type": "string",
+          "description": "address of ERC20 token ",
+          "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        }
+      }
+    },
+    "Erc20Deploy": {
+      "required": [
+        "chain",
+        "mnemonic",
+        "index",
+        "payIndex",
+        "customerId",
+        "name",
+        "symbol",
+        "supply",
+        "basePair"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain - 'mainnet' or 'ropsten' ",
+          "example": "ropsten"
+        },
+        "mnemonic": {
+          "type": "string",
+          "description": "mnemonic to generate private key of deployer of ERC20 ",
+          "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
+        },
+        "index": {
+          "type": "integer",
+          "description": "derivation index of deployer address of ERC20 ",
+          "example": 0
+        },
+        "payIndex": {
+          "type": "integer",
+          "description": "derivation index of address to pay for deployment of ERC20 ",
+          "example": 0
+        },
+        "customerId": {
+          "type": "integer",
+          "description": "ID of customer to create ERC20 for ",
+          "example": 5
+        },
+        "name": {
+          "type": "string",
+          "description": "name of the ERC20 token ",
+          "example": "My ERC20 Token"
+        },
+        "symbol": {
+          "type": "string",
+          "description": "symbol of the ERC20 token ",
+          "example": "MT"
+        },
+        "supply": {
+          "type": "integer",
+          "description": "max supply of ERC20 token ",
+          "example": 10000000
+        },
+        "basePair": {
+          "type": "string",
+          "description": "Base pair for ERC20 token. 1 token will be equal to 1 unit of base pair. Transaction value will be calculated according to this base pair. ",
+          "enmu": [
+            "BTC",
+            "ETH",
+            "USD",
+            "CZK",
+            "EUR"
+          ]
+        }
+      }
+    }
+  },
+  "produces": [
+    "application\/json"
+  ],
+  "consumes": [
+    "application\/json"
+  ]
+}

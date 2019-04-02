@@ -33,9 +33,9 @@
     "body-parser": "1.18.3",
     "ethereumjs-wallet": "0.6.3",
     "express": "4.16.4",
-    "express-swagger-generator": "^1.1.13",
     "hdkey": "1.1.1",
     "lodash": "^4.17.11",
+    "swagger-ui-express": "^4.0.2",
     "web3": "1.0.0-beta.35"
   },
   "devDependencies": {

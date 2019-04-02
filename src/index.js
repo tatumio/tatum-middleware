@@ -3,7 +3,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const axios = require('axios')
-const expressSwaggerGenerator = require('express-swagger-generator');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL
@@ -19,50 +20,12 @@ const btcRouter = require('./api/btcRouter')
 const serverPort = 6543;
 
 const app = express()
-const options = {
-  swaggerDefinition: {
-    info: {
-      description: 'Tatum Middleware is a client to Tatum Blockchain API Core.',
-      title: 'Tatum Middleware',
-      version: '1.0.0',
-    },
-    host: `localhost:${serverPort}`,
-    basePath: '/util/v1',
-    produces: [
-      'application/json',
-    ],
-    consumes: [
-      'application/json',
-    ],
-    schemes: ['http', 'https'],
-    securityDefinitions: {
-      apiKey: {
-        type: 'apiKey',
-        in: 'header',
-        name: 'x-client-secret',
-        description: "",
-      }
-    }
-  },
-  basedir: __dirname, //app absolute path
-  files: ['./**/*.js'] //Path to the API handle folder
-};
 app.use(bodyParser.json())
 
-const expressSwagger = expressSwaggerGenerator(app)
-expressSwagger(options)
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/util/v1/eth', ethRouter)
 app.use('/util/v1/btc', btcRouter)
 
-/**
- * Methods of Tatum Core API. Resends all HTTP headers, paths, query params and HTTP body to set up Tatum Core Endpoint.
- * @route GET /**
- * @route POST /**
- * @route PUT /**
- * @route DELETE /**
- * @group Tatum Core - Proxy methods to Tatum Core API
- */
 app.use(({url, method, headers, body: data}, res) => {
   // default handling of Tatum APIs
   axiosInstance({
