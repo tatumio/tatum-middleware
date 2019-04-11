@@ -1145,6 +1145,7 @@
           "Payment Endpoint"
         ],
         "summary": "Find payments for account.",
+        "description": "Search payments across the whole system.",
         "operationId": "getTransactionsByAccountId",
         "consumes": [
           "application\/json"
@@ -1272,6 +1273,7 @@
           "Settings Endpoint"
         ],
         "summary": "Create new API key",
+        "description": "Create new API key.",
         "operationId": "addApiKey",
         "consumes": [
           "application\/json;charset=UTF-8"
@@ -1694,6 +1696,7 @@
           }
         ],
         "description": "Generate valid JWT token from API Key.",
+        "operationId": "generateJWT",
         "tags": [
           "JWT helper Endpoint"
         ],
@@ -1718,6 +1721,7 @@
           }
         ],
         "description": "Generate wallet.",
+        "operationId": "generateBtcWallet",
         "tags": [
           "Bitcoin wallet helper Endpoint"
         ],
@@ -1760,6 +1764,7 @@
             "type": "integer"
           }
         ],
+        "operationId": "calculateBtcAddress",
         "description": "Calculate address from xpub on Testnet \/ Mainnet for given derivation index",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1787,6 +1792,7 @@
             }
           }
         ],
+        "operationId": "calculateBtcPrviKey",
         "description": "Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation index",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1814,6 +1820,7 @@
             }
           }
         ],
+        "operationId": "transferBtc",
         "description": "Send BTC \/ TBTC from address to address",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1847,6 +1854,7 @@
             }
           }
         ],
+        "operationId": "generateEthWallet",
         "description": "Generate wallet.",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1879,6 +1887,7 @@
             "type": "integer"
           }
         ],
+        "operationId": "calculateEthAddress",
         "description": "Calculate address from xpub on Ropsten \/ Mainnet for given derivation index",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1906,6 +1915,7 @@
             }
           }
         ],
+        "operationId": "calculateEthPrivKey",
         "description": "Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation index",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1933,6 +1943,7 @@
             }
           }
         ],
+        "operationId": "transferEth",
         "description": "Send ETH \/ Ropsten ETH from account to account",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1966,6 +1977,7 @@
             }
           }
         ],
+        "operationId": "deployErc20",
         "description": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1999,6 +2011,7 @@
             }
           }
         ],
+        "operationId": "transferErc20",
         "description": "Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account",
         "tags": [
           "Ethereum wallet helper Endpoint"
