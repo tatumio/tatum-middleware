@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const axios = require('axios')
 const swaggerUi = require('swagger-ui-express');
@@ -16,15 +17,19 @@ module.exports = {
 
 const ethRouter = require('./api/ethRouter')
 const btcRouter = require('./api/btcRouter')
+const jwtRouter = require('./api/jwtRouter')
 
 const serverPort = 6543;
 
 const app = express()
 app.use(bodyParser.json())
+app.use(cors())
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/util/v1/eth', ethRouter)
 app.use('/util/v1/btc', btcRouter)
+
+app.use('/util/v1/jwt', jwtRouter)
 
 app.use(({url, method, headers, body: data}, res) => {
   // default handling of Tatum APIs

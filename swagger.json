@@ -1675,6 +1675,35 @@
         "deprecated": false
       }
     },
+    "\/util\/v1\/jwt\/{key}\/{secret}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "description": "API Key",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "secret",
+            "in": "path",
+            "description": "API Key secret",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "description": "Generate valid JWT token from API Key.",
+        "tags": [
+          "JWT helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Valid JWT token"
+          }
+        }
+      }
+    },
     "\/util\/v1\/btc\/wallet": {
       "post": {
         "parameters": [

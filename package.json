@@ -31,9 +31,11 @@
     "bitcoinjs-lib": "^3.3.2",
     "bn.js": "^4.11.8",
     "body-parser": "1.18.3",
+    "cors": "^2.8.5",
     "ethereumjs-wallet": "0.6.3",
     "express": "4.16.4",
     "hdkey": "1.1.1",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.11",
     "swagger-ui-express": "^4.0.2",
     "web3": "1.0.0-beta.35"
@@ -43,6 +45,6 @@
     "eslint": "^5.8.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^3.1.0",
-    "mocha": "^6.0.2"
+    "mocha": "^6.1.2"
   }
 }
