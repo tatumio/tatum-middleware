@@ -17,6 +17,7 @@ module.exports = {
 
 const ethRouter = require('./api/ethRouter')
 const btcRouter = require('./api/btcRouter')
+const xrpRouter = require('./api/xrpRouter')
 const jwtRouter = require('./api/jwtRouter')
 
 const serverPort = 6543;
@@ -28,6 +29,7 @@ app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/util/v1/eth', ethRouter)
 app.use('/util/v1/btc', btcRouter)
+app.use('/util/v1/xrp', xrpRouter)
 
 app.use('/util/v1/jwt', jwtRouter)
 

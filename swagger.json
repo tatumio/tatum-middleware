@@ -43,6 +43,10 @@
     {
       "name": "Ethereum wallet helper Endpoint",
       "description": "Operations with Ethereum blockchain, such a wallet generation or sending transactions to blockchain."
+    },
+    {
+      "name": "XRP wallet helper Endpoint",
+      "description": "Operations with XRP blockchain, such as wallet generation or sending transactions to blockchain."
     }
   ],
   "schemes": [
@@ -339,7 +343,7 @@
           {
             "name": "xpub",
             "in": "path",
-            "description": "Extended public key to derive address from. There can be only 1 across all accounts and all accounts are generated from it. 0 indexed address is not used and is used for internal purposes (in case of BTC to ask for change for each blockchain transaction).",
+            "description": "Extended public key to derive address from. There can be only 1 across all accounts and all accounts are generated from it. In case of XRP, this is Account address for which there will be generated DestinationTags. 0 indexed address is not used and is used for internal purposes (in case of BTC to ask for change for each blockchain transaction).",
             "required": true,
             "type": "string"
           }
@@ -1695,8 +1699,9 @@
             "type": "string"
           }
         ],
+        "operationId": "generateJwt",
+        "summary": "Generate JWT token.",
         "description": "Generate valid JWT token from API Key.",
-        "operationId": "generateJWT",
         "tags": [
           "JWT helper Endpoint"
         ],
@@ -1705,6 +1710,59 @@
             "description": "Valid JWT token"
           }
         }
+      }
+    },
+    "\/util\/v1\/xrp\/wallet": {
+      "post": {
+        "summary": "Generate XRP account.",
+        "description": "Generate XRP account.",
+        "operationId": "generateXrpWallet",
+        "tags": [
+          "XRP wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "Object containing address and secret for generated wallet.",
+            "schema": {
+              "$ref": "#\/definitions\/XrpWallet"
+            }
+          }
+        }
+      }
+    },
+    "\/util\/v1\/xrp\/transfer": {
+      "post": {
+        "parameters": [
+          {
+            "name": "transfer",
+            "in": "body",
+            "description": null,
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/XrpTransfer"
+            }
+          }
+        ],
+        "operationId": "transferXrp",
+        "summary": "Send XRP \/ TXRP from account to account",
+        "description": "Send XRP \/ TXRP from account to account",
+        "tags": [
+          "XRP wallet helper Endpoint"
+        ],
+        "responses": {
+          "200": {
+            "description": "txHash of successful transaction",
+            "schema": {
+              "$ref": "#\/definitions\/TxHash"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ]
       }
     },
     "\/util\/v1\/btc\/wallet": {
@@ -1720,8 +1778,9 @@
             }
           }
         ],
-        "description": "Generate wallet.",
         "operationId": "generateBtcWallet",
+        "summary": "Generate wallet.",
+        "description": "Generate wallet.",
         "tags": [
           "Bitcoin wallet helper Endpoint"
         ],
@@ -1765,6 +1824,7 @@
           }
         ],
         "operationId": "calculateBtcAddress",
+        "summary": "Calculate BTC address",
         "description": "Calculate address from xpub on Testnet \/ Mainnet for given derivation index",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1793,6 +1853,7 @@
           }
         ],
         "operationId": "calculateBtcPrviKey",
+        "summary": "Calculate BTC private key",
         "description": "Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation index",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1821,6 +1882,7 @@
           }
         ],
         "operationId": "transferBtc",
+        "summary": "Send BTC \/ TBTC from address to address",
         "description": "Send BTC \/ TBTC from address to address",
         "tags": [
           "Bitcoin wallet helper Endpoint"
@@ -1855,7 +1917,8 @@
           }
         ],
         "operationId": "generateEthWallet",
-        "description": "Generate wallet.",
+        "summary": "Generate ETH wallet.",
+        "description": "Generate ETH wallet.",
         "tags": [
           "Ethereum wallet helper Endpoint"
         ],
@@ -1888,6 +1951,7 @@
           }
         ],
         "operationId": "calculateEthAddress",
+        "summary": "Calculate ETH address",
         "description": "Calculate address from xpub on Ropsten \/ Mainnet for given derivation index",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1916,6 +1980,7 @@
           }
         ],
         "operationId": "calculateEthPrivKey",
+        "summary": "Calculate private key of ETH address",
         "description": "Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation index",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1944,6 +2009,7 @@
           }
         ],
         "operationId": "transferEth",
+        "summary": "Send ETH \/ Ropsten ETH from account to account",
         "description": "Send ETH \/ Ropsten ETH from account to account",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -1978,6 +2044,7 @@
           }
         ],
         "operationId": "deployErc20",
+        "summary": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract.",
         "description": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -2012,6 +2079,7 @@
           }
         ],
         "operationId": "transferErc20",
+        "summary": "Transfer ETH \/ Ropsten ETH ERC20",
         "description": "Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account",
         "tags": [
           "Ethereum wallet helper Endpoint"
@@ -2108,7 +2176,7 @@
         },
         "xpub": {
           "type": "string",
-          "description": "Extended public key to derive address from."
+          "description": "Extended public key to derive address from. In case of XRP, this is account address, since address is defined as DestinationTag."
         }
       },
       "title": "Address"
@@ -2861,6 +2929,21 @@
         }
       }
     },
+    "XrpWallet": {
+      "required": null,
+      "properties": {
+        "secret": {
+          "type": "string",
+          "description": "generated secret for account",
+          "example": "snSFTHdvSYQKKkYntvEt8cnmZuPJB"
+        },
+        "address": {
+          "type": "string",
+          "description": "generated account address",
+          "example": "rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV"
+        }
+      }
+    },
     "Wallet": {
       "required": null,
       "properties": {
@@ -2994,6 +3077,67 @@
         }
       }
     },
+    "XrpTransfer": {
+      "required": [
+        "chain",
+        "account",
+        "secret",
+        "senderAccountId",
+        "targetAddress",
+        "amount"
+      ],
+      "properties": {
+        "chain": {
+          "type": "string",
+          "description": "chain - 'XRP' or 'TXRP' ",
+          "example": "XRP",
+          "enum": [
+            "XRP",
+            "TXRP"
+          ]
+        },
+        "account": {
+          "type": "string",
+          "description": "XRP account address. Must be the one used for generating deposit tags.",
+          "example": "rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV"
+        },
+        "secret": {
+          "type": "string",
+          "description": "secret for account",
+          "example": "snSFTHdvSYQKKkYntvEt8cnmZuPJB"
+        },
+        "senderAccountId": {
+          "type": "string",
+          "description": "Sender account ID ",
+          "example": "7c21ed165e294db78b95f0f181086d6f"
+        },
+        "targetAddress": {
+          "type": "string",
+          "description": "Blockchain address to send assets ",
+          "example": "rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV"
+        },
+        "destinationTag": {
+          "type": "integer",
+          "description": "Destination tag of recipient account, if any.",
+          "example": 12355
+        },
+        "amount": {
+          "type": "integer",
+          "description": "Amount to be sent, in XRP",
+          "example": 10000
+        },
+        "senderNote": {
+          "type": "string",
+          "description": "Note visible to owner of withdrawing account ",
+          "example": "Sender note"
+        },
+        "force": {
+          "type": "boolean",
+          "description": "Force payment, even if it is non-compliant ",
+          "example": false
+        }
+      }
+    },
     "Erc20Transfer": {
       "required": [
         "mnemonic",
@@ -3112,7 +3256,7 @@
         "basePair": {
           "type": "string",
           "description": "Base pair for ERC20 token. 1 token will be equal to 1 unit of base pair. Transaction value will be calculated according to this base pair. ",
-          "enmu": [
+          "enum": [
             "BTC",
             "ETH",
             "USD",
