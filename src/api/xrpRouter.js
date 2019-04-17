@@ -69,7 +69,8 @@ router.post('/transfer', async ({headers, body}, res) => {
         amount: {
           currency: 'drops',
           value: (amount * 1000000) + ''
-        }
+        },
+        tag: id
       },
       destination: {
         address: targetAddress,

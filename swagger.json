@@ -3109,7 +3109,7 @@
         "senderAccountId": {
           "type": "string",
           "description": "Sender account ID ",
-          "example": "7c21ed165e294db78b95f0f181086d6f"
+          "example": "35ab5ea8e48c4b179cadea653c6d732e"
         },
         "targetAddress": {
           "type": "string",
