@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "REST API documentation for Tatum Middleware. Tatum Middleware is a client to Tatum Blockchain API Core.",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "title": "Tatum Middleware API"
   },
   "host": "localhost:6543",
@@ -1715,14 +1715,14 @@
     "\/util\/v1\/xrp\/wallet": {
       "post": {
         "summary": "Generate XRP account.",
-        "description": "Generate XRP account.",
+        "description": "Generate XRP account. 1 common XRP account is used for all customer accounts within Tatum and are distinguished by tag.",
         "operationId": "generateXrpWallet",
         "tags": [
           "XRP wallet helper Endpoint"
         ],
         "responses": {
           "200": {
-            "description": "Object containing address and secret for generated wallet.",
+            "description": "Object containing address and secret for generated account.",
             "schema": {
               "$ref": "#\/definitions\/XrpWallet"
             }
