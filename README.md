@@ -1,6 +1,9 @@
 # Tatum Middleware 
 Tatum Middleware is a client to Tatum Blockchain API Core.
 
+## Where to start
+In order to start work with Tatum Blockchain API, please reach us directly at <a href="mailto:hello@tatum.io">hello@tatum.io</a> in order to create access API key.
+
 ## Install docker image
 Tatum Middleware docker image is available in Docker HUB under `tatumio/tatum-middleware` tag, see <a href="https://hub.docker.com/r/tatumio/tatum-middleware">https://hub.docker.com/r/tatumio/tatum-middleware</a>.
 

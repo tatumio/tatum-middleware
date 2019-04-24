@@ -10,33 +10,6 @@ const {BTC} = require('../constants')
 const commonService = require('../service/commonService')
 const btcService = require('../service/btcService')
 
-/**
- * @typedef WalletGenerateBtc
- * @property {string} chain - chain - eg: BTC
- */
-
-/**
- * @typedef Address
- * @property {string} address - Generated address - eg: mtQygZAEbmgBCPJNMYRjGxa4C3kgTNdmXM
- */
-
-/**
- * @typedef PrivKey
- * @property {string} key - Generated private key - eg: cTmS2jBWXgFaXZ2xG9jhn67TiyTshnMp3UedamzEhGm6BZV1vLgQ
- */
-
-/**
- * @typedef TxHash
- * @property {string} txHash - txHash of successful transaction - eg: c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9
- */
-
-/**
- * Generate wallet.
- * @route POST /btc/wallet
- * @group BTC - Operations with Bitcoin blockchain
- * @param {WalletGenerateBtc.model} chain.body.required - chain - BTC for Mainnet or TBTC for Testnet3
- * @returns {Wallet.model} 200 - Object containing mnemonic, xpriv and xpub for generated wallet.
- */
 router.post('/wallet', (req, res) => {
   const {chain} = req.body
 
@@ -45,15 +18,6 @@ router.post('/wallet', (req, res) => {
   res.json({mnemonic, ...wallet})
 })
 
-/**
- * Calculate address from xpub on Testnet / Mainnet for given derivation index
- * @route GET /btc/wallet/xpub/{chain}/{xpub}/{i}
- * @group BTC - Operations with Bitcoin blockchain
- * @param {enum} chain.path.required - chain - BTC for Mainnet or TBTC for Testnet3 - eg: BTC,TBTC
- * @param {string} xpub.path.required - xpub to generate address from
- * @param {integer} i.path.required - derivation index of address
- * @returns {Address.model} 200 - Generated address
- */
 router.get('/wallet/xpub/:chain/:xpub/:i', ({params}, res) => {
   const {i, xpub, chain} = params
   const index = parseInt(i)
@@ -62,20 +26,6 @@ router.get('/wallet/xpub/:chain/:xpub/:i', ({params}, res) => {
   res.send({address})
 })
 
-/**
- * @typedef XPrivBtc
- * @property {string} chain.required - chain - BTC for Mainnet or TBTC for Testnet3 - eg: BTC
- * @property {string} mnemonic.required - mnemonic to generate private key from - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
- * @property {integer} index.required - derivation index of private key -eg: 4
- */
-
-/**
- * Calculate private key of address from mnemonic on Testnet / Mainnet for given derivation index
- * @route POST /btc/wallet/xpriv
- * @group BTC - Operations with Bitcoin blockchain
- * @param {XPrivBtc.model} xpriv.body.required
- * @returns {PrivKey.model} 200 - Generated private key
- */
 router.post('/wallet/xpriv', ({body}, res) => {
   const {index, mnemonic, chain} = body
   const i = parseInt(index)
@@ -84,26 +34,6 @@ router.post('/wallet/xpriv', ({body}, res) => {
   res.json(privateKeyWIF)
 })
 
-/**
- * @typedef WithdrawalBtc
- * @property {string} senderAccountId.required - Sender account ID - eg: 7c21ed165e294db78b95f0f181086d6f
- * @property {string} targetAddress.required - Blockchain address to send assets - eg: mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7
- * @property {string} currency.required - Withdrawal currency - eg: TBTC
- * @property {number} amount.required - Amount to be sent in btc - eg: 0.02
- * @property {string} senderNote - Note visible to owner of withdrawing account - eg: Sender note
- * @property {boolean} force - Force withdrawal, even if it is non-compliant - eg: false
- * @property {string} mnemonic.required - private key of address to send funds from - eg: urge pulp usage sister evidence arrest palm math please chief egg abuse
- */
-
-//TODO: returns error codes
-/**
- * Send BTC / TBTC from address to address
- * @route POST /btc/withdrawal
- * @group BTC - Operations with Bitcoin blockchain
- * @param {WithdrawalBtc.model} transfer.body.required
- * @returns {TxHash.model} 200 - txHash of successful transaction - eg: {txHash: "c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9"}
- * @security apiKey
- */
 router.post('/withdrawal', async ({headers, body}, res) => {
   const {mnemonic, ...withdrawal} = body
 

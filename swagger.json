@@ -9,44 +9,48 @@
   "basePath": "\/",
   "tags": [
     {
-      "name": "Account Endpoint",
-      "description": "Endpoint to handle operations on Tatum private accounts, such as generate deposit addresses, list accounts belonging to defined customer, generate blockchain addresses and link them to account etc."
-    },
-    {
-      "name": "Customer Endpoint",
-      "description": "Endpoint used to handle customer operations, like creating new one, update information about customer, enable/disable etc."
-    },
-    {
-      "name": "ERC20 Endpoint",
-      "description": "Erc 20 Token Endpoint is used to create new ERC20 token in Ethereum blockchain and register it within Tatum. Then you will be able to send and receive created ERC20 tokens as you would with Bitcoin or Ethereum."
+      "name": "JWT helper Endpoint",
+      "description": "Endpoint used to create valid JWT x-client-secret from your API key."
     },
     {
       "name": "Settings Endpoint",
       "description": "Endpoint used to add / remove API keys."
     },
     {
-      "name": "Payment Endpoint",
-      "description": "Endpoint used to create and list transactions within Tatum private's ledger."
+      "name": "Customer Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>JWT helper Endpoint</li></ul></p>Endpoint used to handle customer operations, like creating new one, update information about customer, enable/disable. Within Tatum API, customer represents client of your organization."
+    },
+    {
+      "name": "Bitcoin blockchain helper Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Customer Endpoint</li></ul></p>Operations with Bitcoin blockchain, such as wallet generation or sending transactions to blockchain. Tatum supports 2 chains - Mainnet, which is regular live chain, and Testnet3, which is test chain used for test purposes. Coins on test chain have no value and can be obtained from Faucet, e.g. <a href=\"https://coinfaucet.eu/en/btc-testnet/\">https://coinfaucet.eu/en/btc-testnet/</a>. In order to start using Bitcoin blockchain, first we need to create a wallet. At Tatum, we support BIP44 HD wallets. It is very convenient, since we can generate 2^32-1 addresses from 1 mnemonic phrase. Mnemonic phrase consists of 12 special words in defined order, from which we can restore access to all addresses and private keys generated from it.<p>Each address is identified by 3 main values:<ul><li>Private Key - your secret value, which should never be revealed</li><li>Public Key - public address to be published</li><li>Derivation index - index of generated address</li></ul></p> Tatum follows BIP44 specification and generates for Bitcoin wallet with derivation path m'/44'/0'/0'/0. More about BIP44 HD wallets can be found here - <a href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>."
+    },
+    {
+      "name": "Ethereum blockchain helper Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Customer Endpoint</li></ul></p>Operations with Bitcoin blockchain, such as wallet generation or sending transactions to blockchain. Tatum supports 2 chains - Mainnet, which is regular live chain, and Ropsten, which is test chain used for test purposes. Coins on test chain have no value and can be obtained from Faucet, e.g. <a href=\"https://faucet.ropsten.be/\">https://faucet.ropsten.be/</a>. In order to start using Ethereum blockchain, first we need to create a wallet. At Tatum, we support BIP44 HD wallets. It is very convenient, since we can generate 2^32-1 addresses from 1 mnemonic phrase. Mnemonic phrase consists of 12 special words in defined order, from which we can restore access to all accounts and private keys generated from it.<p>Each account is identified by 3 main values:<ul><li>Private Key - your secret value, which should never be revealed</li><li>Public Key - public address to be published</li><li>Derivation index - index of generated address</li></ul></p> Tatum follows BIP44 specification and generates for Ethereum wallet with derivation path m'/44'/60'/0'/0. More about BIP44 HD wallets can be found here - <a href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>."
+    },
+    {
+      "name": "XRP blockchain helper Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Customer Endpoint</li></ul></p>Operations with XRP blockchain, such as account generation or sending transactions to blockchain. Tatum supports 2 chains - Mainnet, which is regular live chain, and Test chain, which is used for test purposes. Coins on test chain have no value and can be obtained from Faucet, e.g. <a href=\"https://developers.ripple.com/xrp-test-net-faucet.html\">https://developers.ripple.com/xrp-test-net-faucet.html</a>. In order to start using XRP blockchain, first we need to crate and XRP account. In XRP, same account is used for Mainnet and Test chain. In order to have account activated, it must be credited with 20 XRP. Because of this obstacle, it is common to use 1 account for all customers and distinguish them via Destination tags. At Tatum, when we create deposit address for account, we generate deposit tag for the same account."
+    },
+    {
+      "name": "Account Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Bitcoin blockchain helper Endpoint</li><li>Ethereum blockchain helper Endpoint</li><li>XRP blockchain helper Endpoint</li></ul></p>Endpoint to handle operations on Tatum accounts, list accounts belonging to defined customer, generate blockchain addresses and link them to accounts. <p>There are 2 main concepts within Tatum:<ul><li>Tatum account with no blockchain address generated - account generated for given currency such as BTC, but without blockchain address associated with it. Customer can send and receive funds with this account inside Tatum's private ledger, but it is impossible to receive fund from blockchain ledger. But it is possible to send funds to blockchain addresses.</li><li>Tatum account with generated blockchain address - customer is able to use Tatum's private ledger transactions, send funds to blockchain addresses as well as receive funds fomr blockchain users.</li></ul></p>"
     },
     {
       "name": "Virtual Currency Endpoint",
-      "description": "Register and use Tatum private's virtual currencies. You cas create your own virtual currency and distribute it amongst your customers."
+      "description": "<p>Prerequisites: <br/><ul><li>Account Endpoint</li></ul></p>Register and use Tatum private's virtual currencies. You can create your own virtual currency and distribute it amongst your customers."
+    },
+    {
+      "name": "Payment Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Account Endpoint</li></ul></p>Endpoint used to create and list transactions within Tatum private's ledger."
     },
     {
       "name": "Withdrawal Endpoint",
-      "description": "Endpoint used to cancel / complete withdrawals made by your customers."
+      "description": "<p>Prerequisites: <br/><ul><li>Account Endpoint</li></ul></p>Endpoint used to cancel / complete withdrawals from Tatum to supported blockchains made by your customers."
     },
     {
-      "name": "Bitcoin wallet helper Endpoint",
-      "description": "Operations with Bitcoin blockchain, such as wallet generation or sending transactions to blockchain."
-    },
-    {
-      "name": "Ethereum wallet helper Endpoint",
-      "description": "Operations with Ethereum blockchain, such a wallet generation or sending transactions to blockchain."
-    },
-    {
-      "name": "XRP wallet helper Endpoint",
-      "description": "Operations with XRP blockchain, such as wallet generation or sending transactions to blockchain."
+      "name": "ERC20 Endpoint",
+      "description": "<p>Prerequisites: <br/><ul><li>Ethereum blockchain helper Endpoint</li><li>Withdrawal Endpoint</li></ul></p>Erc 20 Token Endpoint is used to create new ERC20 token in Ethereum blockchain and register it within Tatum. Then you will be able to send and receive created ERC20 tokens as you would with Ethereum or any other crypto asset."
     }
   ],
   "schemes": [
@@ -1718,7 +1722,7 @@
         "description": "Generate XRP account. 1 common XRP account is used for all customer accounts within Tatum and are distinguished by tag.",
         "operationId": "generateXrpWallet",
         "tags": [
-          "XRP wallet helper Endpoint"
+          "XRP blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1747,7 +1751,7 @@
         "summary": "Send XRP \/ TXRP from account to account",
         "description": "Send XRP \/ TXRP from account to account",
         "tags": [
-          "XRP wallet helper Endpoint"
+          "XRP blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1782,7 +1786,7 @@
         "summary": "Generate wallet.",
         "description": "Generate wallet.",
         "tags": [
-          "Bitcoin wallet helper Endpoint"
+          "Bitcoin blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1827,7 +1831,7 @@
         "summary": "Calculate BTC address",
         "description": "Calculate address from xpub on Testnet \/ Mainnet for given derivation index",
         "tags": [
-          "Bitcoin wallet helper Endpoint"
+          "Bitcoin blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1856,7 +1860,7 @@
         "summary": "Calculate BTC private key",
         "description": "Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation index",
         "tags": [
-          "Bitcoin wallet helper Endpoint"
+          "Bitcoin blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1885,7 +1889,7 @@
         "summary": "Send BTC \/ TBTC from address to address",
         "description": "Send BTC \/ TBTC from address to address",
         "tags": [
-          "Bitcoin wallet helper Endpoint"
+          "Bitcoin blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1920,7 +1924,7 @@
         "summary": "Generate ETH wallet.",
         "description": "Generate ETH wallet.",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1954,7 +1958,7 @@
         "summary": "Calculate ETH address",
         "description": "Calculate address from xpub on Ropsten \/ Mainnet for given derivation index",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -1983,7 +1987,7 @@
         "summary": "Calculate private key of ETH address",
         "description": "Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation index",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -2012,7 +2016,7 @@
         "summary": "Send ETH \/ Ropsten ETH from account to account",
         "description": "Send ETH \/ Ropsten ETH from account to account",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -2047,7 +2051,7 @@
         "summary": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract.",
         "description": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -2082,7 +2086,7 @@
         "summary": "Transfer ETH \/ Ropsten ETH ERC20",
         "description": "Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account",
         "tags": [
-          "Ethereum wallet helper Endpoint"
+          "Ethereum blockchain helper Endpoint"
         ],
         "responses": {
           "200": {
@@ -2106,7 +2110,7 @@
       "type": "apiKey",
       "name": "x-client-secret",
       "in": "header",
-      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>how to create valid **x-client-secret** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>"
+      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>How to create valid **x-client-secret** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>, or you can use our JWT helper Endpoint."
     }
   },
   "definitions": {
