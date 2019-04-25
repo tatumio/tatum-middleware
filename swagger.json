@@ -30,7 +30,7 @@
     },
     {
       "name": "XRP blockchain helper Endpoint",
-      "description": "<p>Prerequisites: <br/><ul><li><a href=\"#tatum-middleware-api-customer-endpoint\">Customer Endpoint</a></li></ul></p><p>Operations with XRP blockchain, such as account generation or sending transactions to blockchain. Tatum supports 2 chains - Mainnet, which is regular live chain, and Test chain, which is used for test purposes. Coins on test chain have no value and can be obtained from Faucet, e.g. <a href=\"https://developers.ripple.com/xrp-test-net-faucet.html\">https://developers.ripple.com/xrp-test-net-faucet.html</a>.<br/>In order to start using XRP blockchain, first we need to crate and XRP account. In XRP, same account is used for Mainnet and Test chain. In order to have account activated, it must be credited with 20 XRP. Because of this obstacle, it is common to use 1 account for all customers and distinguish them via Destination tags. At Tatum, when we create deposit address for account, we generate deposit tag for the same account.</p>"
+      "description": "<p>Prerequisites: <br/><ul><li><a href=\"#tatum-middleware-api-customer-endpoint\">Customer Endpoint</a></li></ul></p><p>Operations with XRP blockchain, such as account generation or sending transactions to blockchain. Tatum supports 2 chains - Mainnet, which is regular live chain, and Test chain, which is used for test purposes. Coins on test chain have no value and can be obtained from Faucet, e.g. <a href=\"https://developers.ripple.com/xrp-test-net-faucet.html\">https://developers.ripple.com/xrp-test-net-faucet.html</a>.<br/>In order to start using XRP blockchain, first we need to create and XRP account. In XRP, same account is used for Mainnet and Test chain. In order to have account activated, it must be credited with 20 XRP. Because of this obstacle, it is common to use 1 account for all customers and distinguish them via Destination tags. At Tatum, when we create deposit address for account, we generate deposit tag for the same account.</p>"
     },
     {
       "name": "Account Endpoint",
@@ -63,7 +63,7 @@
           "Account Endpoint"
         ],
         "summary": "Create new account",
-        "description": "Creates new account for the customer. This will create account on Tatum's private ledger.",
+        "description": "<p>Creates new account for the customer. This will create account on Tatum's private ledger. It will not create any blockchain address, so customer is unable to receive funds from outside of Tatum. It is possible to create account for every supported crypto currency as well as any ERC20 token created within Tatum instance and Tatum virtual currencies.</p>",
         "operationId": "createAccount",
         "consumes": [
           "application\/json"
@@ -117,7 +117,7 @@
           "Account Endpoint"
         ],
         "summary": "Get account by ID",
-        "description": "Get account by ID.",
+        "description": "<p>Get account by ID. Display all information regarding given account.</p>",
         "operationId": "getAccountByPublicId",
         "produces": [
           "application\/json"
@@ -223,7 +223,7 @@
           "Account Endpoint"
         ],
         "summary": "List all customer accounts",
-        "description": "List all accounts associated with the customer.",
+        "description": "<p>List all accounts associated with the customer.</p>",
         "operationId": "getAccountsByCustomerId",
         "produces": [
           "application\/json"
@@ -272,7 +272,7 @@
           "Account Endpoint"
         ],
         "summary": "Get all deposit addresses for account",
-        "description": "Get all deposit addresses generated for account.",
+        "description": "<p>Get all deposit addresses generated for account. It is possible to deposit funds from another blockchain address to any of associated addresses.</p>",
         "operationId": "getAllDepositAddresses",
         "produces": [
           "application\/json"
@@ -321,7 +321,7 @@
           "Account Endpoint"
         ],
         "summary": "Create new deposit address",
-        "description": "Creates new deposit address for account. This method associate public blockchain's ledger address with account of Tatum's private ledger.",
+        "description": "<p>Create new deposit address for account. This method associate public blockchain's ledger address with account of Tatum's private ledger. Depending on currency of account, this method will either generate public address for Bitcoin or Ethereum, or DestinationTag in case of XRP.</p>",
         "operationId": "generateDepositAddress",
         "consumes": [
           "application\/json"
@@ -340,14 +340,14 @@
           {
             "name": "index",
             "in": "query",
-            "description": "Derivation path index for concrete address. If not present, last used index for given xpub + 1 is used.",
+            "description": "<p>Derivation path index for concrete address. If not present, last used index for given xpub + 1 is used. We recommend not to pass this value manually, since when some of hte indexes are skipped, it is not possible to use them lately to generate address from it.</p>",
             "required": false,
             "type": "string"
           },
           {
             "name": "xpub",
             "in": "path",
-            "description": "Extended public key to derive address from. There can be only 1 across all accounts and all accounts are generated from it. In case of XRP, this is Account address for which there will be generated DestinationTags. 0 indexed address is not used and is used for internal purposes (in case of BTC to ask for change for each blockchain transaction).",
+            "description": "<p>Extended public key to derive address from. There can be only 1 across all accounts and all accounts are generated from it. In case of XRP, this is Account address for which there will be generated DestinationTags. 0 indexed address is not used and is used for internal purposes (in case of BTC to ask for change for each blockchain transaction).</p>",
             "required": true,
             "type": "string"
           }
@@ -433,7 +433,7 @@
           "Account Endpoint"
         ],
         "summary": " Block amount on account",
-        "description": "Blocked amount affects account available balance and does not allow to go with balance under the blocked amount.",
+        "description": "<p>Blocked amount affects account available balance and does not allow to go with balance under the blocked amount.</p>",
         "operationId": "blockAmount",
         "consumes": [
           "application\/json"
@@ -491,7 +491,7 @@
           "Account Endpoint"
         ],
         "summary": "Deactivate account",
-        "description": "Deactivate account. Only accounts with non-zero balance can be deactivated.",
+        "description": "<p>Deactivate account. Only accounts with non-zero balance can be deactivated.</p>",
         "operationId": "deactivateAccount",
         "consumes": [
           "application\/json"
@@ -540,7 +540,7 @@
           "Account Endpoint"
         ],
         "summary": "Freeze account",
-        "description": "Freeze account will disable all outgoing payments. Deposits on account will remain available.",
+        "description": "<p>Freeze account will disable all outgoing payments. Deposits on account will remain available.</p>",
         "operationId": "freezeAccount",
         "consumes": [
           "application\/json"
@@ -589,7 +589,7 @@
           "Account Endpoint"
         ],
         "summary": "Unfreeze account",
-        "description": "Unfreeze previously frozen account. Unfreezing non-frozen account will do no harm to the account.",
+        "description": "<p>Unfreeze previously frozen account. Unfreezing non-frozen account will do no harm to the account.</p>",
         "operationId": "unfreezeAccount",
         "consumes": [
           "application\/json"
@@ -638,7 +638,7 @@
           "Customer Endpoint"
         ],
         "summary": "List all customers",
-        "description": "List of all customers. Please limit calls as much as possible, especially if you have more customers",
+        "description": "<p>List of all customers. Please limit calls as much as possible, especially if you have more customers.</p>",
         "operationId": "findAll",
         "produces": [
           "application\/json"
@@ -676,7 +676,7 @@
           "Customer Endpoint"
         ],
         "summary": "Create new customer",
-        "description": "Creates new customer. Customer is just an envelope to accounts holder. Every customer can have unlimited accounts. In order to crate accounts and connect them to blockchain addresses, customer must be created.",
+        "description": "<p>Create new customer. Customer represents customer within your organization, for who you want to create account. Every customer can have unlimited accounts. In order to create accounts and connect them to blockchain addresses, customer must be created.</p>",
         "operationId": "createCustomer",
         "consumes": [
           "application\/json"
@@ -731,7 +731,7 @@
           "Customer Endpoint"
         ],
         "summary": "Get customer details",
-        "description": "Using anonymized external ID you can access customer detail information including internal ID. Internal ID is needed to call other customer related methods.",
+        "description": "<p>Using anonymized external ID you can access customer detail information including internal ID. Internal ID is needed to call other customer related methods.</p>",
         "operationId": "getCustomerByExternalId",
         "produces": [
           "application\/json"
@@ -777,7 +777,7 @@
           "Customer Endpoint"
         ],
         "summary": "Update customer",
-        "description": "This method is helpful in case your primary system will change ID's or customer will change the country he\/she is supposed to be in compliance with.",
+        "description": "<p>This method is helpful in case your primary system will change ID's or customer will change the country he\/she is supposed to be in compliance with.</p>",
         "operationId": "updateCustomer",
         "consumes": [
           "application\/json"
@@ -835,7 +835,7 @@
           "Customer Endpoint"
         ],
         "summary": "Deactivate customer",
-        "description": "Deactivate customer is not able to do any operation. Customer can be deactivated only when all their accounts are already deactivated.",
+        "description": "<p>Deactivate customer is not able to do any operation. Customer can be deactivated only when all their accounts are already deactivated.</p>",
         "operationId": "deactivateCustomer",
         "consumes": [
           "application\/json"
@@ -884,7 +884,7 @@
           "Customer Endpoint"
         ],
         "summary": "Disable customer",
-        "description": "Disabled customer cannot perform end-user operations, such as create new accounts or send payments. Available balance on all accounts is set to 0. Account balance will stay untouched.",
+        "description": "<p>Disabled customer cannot perform end-user operations, such as create new accounts or send payments. Available balance on all accounts is set to 0. Account balance will stay untouched.</p>",
         "operationId": "disableCustomer",
         "consumes": [
           "application\/json"
@@ -933,7 +933,7 @@
           "Customer Endpoint"
         ],
         "summary": "Enable customer",
-        "description": "Enabled customer can perform all operations. By default all customers are enabled.",
+        "description": "<p>Enabled customer can perform all operations. By default all customers are enabled.</p>",
         "operationId": "enableCustomer",
         "consumes": [
           "application\/json"
@@ -982,7 +982,7 @@
           "ERC20 Endpoint"
         ],
         "summary": "Create new ERC20 token",
-        "description": "Create new ERC20 token with given supply. Whole supply is stored in newly created account.",
+        "description": "<p>Create new ERC20 token with given supply on Ethereum blockchain. Whole supply of newly created ERC20 token is stored in customer's newly created account. Then it is possible to create new Tatum accounts with ERC20 token name as account's currency.</p>",
         "operationId": "createErc20Currency",
         "consumes": [
           "application\/json"
@@ -1043,7 +1043,7 @@
           "ERC20 Endpoint"
         ],
         "summary": "Set ERC20 token contract address",
-        "description": "Set contract address of ERC20 token. This must be done in order to communicate with ERC20 smart contract.",
+        "description": "<p>Set contract address of ERC20 token. This must be done in order to communicate with ERC20 smart contract. After creating and deploying ERC20 token to Ethereum blockchain, smart contract address is generated and must be set within Tatum. Otherwise Tatum platform will not be able to detect incoming deposits of ERC20 and do withdrawals from Tatum accounts to other blockchain addresses.</p>",
         "operationId": "storeErc20ContractAddress",
         "consumes": [
           "application\/json"
@@ -1099,7 +1099,7 @@
           "Payment Endpoint"
         ],
         "summary": "Send payment",
-        "description": "Send payment within the Tatum's ledger. All assets are settled instantly. This method will notmodify any blockchain connected to the accounts used within payment.",
+        "description": "<p>Send payment within the Tatum's ledger. All assets are settled instantly. This method is used only for transferring assets between Tatum's accounts and will not send any funds to blockchain addresses.</p>",
         "operationId": "sendPayment",
         "consumes": [
           "application\/json"
@@ -1153,7 +1153,7 @@
           "Payment Endpoint"
         ],
         "summary": "Find payments for account.",
-        "description": "Search payments across the whole system.",
+        "description": "<p>Find payments for account identified by given id.</p>",
         "operationId": "getTransactionsByAccountId",
         "consumes": [
           "application\/json"
@@ -1217,8 +1217,8 @@
           "Payment Endpoint"
         ],
         "summary": "Find payments for customer across all accounts.",
-        "description": "Search payments across the whole system.",
-        "operationId": "getTransactionsByUserId",
+        "description": "<p>Find payments for all accounts of customer identified by given id.</p>",
+        "operationId": "getTransactionsByCustomerId",
         "consumes": [
           "application\/json"
         ],
@@ -1281,7 +1281,7 @@
           "Settings Endpoint"
         ],
         "summary": "Create new API key",
-        "description": "Create new API key.",
+        "description": "<p>Create new API key. It is possible to set read/write permissions. Read permission is always set. Read permission allows any non-modifying operation such as list accounts, transactions, but it is not possible to create transaction or activate account.</p>",
         "operationId": "addApiKey",
         "consumes": [
           "application\/json;charset=UTF-8"
@@ -1332,7 +1332,7 @@
           "Settings Endpoint"
         ],
         "summary": "Remove existing API key",
-        "description": "Do not remove last used API key, otherwise you will not be able to use API.",
+        "description": "<p>Do not remove last used API key, otherwise you will not be able to use API.</p>",
         "operationId": "removeApiKey",
         "produces": [
           "*\/*"
@@ -1375,7 +1375,7 @@
           "Virtual Currency Endpoint"
         ],
         "summary": "Create new supply of virtual currency",
-        "description": "Create new supply of virtual currency linked with given accountId. Method increases total supply of currency.",
+        "description": "<p>Create new supply of virtual currency linked with given accountId. Method increases total supply of currency.<p>",
         "operationId": "mintCurrency",
         "consumes": [
           "application\/json"
@@ -1426,7 +1426,7 @@
           "Virtual Currency Endpoint"
         ],
         "summary": "Destroy supply of virtual currency",
-        "description": "Destroy supply of virtual currency linked with given accountId. Method decreases total supply of currency.",
+        "description": "<p>Destroy supply of virtual currency linked with given accountId. Method decreases total supply of currency.</p>",
         "operationId": "revokeCurrency",
         "consumes": [
           "application\/json"
@@ -1477,7 +1477,7 @@
           "Virtual Currency Endpoint"
         ],
         "summary": "Create new virtual currency",
-        "description": "Create new virtual currency with given supply stored in account. This will create Tatum internal virtual currency. For creation of ERC20 token, see \/erc20 API.",
+        "description": "<p>Create new virtual currency with given supply stored in account. This will create Tatum internal virtual currency. Tatum virtual currency act as any other asset within Tatum. For creation of ERC20 token, see <a href=\"#tatum-middleware-api-erc20-endpoint\">ERC20 Endpoint</a>.</p>",
         "operationId": "createCurrency",
         "consumes": [
           "application\/json"
@@ -1538,7 +1538,7 @@
           "Withdrawal Endpoint"
         ],
         "summary": "Check withdrawal",
-        "description": "Check available addresses with enough balance to withdraw. Only for Ethereum based accounts.",
+        "description": "<p>Check available accounts with enough balance to withdraw desired amount. With Ethereum blockchain, it is possible to withdraw as a 1 transaction only amount, which is available on any of the registered accounts. E.g. we have 3 accounts with balances 0.2 ETH, 0.3 ETH and 0.4 ETH, so maximal available amount to withdraw at 1 transaction is 0.4 ETH. If we want to withdraw more, it must be split into multiple transactions. Only for Ethereum based accounts.</p>",
         "operationId": "checkWithdrawal",
         "consumes": [
           "application\/json"
@@ -1592,7 +1592,7 @@
           "Withdrawal Endpoint"
         ],
         "summary": "Cancel withdrawal",
-        "description": "This method is helpful if you need to cancel withdrawal in case of blockchain transaction failed or is not yet processed. This does not cancel already broadcast blockchain transaction.",
+        "description": "<p>This method is helpful if you need to cancel withdrawal in case of blockchain transaction failed or is not yet processed. This does not cancel already broadcast blockchain transaction, only Tatum internal withdrawal request.</p>",
         "operationId": "cancelWithdrawal",
         "produces": [
           "*\/*"
@@ -1635,7 +1635,7 @@
           "Withdrawal Endpoint"
         ],
         "summary": "Complete withdrawal",
-        "description": "Invoke complete withdrawal as soon as blockchain transaction ID is available. Otherwise withdrawal will be processed automatically in next block and all other withdrawals will be pending.",
+        "description": "<p>Invoke complete withdrawal as soon as blockchain transaction ID is available. Otherwise withdrawal will be processed automatically in next block and all other withdrawals will be pending unless the last one is processed and marked as compelted..</p>",
         "operationId": "completeWithdrawal",
         "consumes": [
           "application\/json"
@@ -1705,7 +1705,7 @@
         ],
         "operationId": "generateJwt",
         "summary": "Generate JWT token.",
-        "description": "Generate valid JWT token from API Key.",
+        "description": "<p>Generate valid JWT token from API Key. This token is used to authorize access to Tatum Blockchain API. JWT token is valid only for 30 minutes and it should be renewed ideally with every new request.</p>",
         "tags": [
           "JWT helper Endpoint"
         ],
@@ -1719,7 +1719,7 @@
     "\/util\/v1\/xrp\/wallet": {
       "post": {
         "summary": "Generate XRP account.",
-        "description": "Generate XRP account. 1 common XRP account is used for all customer accounts within Tatum and are distinguished by tag.",
+        "description": "<p>Generate XRP account. 1 common XRP account is used for all customer accounts within Tatum and are distinguished by tag. We can generate as many accounts as we want, but as soon as one is used for address generation, this one will be used for generation of DestinationTag.</p>",
         "operationId": "generateXrpWallet",
         "tags": [
           "XRP blockchain helper Endpoint"
@@ -1749,7 +1749,7 @@
         ],
         "operationId": "transferXrp",
         "summary": "Send XRP \/ TXRP from account to account",
-        "description": "Send XRP \/ TXRP from account to account",
+        "description": "<p>Send XRP \/ TXRP from account to account. This will create Tatum internal withdrawal request with ID. If every system works as expected, withdrawal request is marked as complete and transaction id is assigned to it.<ul><li>If XRP server connection is unavailable, withdrawal request is cancelled.</li><li>If blockchain transfer is successful, but is it not possible to reach Tatum Blockchain API, transaction id of blockchain transaction is returned and withdrawal request must be completed manually, otherwise all other withdrawals will be pending.</li></ul></p>",
         "tags": [
           "XRP blockchain helper Endpoint"
         ],
@@ -1784,7 +1784,7 @@
         ],
         "operationId": "generateBtcWallet",
         "summary": "Generate wallet.",
-        "description": "Generate wallet.",
+        "description": "<p>Generate wallet. This will create BIP44 HD wallet with predefined derivation path and returns mnemonic phrase and extended public and private key to be used for address generation.</p>",
         "tags": [
           "Bitcoin blockchain helper Endpoint"
         ],
@@ -1829,7 +1829,7 @@
         ],
         "operationId": "calculateBtcAddress",
         "summary": "Calculate BTC address",
-        "description": "Calculate address from xpub on Testnet \/ Mainnet for given derivation index",
+        "description": "<p>Calculate address from extended public key on Testnet \/ Mainnet for given derivation path index.</p>",
         "tags": [
           "Bitcoin blockchain helper Endpoint"
         ],
@@ -1858,7 +1858,7 @@
         ],
         "operationId": "calculateBtcPrviKey",
         "summary": "Calculate BTC private key",
-        "description": "Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation index",
+        "description": "<p>Calculate private key of address from mnemonic on Testnet \/ Mainnet for given derivation path index.</p>",
         "tags": [
           "Bitcoin blockchain helper Endpoint"
         ],
@@ -1887,7 +1887,7 @@
         ],
         "operationId": "transferBtc",
         "summary": "Send BTC \/ TBTC from address to address",
-        "description": "Send BTC \/ TBTC from address to address",
+        "description": "<p>Send BTC \/ TBTC from address to address. This will create Tatum internal withdrawal request with ID. If every system works as expected, withdrawal request is marked as complete and transaction id is assigned to it.<ul><li>If Bitcoin server connection is unavailable, withdrawal request is cancelled.</li><li>If blockchain transfer is successful, but is it not possible to reach Tatum Blockchain API, transaction id of blockchain transaction is returned and withdrawal request must be completed manually, otherwise all other withdrawals will be pending.</li></ul></p>",
         "tags": [
           "Bitcoin blockchain helper Endpoint"
         ],
@@ -1922,7 +1922,7 @@
         ],
         "operationId": "generateEthWallet",
         "summary": "Generate ETH wallet.",
-        "description": "Generate ETH wallet.",
+        "description": "<p>Generate wallet. This will create BIP44 HD wallet with predefined derivation path and returns mnemonic phrase and extended public and private key to be used for address generation.</p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
@@ -1956,7 +1956,7 @@
         ],
         "operationId": "calculateEthAddress",
         "summary": "Calculate ETH address",
-        "description": "Calculate address from xpub on Ropsten \/ Mainnet for given derivation index",
+        "description": "<p>Calculate address from xpub on Ropsten \/ Mainnet for given derivation path index.</p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
@@ -1985,7 +1985,7 @@
         ],
         "operationId": "calculateEthPrivKey",
         "summary": "Calculate private key of ETH address",
-        "description": "Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation index",
+        "description": "<p>Calculate private key of address from mnemonic on Ropsten \/ Mainnet for given derivation path index.</p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
@@ -2014,7 +2014,7 @@
         ],
         "operationId": "transferEth",
         "summary": "Send ETH \/ Ropsten ETH from account to account",
-        "description": "Send ETH \/ Ropsten ETH from account to account",
+        "description": "Send ETH \/ Ropsten ETH from account to account. This will create Tatum internal withdrawal request with ID. If every system works as expected, withdrawal request is marked as complete and transaction id is assigned to it.<ul><li>If Ethereum server connection is unavailable, withdrawal request is cancelled.</li><li>If blockchain transfer is successful, but is it not possible to reach Tatum Blockchain API, transaction id of blockchain transaction is returned and withdrawal request must be completed manually, otherwise all other withdrawals will be pending.</li></ul></p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
@@ -2049,7 +2049,7 @@
         ],
         "operationId": "deployErc20",
         "summary": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract.",
-        "description": "Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes.",
+        "description": "<p>Deploy ETH \/ Ropsten ETH ERC20 Smart Contract. Response could take quite a lot of time, average time of creation is 3-4 minutes. After deploying contract to blockchain, contract address will become available and must be stored within Tatum, otherwise it will not be possible to interact with it.</p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
@@ -2084,7 +2084,7 @@
         ],
         "operationId": "transferErc20",
         "summary": "Transfer ETH \/ Ropsten ETH ERC20",
-        "description": "Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account",
+        "description": "<p>Transfer ETH \/ Ropsten ETH ERC20 Smart Contract Tokens from account to account. This will create Tatum internal withdrawal request with ID. If every system works as expected, withdrawal request is marked as complete and transaction id is assigned to it.<ul><li>If Ethereum server connection is unavailable, withdrawal request is cancelled.</li><li>If blockchain transfer is successful, but is it not possible to reach Tatum Blockchain API, transaction id of blockchain transaction is returned and withdrawal request must be completed manually, otherwise all other withdrawals will be pending.</li></ul></p>",
         "tags": [
           "Ethereum blockchain helper Endpoint"
         ],
