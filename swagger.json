@@ -2108,9 +2108,9 @@
   "securityDefinitions": {
     "apiKey": {
       "type": "apiKey",
-      "name": "x-client-secret",
+      "name": "Authorization",
       "in": "header",
-      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>How to create valid **x-client-secret** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>, or you can use our JWT helper Endpoint."
+      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key passed as Bearer token in Authorization header, e.g. `Authorization: Bearer 12kjn128n123n12i3n`.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>How to create valid **JWT** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>, or you can use our JWT helper Endpoint."
     }
   },
   "definitions": {
@@ -2119,7 +2119,7 @@
       "properties": {
         "accountBalance": {
           "type": "number",
-          "description": "Account balance represents all assets on the account"
+          "description": "Account balance represents all assets on the account, available and blocked."
         },
         "availableBalance": {
           "type": "number",
@@ -2148,7 +2148,11 @@
             "BTC",
             "ETH",
             "TBTC",
-            "TETH"
+            "TETH",
+            "XRP",
+            "TXRP",
+            "VC_<VIRTUAL_CURRENCY>",
+            "<ERC20_CURRENCY>"
           ]
         },
         "frozen": {
@@ -2180,7 +2184,7 @@
         },
         "xpub": {
           "type": "string",
-          "description": "Extended public key to derive address from. In case of XRP, this is account address, since address is defined as DestinationTag."
+          "description": "Extended public key to derive address from. In case of XRP, this is account address, since address is defined as DestinationTag, which is address field."
         }
       },
       "title": "Address"
@@ -2225,7 +2229,7 @@
       "properties": {
         "amount": {
           "type": "number",
-          "description": "Amount to be blocked"
+          "description": "Amount to be blocked on account."
         }
       },
       "title": "BlockAmount"
@@ -2236,14 +2240,21 @@
         "compliant": {
           "type": "boolean",
           "example": false,
-          "description": "Enable compliant checks."
+          "description": "Enable compliant checks. If this is enabled, it is impossible to create account if compliant check fails."
         },
         "currency": {
           "type": "string",
           "example": "BTC",
           "description": "Account currency",
           "enum": [
-            "BTC"
+            "BTC",
+            "ETH",
+            "TBTC",
+            "TETH",
+            "XRP",
+            "TXRP",
+            "VC_<VIRTUAL_CURRENCY>",
+            "<ERC20_CURRENCY>"
           ]
         },
         "customerId": {
@@ -2399,7 +2410,7 @@
       "properties": {
         "accountId": {
           "type": "string",
-          "description": "Account ID with type of currency like created ERC20 token symbol. Supply of ERC20 token will becredited as soon as ERC20 token is sent to Ethereum blockchain."
+          "description": "Account ID with type of currency like created ERC20 token symbol. Supply of ERC20 token will be credited as soon as ERC20 token is sent to Ethereum blockchain."
         },
         "data": {
           "type": "string",
@@ -2469,12 +2480,12 @@
         "compliant": {
           "type": "boolean",
           "example": false,
-          "description": "Enable compliant checks."
+          "description": "Enable compliant checks. Payment will not be processed, if compliant check fails."
         },
         "paymentId": {
           "type": "string",
           "example": 9625,
-          "description": "Payment ID"
+          "description": "Payment ID, External identifier of the payment, which can be used to pair payments within Tatum accounts."
         },
         "recipientAccountId": {
           "type": "string",
@@ -2574,7 +2585,7 @@
         "reference": {
           "type": "string",
           "example": 1561683216,
-          "description": "Payment internal reference - unique identifier"
+          "description": "Payment internal reference - unique identifier within Tatum ledger. In order of failure, use this value to search for problems."
         },
         "senderNote": {
           "type": "string",
@@ -2699,7 +2710,7 @@
         },
         "amount": {
           "type": "number",
-          "description": "Supply of virtual currency.",
+          "description": "Amount of virtual currency to operate within this operation.",
           "minimum": 0,
           "exclusiveMinimum": false
         }
@@ -2712,19 +2723,26 @@
         "amount": {
           "type": "number",
           "example": 0.001,
-          "description": "Amount to be sent"
+          "description": "Amount to be withdrawn to blockchain."
         },
         "currency": {
           "type": "string",
           "example": "BTC",
           "description": "Withdrawal currency",
-          "minLength": 1,
-          "maxLength": 2147483647
+          "enum": [
+            "BTC",
+            "ETH",
+            "TBTC",
+            "TETH",
+            "XRP",
+            "TXRP",
+            "<ERC20_CURRENCY>"
+          ]
         },
         "fee": {
           "type": "number",
           "example": 0.0005,
-          "description": "Fee to be submitted as a transaction fee to blockchain. If not present, it is set automatically to 0.0005 for BTC"
+          "description": "Fee to be submitted as a transaction fee to blockchain. If not present, it is set automatically to 0.0005 for BTC."
         },
         "force": {
           "type": "boolean",
@@ -2746,7 +2764,7 @@
         "sourceAddress": {
           "type": "string",
           "example": "mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7",
-          "description": "Blockchain address to send assets from. Used only for ETH-based accounts."
+          "description": "Blockchain address to send assets from. Used only for ETH-based accounts. See <a href=\"#tatum-middleware-api-ethereum-blockchain-helper-endpoint\">Ethereum blockchain helper Endpoint</a>."
         },
         "targetAddress": {
           "type": "string",
@@ -2788,7 +2806,7 @@
         },
         "amounts": {
           "type": "array",
-          "description": "Amounts for each address\/vIn to be withdrawn.",
+          "description": "Amounts for each of unprocessed transaction outputs, that can be used for withdrawal.",
           "items": {
             "type": "number"
           }
@@ -2801,6 +2819,7 @@
         },
         "vin": {
           "type": "array",
+          "description": "Last used unprocessed transaction outputs, that can be used.",
           "items": {
             "type": "string"
           }
@@ -2820,8 +2839,12 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain ",
-          "example": "BTC"
+          "description": "Chain to generate address.",
+          "example": "BTC",
+          "enum": [
+            "BTC",
+            "TBTC"
+          ]
         }
       }
     },
@@ -2830,7 +2853,7 @@
       "properties": {
         "address": {
           "type": "string",
-          "description": "Generated address ",
+          "description": "Generated address.",
           "example": "mtQygZAEbmgBCPJNMYRjGxa4C3kgTNdmXM"
         }
       }
@@ -2840,7 +2863,7 @@
       "properties": {
         "key": {
           "type": "string",
-          "description": "Generated private key ",
+          "description": "Generated private key.",
           "example": "cTmS2jBWXgFaXZ2xG9jhn67TiyTshnMp3UedamzEhGm6BZV1vLgQ"
         }
       }
@@ -2850,7 +2873,7 @@
       "properties": {
         "txHash": {
           "type": "string",
-          "description": "txHash of successful transaction ",
+          "description": "txHash of successful transaction.",
           "example": "c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9"
         }
       }
@@ -2864,7 +2887,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - BTC for Mainnet or TBTC for Testnet3 ",
+          "description": "chain - BTC for Mainnet or TBTC for Testnet3",
           "example": "BTC",
           "enum": [
             "BTC",
@@ -2873,12 +2896,12 @@
         },
         "mnemonic": {
           "type": "string",
-          "description": "mnemonic to generate private key from ",
+          "description": "mnemonic to generate private key from",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "index": {
           "type": "integer",
-          "description": "derivation index of private key ",
+          "description": "derivation index of private key",
           "example": 4
         }
       }
@@ -2894,17 +2917,17 @@
       "properties": {
         "senderAccountId": {
           "type": "string",
-          "description": "Sender account ID ",
+          "description": "Sender account ID",
           "example": "7c21ed165e294db78b95f0f181086d6f"
         },
         "targetAddress": {
           "type": "string",
-          "description": "Blockchain address to send assets ",
+          "description": "Blockchain address to send assets",
           "example": "mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7"
         },
         "currency": {
           "type": "string",
-          "description": "Withdrawal currency ",
+          "description": "Withdrawal currency",
           "enum": [
             "BTC",
             "TBTC"
@@ -2913,22 +2936,24 @@
         },
         "amount": {
           "type": "number",
-          "description": "Amount to be sent in btc ",
+          "description": "Amount to be sent in btc",
+          "minimum": 0,
+          "exclusiveMinimum": false,
           "example": "0.02"
         },
         "senderNote": {
           "type": "string",
-          "description": "Note visible to owner of withdrawing account ",
+          "description": "Note visible to owner of withdrawing account",
           "example": "Sender note"
         },
         "force": {
           "type": "boolean",
-          "description": "Force withdrawal, even if it is non-compliant ",
+          "description": "Force withdrawal, even if it is non-compliant",
           "example": false
         },
         "mnemonic": {
           "type": "string",
-          "description": "private key of address to send funds from ",
+          "description": "private key of address to send funds from",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         }
       }
@@ -2953,17 +2978,17 @@
       "properties": {
         "mnemonic": {
           "type": "string",
-          "description": "generated mnemonic for wallet ",
+          "description": "generated mnemonic for wallet",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "xpriv": {
           "type": "string",
-          "description": "generated xpriv for wallet with derivation path according to BIP44 ",
+          "description": "generated xpriv for wallet with derivation path according to BIP44",
           "example": "xprvA1srLWNaGEkhdSJg6cLTMAziUpQcefpu2ZnKH2PXGiXEPKTdVPHjLFp4aZSSqSsaLMNrWXoj6TsyyUqh18T1hbiQkC42aWjXB9HnpmmqrYr"
         },
         "xpub": {
           "type": "string",
-          "description": "generated xpub for wallet with derivation path according to BIP44 ",
+          "description": "generated xpub for wallet with derivation path according to BIP44",
           "example": "xpub6EsCk1uU6cJzqvP9CdsTiJwT2rF748YkPnhv5Qo8q44DG7nn2vbyt48YRsNSUYS44jFCW9gwvD9kLQu9AuqXpTpM1c5hgg9PsuBLdeNncid"
         }
       }
@@ -2973,7 +2998,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - 'mainnet' or 'ropsten' ",
+          "description": "chain - 'mainnet' or 'ropsten'",
           "example": "ropsten",
           "enum": [
             "mainnet",
@@ -2987,12 +3012,12 @@
       "properties": {
         "tx": {
           "type": "string",
-          "description": "tx hash ",
+          "description": "tx hash of deployment of smart contract",
           "example": "0x93feef50a0754d5b815964ec41a744b8b60fd83bac7657386b21cd8a7c38a3b1"
         },
         "contractAddress": {
           "type": "string",
-          "description": "address of generated smart contract ",
+          "description": "address of generated smart contract",
           "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         }
       }
@@ -3006,7 +3031,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - 'mainnet' or 'ropsten' ",
+          "description": "chain - 'mainnet' or 'ropsten'",
           "example": "ropsten",
           "enum": [
             "mainnet",
@@ -3015,12 +3040,12 @@
         },
         "mnemonic": {
           "type": "string",
-          "description": "mnemonic to generate private key from ",
+          "description": "mnemonic to generate private key from",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "index": {
           "type": "integer",
-          "description": "derivation index of private key ",
+          "description": "derivation index of private key",
           "example": 0
         }
       }
@@ -3037,7 +3062,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - 'mainnet' or 'ropsten' ",
+          "description": "chain - 'mainnet' or 'ropsten'",
           "example": "ropsten",
           "enum": [
             "mainnet",
@@ -3046,37 +3071,39 @@
         },
         "mnemonic": {
           "type": "string",
-          "description": "mnemonic to generate private key of sender ",
+          "description": "mnemonic to generate private key of sender",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "index": {
           "type": "integer",
-          "description": "derivation index of sender address of sender ",
+          "description": "derivation index of sender address of sender",
           "example": 0
         },
         "senderAccountId": {
           "type": "string",
-          "description": "Sender account ID ",
+          "description": "Sender account ID",
           "example": "7c21ed165e294db78b95f0f181086d6f"
         },
         "targetAddress": {
           "type": "string",
-          "description": "Blockchain address to send assets ",
+          "description": "Blockchain address to send assets",
           "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         },
         "amount": {
           "type": "integer",
-          "description": "Amount to be sent in wei ",
+          "description": "Amount to be sent in wei",
+          "minimum": 0,
+          "exclusiveMinimum": false,
           "example": 100000
         },
         "senderNote": {
           "type": "string",
-          "description": "Note visible to owner of withdrawing account ",
+          "description": "Note visible to owner of withdrawing account",
           "example": "Sender note"
         },
         "force": {
           "type": "boolean",
-          "description": "Force payment, even if it is non-compliant ",
+          "description": "Force payment, even if it is non-compliant",
           "example": false
         }
       }
@@ -3093,7 +3120,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - 'XRP' or 'TXRP' ",
+          "description": "chain - 'XRP' or 'TXRP'",
           "example": "XRP",
           "enum": [
             "XRP",
@@ -3107,17 +3134,17 @@
         },
         "secret": {
           "type": "string",
-          "description": "secret for account",
+          "description": "Secret for account",
           "example": "snSFTHdvSYQKKkYntvEt8cnmZuPJB"
         },
         "senderAccountId": {
           "type": "string",
-          "description": "Sender account ID ",
+          "description": "Sender account ID",
           "example": "35ab5ea8e48c4b179cadea653c6d732e"
         },
         "targetAddress": {
           "type": "string",
-          "description": "Blockchain address to send assets ",
+          "description": "Blockchain address to send assets",
           "example": "rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV"
         },
         "destinationTag": {
@@ -3127,17 +3154,19 @@
         },
         "amount": {
           "type": "integer",
-          "description": "Amount to be sent, in XRP",
-          "example": 10000
+          "description": "Amount to be sent, in XRP.",
+          "example": 10000,
+          "minimum": 0,
+          "exclusiveMinimum": false
         },
         "senderNote": {
           "type": "string",
-          "description": "Note visible to owner of withdrawing account ",
+          "description": "Note visible to owner of withdrawing account.",
           "example": "Sender note"
         },
         "force": {
           "type": "boolean",
-          "description": "Force payment, even if it is non-compliant ",
+          "description": "Force payment, even if it is non-compliant.",
           "example": false
         }
       }
@@ -3155,47 +3184,47 @@
       "properties": {
         "mnemonic": {
           "type": "string",
-          "description": "mnemonic to generate private key of holder of ERC20 token ",
+          "description": "mnemonic to generate private key of holder of ERC20 token",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "index": {
           "type": "integer",
-          "description": "derivation index of sender address of holder of ERC20 token ",
+          "description": "derivation index of sender address of holder of ERC20 token",
           "example": 0
         },
         "senderAccountId": {
           "type": "string",
-          "description": "Sender account ID ",
+          "description": "Sender account ID",
           "example": "7c21ed165e294db78b95f0f181086d6f"
         },
         "targetAddress": {
           "type": "string",
-          "description": "Blockchain address to send ERC20 token to ",
+          "description": "Blockchain address to send ERC20 token to",
           "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         },
         "currency": {
           "type": "string",
-          "description": "ERC20 symbol ",
+          "description": "ERC20 symbol",
           "example": "MY_SYMBOL"
         },
         "amount": {
           "type": "integer",
-          "description": "Amount to be sent in wei ",
+          "description": "Amount to be sent in wei",
           "example": 100000
         },
         "senderNote": {
           "type": "string",
-          "description": "Note visible to owner of withdrawing account ",
+          "description": "Note visible to owner of withdrawing account",
           "example": "Sender note"
         },
         "force": {
           "type": "boolean",
-          "description": "Force payment, even if it is non-compliant ",
+          "description": "Force payment, even if it is non-compliant",
           "example": false
         },
         "tokenAddress": {
           "type": "string",
-          "description": "address of ERC20 token ",
+          "description": "address of ERC20 token",
           "example": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         }
       }
@@ -3215,7 +3244,7 @@
       "properties": {
         "chain": {
           "type": "string",
-          "description": "chain - 'mainnet' or 'ropsten' ",
+          "description": "chain - 'mainnet' or 'ropsten'",
           "example": "ropsten",
           "enum": [
             "mainnet",
@@ -3224,42 +3253,42 @@
         },
         "mnemonic": {
           "type": "string",
-          "description": "mnemonic to generate private key of deployer of ERC20 ",
+          "description": "mnemonic to generate private key of deployer of ERC20",
           "example": "urge pulp usage sister evidence arrest palm math please chief egg abuse"
         },
         "index": {
           "type": "integer",
-          "description": "derivation index of deployer address of ERC20 ",
+          "description": "derivation index of deployer address of ERC20",
           "example": 0
         },
         "payIndex": {
           "type": "integer",
-          "description": "derivation index of address to pay for deployment of ERC20 ",
+          "description": "derivation index of address to pay for deployment of ERC20",
           "example": 0
         },
         "customerId": {
           "type": "integer",
-          "description": "ID of customer to create ERC20 for ",
+          "description": "ID of customer to create ERC20 for",
           "example": 5
         },
         "name": {
           "type": "string",
-          "description": "name of the ERC20 token ",
+          "description": "name of the ERC20 token",
           "example": "My ERC20 Token"
         },
         "symbol": {
           "type": "string",
-          "description": "symbol of the ERC20 token ",
+          "description": "symbol of the ERC20 token",
           "example": "MT"
         },
         "supply": {
           "type": "integer",
-          "description": "max supply of ERC20 token ",
+          "description": "max supply of ERC20 token",
           "example": 10000000
         },
         "basePair": {
           "type": "string",
-          "description": "Base pair for ERC20 token. 1 token will be equal to 1 unit of base pair. Transaction value will be calculated according to this base pair. ",
+          "description": "Base pair for ERC20 token. 1 token will be equal to 1 unit of base pair. Transaction value will be calculated according to this base pair.",
           "enum": [
             "BTC",
             "ETH",
