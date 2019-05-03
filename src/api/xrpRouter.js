@@ -25,8 +25,10 @@ router.post('/transfer', async ({headers, body}, res) => {
     res.status(500).json({
       error: 'Unable to connect to XRP server.',
       errorCode: 'withdrawal.connect',
-      originalErrorCode: errorCode,
-      originalErrorMessage: errorMessage
+      data: {
+        originalErrorCode: errorCode,
+        originalErrorMessage: errorMessage
+      }
     })
   })
 
@@ -99,7 +101,7 @@ router.post('/transfer', async ({headers, body}, res) => {
           .catch(({response}) => {
             console.error(response.data)
             res.status(response.status).json({
-              ...response.data,
+              data: response.data,
               txId,
               id,
               error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
@@ -121,16 +123,20 @@ router.post('/transfer', async ({headers, body}, res) => {
         url: `api/v1/withdrawal/${id}`
       }).then(() => res.status(500).json({
         error: 'Unable to broadcast transaction, withdrawal cancelled.',
-        originalError: e.engine_result_message,
-        originalErrorCode: e.engine_result,
+        data: {
+          originalError: e.engine_result_message,
+          originalErrorCode: e.engine_result
+        },
         code: 'withdrawal.hex.cancelled'
       }))
         .catch(({response}) => res.status(response.status).json({
-          ...response.data,
+          data: {
+            ...response.data,
+            originalError: e.engine_result_message,
+            originalErrorCode: e.engine_result
+          },
           error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
           code: 'withdrawal.hex.not.cancelled',
-          originalError: e.engine_result_message,
-          originalErrorCode: e.engine_result,
           id
         }))
     }

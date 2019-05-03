@@ -102,7 +102,7 @@ router.post('/transfer', ({body, headers}, res) => {
                 id,
                 error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
                 code: 'withdrawal.not.completed',
-                ...response.data
+                data: response.data
               })
             })
         })
@@ -266,7 +266,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
                 id,
                 error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
                 code: 'withdrawal.not.completed',
-                ...response.data
+                data: response.data
               })
             })
         })

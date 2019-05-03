@@ -81,7 +81,7 @@ router.post('/withdrawal', async ({headers, body}, res) => {
       .catch(({response}) => {
         console.error(response.data)
         res.status(response.status).json({
-          ...response.data,
+          data: response.data,
           txId,
           id,
           error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
@@ -103,7 +103,7 @@ router.post('/withdrawal', async ({headers, body}, res) => {
       code: 'withdrawal.hex.cancelled'
     }))
       .catch(({response}) => res.status(response.status).json({
-        ...response.data,
+        data: response.data,
         error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
         code: 'withdrawal.hex.not.cancelled',
         id

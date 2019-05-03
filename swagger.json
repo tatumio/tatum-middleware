@@ -89,17 +89,23 @@
               "type": "string"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -141,8 +147,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -201,8 +210,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -250,8 +262,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -299,8 +314,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -359,17 +377,23 @@
               "$ref": "#\/definitions\/Address"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -411,8 +435,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -463,17 +490,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -512,17 +545,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -561,17 +600,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -610,17 +655,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -656,8 +707,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -703,17 +757,23 @@
               "format": "int64"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -755,8 +815,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
@@ -807,17 +870,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -856,17 +925,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -905,17 +980,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -954,17 +1035,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1015,17 +1102,23 @@
               "$ref": "#\/definitions\/Erc20Response"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1071,17 +1164,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1125,17 +1224,23 @@
               "type": "string"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1189,17 +1294,23 @@
               }
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1253,17 +1364,23 @@
               }
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1304,17 +1421,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1356,8 +1479,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1398,17 +1524,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1449,17 +1581,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1510,17 +1648,23 @@
               "type": "string"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1564,17 +1708,23 @@
               "$ref": "#\/definitions\/WithdrawalHint"
             }
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1616,8 +1766,11 @@
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1663,17 +1816,23 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          },
           "401": {
             "description": "Unauthorized"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -1712,6 +1871,15 @@
         "responses": {
           "200": {
             "description": "Valid JWT token"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -1729,6 +1897,15 @@
             "description": "Object containing address and secret for generated account.",
             "schema": {
               "$ref": "#\/definitions\/XrpWallet"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         }
@@ -1758,6 +1935,21 @@
             "description": "txHash of successful transaction",
             "schema": {
               "$ref": "#\/definitions\/TxHash"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         },
@@ -1793,6 +1985,15 @@
             "description": "Object containing mnemonic, xpriv and xpub for generated wallet.",
             "schema": {
               "$ref": "#\/definitions\/Wallet"
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         }
@@ -1839,6 +2040,15 @@
             "schema": {
               "$ref": "#\/definitions\/GeneratedAddress"
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -1868,6 +2078,15 @@
             "schema": {
               "$ref": "#\/definitions\/PrivKey"
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -1896,6 +2115,21 @@
             "description": "txHash of successful transaction",
             "schema": {
               "$ref": "#\/definitions\/TxHash"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         },
@@ -1932,6 +2166,15 @@
             "schema": {
               "$ref": "#\/definitions\/Wallet"
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -1966,6 +2209,15 @@
             "schema": {
               "$ref": "#\/definitions\/GeneratedAddress"
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -1995,6 +2247,15 @@
             "schema": {
               "$ref": "#\/definitions\/PrivKey"
             }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         }
       }
@@ -2023,6 +2284,21 @@
             "description": "txHash of successful transaction",
             "schema": {
               "$ref": "#\/definitions\/TxHash"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         },
@@ -2059,6 +2335,21 @@
             "schema": {
               "$ref": "#\/definitions\/Erc20Token"
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
           }
         },
         "security": [
@@ -2093,6 +2384,21 @@
             "description": "txHash of successful transaction",
             "schema": {
               "$ref": "#\/definitions\/TxHash"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
             }
           }
         },
@@ -3296,6 +3602,42 @@
             "CZK",
             "EUR"
           ]
+        }
+      }
+    },
+    "Error": {
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Define field in request object, if any, which fails validation or raises error.",
+          "example": "payment.senderAccountId"
+        },
+        "code": {
+          "type": "string",
+          "description": "Unique error code which identifies error.",
+          "example": "payment.amount.notNull"
+        },
+        "message": {
+          "type": "string",
+          "description": "Description of the error.",
+          "example": "Payment amount must be greater than 0."
+        },
+        "id": {
+          "type": "number",
+          "description": "Optional id of failed request object, e.g. id of withdrawal from Tatum ledger in case of failure.",
+          "example": 1
+        },
+        "txId": {
+          "type": "string",
+          "description": "Optional transaction id of blockchain transaction in case of failure."
+        },
+        "data": {
+          "type": "object",
+          "description": "Additional data specific to blockchain or error code."
         }
       }
     }
