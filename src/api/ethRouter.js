@@ -65,7 +65,7 @@ router.post('/transfer', ({body, headers}, res) => {
           headers: {
             'content-type': headers['content-type'] || 'application/json',
             'accept': headers['accept'] || 'application/json',
-            'x-client-secret': headers['x-client-secret']
+            'authorization': headers['authorization']
           },
           url: `api/v1/withdrawal`,
           data: withdrawal
@@ -140,7 +140,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         'accept': headers['accept'] || 'application/json',
-        'x-client-secret': headers['x-client-secret']
+        'authorization': headers['authorization']
       },
       url: `api/v1/erc20/${customerId}`,
       data: erc20
@@ -165,7 +165,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
             headers: {
               'content-type': headers['content-type'] || 'application/json',
               'accept': headers['accept'] || 'application/json',
-              'x-client-secret': headers['x-client-secret']
+              'authorization': headers['authorization']
             },
             url: `api/v1/erc20/${symbol}/${result.contractAddress}`,
           })
@@ -229,7 +229,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
           headers: {
             'content-type': headers['content-type'] || 'application/json',
             'accept': headers['accept'] || 'application/json',
-            'x-client-secret': headers['x-client-secret']
+            'authorization': headers['authorization']
           },
           url: `api/v1/withdrawal`,
           data: withdrawal
@@ -253,7 +253,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
             headers: {
               'content-type': headers['content-type'] || 'application/json',
               'accept': headers['accept'] || 'application/json',
-              'x-client-secret': headers['x-client-secret']
+              'authorization': headers['authorization']
             },
             url: `api/v1/withdrawal/${id}/${txId}`,
             data: withdrawal

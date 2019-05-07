@@ -6,7 +6,7 @@ const router = express.Router()
 
 const {axios: axiosCoreInstance} = require('../index')
 
-const {BTC} = require('../constants')
+const {TBTC} = require('../constants')
 const commonService = require('../service/commonService')
 const btcService = require('../service/btcService')
 
@@ -47,7 +47,7 @@ router.post('/withdrawal', async ({headers, body}, res) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         'accept': headers['accept'] || 'application/json',
-        'x-client-secret': headers['x-client-secret']
+        'authorization': headers['authorization']
       },
       url: `api/v1/withdrawal`,
       data: withdrawal
@@ -63,52 +63,51 @@ router.post('/withdrawal', async ({headers, body}, res) => {
   const rawtx = btcService.prepareTransaction(vin, vinIndex, addresses, amounts, targetAddress, currency, amount, fee, mnemonic)
   console.log('tx raw hex:', rawtx)
 
-  try {
-    const url = `${currency === BTC ? 'https://' : 'https://testnet.'}blockexplorer.com/api/tx/send`
-    const {data} = await axios.post(url, {rawtx})
-
-    const txId = data.txid
-    axiosCoreInstance({
-      method: 'PUT',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        'accept': headers['accept'] || 'application/json',
-        'x-client-secret': headers['x-client-secret']
-      },
-      url: `api/v1/withdrawal/${id}/${txId}`,
-      data: withdrawal
-    }).then(() => res.json({txId}))
-      .catch(({response}) => {
-        console.error(response.data)
+  axiosCoreInstance({
+    method: 'POST',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      'accept': headers['accept'] || 'application/json',
+      'authorization': headers['authorization']
+    },
+    url: `api/v1/withdrawal/broadcast`,
+    data: {
+      txData: rawtx,
+      withdrawalId: id,
+      currency,
+      testnet: currency === TBTC
+    }
+  }).then(({data: txId}) => res.json({txId}))
+    .catch(({response}) => {
+      console.error(response.data, response.status)
+      if (response.status === 412) {
         res.status(response.status).json({
-          data: response.data,
-          txId,
+          txId: response.data,
           id,
           error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
           code: 'withdrawal.not.completed'
         })
-      })
-  } catch (e) {
-    console.error(e)
-    axiosCoreInstance({
-      method: 'DELETE',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        'accept': headers['accept'] || 'application/json',
-        'x-client-secret': headers['x-client-secret']
-      },
-      url: `api/v1/withdrawal/${id}`
-    }).then(() => res.status(500).json({
-      error: 'Unable to broadcast transaction, withdrawal cancelled.',
-      code: 'withdrawal.hex.cancelled'
-    }))
-      .catch(({response}) => res.status(response.status).json({
-        data: response.data,
-        error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
-        code: 'withdrawal.hex.not.cancelled',
-        id
-      }))
-  }
+      } else {
+        axiosCoreInstance({
+          method: 'DELETE',
+          headers: {
+            'content-type': headers['content-type'] || 'application/json',
+            'accept': headers['accept'] || 'application/json',
+            'authorization': headers['authorization']
+          },
+          url: `api/v1/withdrawal/${id}`
+        }).then(() => res.status(500).json({
+          error: 'Unable to broadcast transaction, withdrawal cancelled.',
+          code: 'withdrawal.hex.cancelled'
+        }))
+          .catch(({response}) => res.status(response.status).json({
+            data: response.data,
+            error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
+            code: 'withdrawal.hex.not.cancelled',
+            id
+          }))
+      }
+    })
 })
 
 module.exports = router

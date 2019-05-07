@@ -51,7 +51,7 @@ router.post('/transfer', async ({headers, body}, res) => {
         headers: {
           'content-type': headers['content-type'] || 'application/json',
           'accept': headers['accept'] || 'application/json',
-          'x-client-secret': headers['x-client-secret']
+          'authorization': headers['authorization']
         },
         url: `api/v1/withdrawal`,
         data: {...withdrawal, attr: destinationTag}
@@ -84,33 +84,55 @@ router.post('/transfer', async ({headers, body}, res) => {
       }
     }
     try {
-      const {signedTransaction, id: txId} = await api.preparePayment(account, payment, {fee})
+      const {signedTransaction} = await api.preparePayment(account, payment, {fee})
         .then(tx => api.sign(tx.txJSON, secret))
-      const result = await api.submit(signedTransaction)
-      if (result.engine_result_code === 0) {
-        axios({
-          method: 'PUT',
-          headers: {
-            'content-type': headers['content-type'] || 'application/json',
-            'accept': headers['accept'] || 'application/json',
-            'x-client-secret': headers['x-client-secret']
-          },
-          url: `api/v1/withdrawal/${id}/${txId}`,
-          data: withdrawal
-        }).then(() => res.json({txId}))
-          .catch(({response}) => {
-            console.error(response.data)
+
+      axios({
+        method: 'POST',
+        headers: {
+          'content-type': headers['content-type'] || 'application/json',
+          'accept': headers['accept'] || 'application/json',
+          'authorization': headers['authorization']
+        },
+        url: `api/v1/withdrawal/broadcast`,
+        data: {
+          txData: signedTransaction,
+          withdrawalId: id,
+          currency: chain,
+          testnet: chain !== XRP
+        }
+      })
+        .then(({data: txId}) => res.json({txId}))
+        .catch(({response}) => {
+          console.error(response.data, response.status)
+          if (response.status === 412) {
             res.status(response.status).json({
-              data: response.data,
-              txId,
+              txId: response.data,
               id,
               error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
               code: 'withdrawal.not.completed'
             })
-          })
-        return
-      }
-      throw result
+          } else {
+            axios({
+              method: 'DELETE',
+              headers: {
+                'content-type': headers['content-type'] || 'application/json',
+                'accept': headers['accept'] || 'application/json',
+                'authorization': headers['authorization']
+              },
+              url: `api/v1/withdrawal/${id}`
+            }).then(() => res.status(500).json({
+              error: 'Unable to broadcast transaction, withdrawal cancelled.',
+              code: 'withdrawal.hex.cancelled'
+            }))
+              .catch(({response}) => res.status(response.status).json({
+                data: response.data,
+                error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
+                code: 'withdrawal.hex.not.cancelled',
+                id
+              }))
+          }
+        })
     } catch (e) {
       console.error(e)
       axios({
@@ -118,11 +140,11 @@ router.post('/transfer', async ({headers, body}, res) => {
         headers: {
           'content-type': headers['content-type'] || 'application/json',
           'accept': headers['accept'] || 'application/json',
-          'x-client-secret': headers['x-client-secret']
+          'authorization': headers['authorization']
         },
         url: `api/v1/withdrawal/${id}`
       }).then(() => res.status(500).json({
-        error: 'Unable to broadcast transaction, withdrawal cancelled.',
+        error: 'Unable to sign transaction, withdrawal cancelled.',
         data: {
           originalError: e.engine_result_message,
           originalErrorCode: e.engine_result
@@ -135,7 +157,7 @@ router.post('/transfer', async ({headers, body}, res) => {
             originalError: e.engine_result_message,
             originalErrorCode: e.engine_result
           },
-          error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
+          error: 'Unable to sign transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
           code: 'withdrawal.hex.not.cancelled',
           id
         }))

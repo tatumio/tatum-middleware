@@ -10,7 +10,7 @@
   "tags": [
     {
       "name": "JWT helper Endpoint",
-      "description": "Endpoint used to create valid JWT x-client-secret from your API key."
+      "description": "Endpoint used to create valid JWT authorization bearer token from your API key."
     },
     {
       "name": "Settings Endpoint",
@@ -1676,6 +1676,66 @@
         "deprecated": false
       }
     },
+    "\/api\/v1\/withdrawal\/broadcast": {
+      "post": {
+        "tags": [
+          "Withdrawal Endpoint"
+        ],
+        "summary": "Broadcast signed transaction and complete withdrawal",
+        "description": "<p>Broadcast signed raw transaction end complete withdrawal associated with it. When broadcast succeeded but it is impossible to complete withdrawal, transaction id of transaction is returned and withdrawal must be completed manually.</p>",
+        "operationId": "broadcast",
+        "consumes": [
+          "application\/json"
+        ],
+        "produces": [
+          "application\/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "broadcast",
+            "description": "broadcast",
+            "required": true,
+            "schema": {
+              "$ref": "#\/definitions\/Broadcast"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#\/definitions\/BroadcastResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "400": {
+            "description": "Invalid",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal error",
+            "schema": {
+              "$ref": "#\/definitions\/Error"
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+            ]
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "\/api\/v1\/withdrawal\/hint": {
       "post": {
         "tags": [
@@ -2414,9 +2474,9 @@
   "securityDefinitions": {
     "apiKey": {
       "type": "apiKey",
-      "name": "Authorization",
+      "name": "authorization",
       "in": "header",
-      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key passed as Bearer token in Authorization header, e.g. `Authorization: Bearer 12kjn128n123n12i3n`.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>How to create valid **JWT** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>, or you can use our JWT helper Endpoint."
+      "description": "JWT token generated from `apiKey` field of your API Key and current timestamp signed by `secret` of your API Key passed as Bearer token in authorization header, e.g. `authorization: Bearer 12kjn128n123n12i3n`.<br/>`{\"apiKey\": \"your_api_key\", \"created\": current_timestamp_millis}`<br/>How to create valid **JWT** can be found at <a href=\"https://jwt.io\">https://jwt.io</a>, or you can use our JWT helper Endpoint."
     }
   },
   "definitions": {
@@ -3022,6 +3082,50 @@
         }
       },
       "title": "VirtualCurrencyOperation"
+    },
+    "BroadcastResponse": {
+      "type": "string",
+      "description": "Transaction ID of broadcast transaction",
+      "example": "62BD544D1B9031EFC330A3E855CC3A0D51CA5131455C1AB3BCAC6D243F65460D"
+    },
+    "Broadcast": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "type": "string",
+          "example": "BTC",
+          "description": "Currency of signed transaction to be broadcast",
+          "enum": [
+            "BTC",
+            "ETH",
+            "TBTC",
+            "TETH",
+            "XRP",
+            "TXRP",
+            "<ERC20_CURRENCY>"
+          ]
+        },
+        "testnet": {
+          "type": "boolean",
+          "example": false,
+          "description": "Whether we use testnet or mainnet chain."
+        },
+        "withdrawalId": {
+          "type": "integer",
+          "example": "12345",
+          "description": "Withdrawal ID to be completed by transaction broadcast",
+          "minLength": 1,
+          "maxLength": 2147483647
+        },
+        "txData": {
+          "type": "string",
+          "example": "62BD544D1B9031EFC330A3E855CC3A0D51CA5131455C1AB3BCAC6D243F65460D",
+          "description": "Raw signed transaction to be published to network.",
+          "minLength": 1,
+          "maxLength": 65535
+        }
+      },
+      "title": "Broadcast"
     },
     "Withdrawal": {
       "type": "object",

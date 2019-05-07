@@ -42,7 +42,7 @@ app.use(({url, method, headers, body: data}, res) => {
     headers: {
       'content-type': headers['content-type'] || 'application/json',
       'accept': headers['accept'] || 'application/json',
-      'x-client-secret': headers['x-client-secret']
+      'authorization': headers['authorization']
     }
   })
     .then((response) => {
