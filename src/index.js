@@ -46,7 +46,7 @@ app.use(({url, method, headers, body: data}, res) => {
     }
   })
     .then((response) => {
-      res.status(response.status).send(response.data)
+      res.status(response.status).json(response.data)
     })
     .catch((error) => {
       if (error.response) {
