@@ -1,7 +1,7 @@
-const bip39 = require('bip39')
+const bip39 = require('bip39');
 
-const generateMnemonic = () => bip39.generateMnemonic()
+const generateMnemonic = () => bip39.generateMnemonic();
 
 module.exports = {
-  generateMnemonic
-}
+  generateMnemonic,
+};

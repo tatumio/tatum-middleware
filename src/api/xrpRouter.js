@@ -1,175 +1,113 @@
-'use strict'
-const express = require('express')
-const xrp = require('ripple-lib').RippleAPI
+const {storeWithdrawal, cancelWithdrawal, broadcast} = require('../service/coreService');
 
-const offlineApi = new xrp()
-const MAINNET = 'wss://s1.ripple.com'
-const TESTNET = 'wss://s.altnet.rippletest.net:51233'
-const router = express.Router()
+const express = require('express');
+const Xrp = require('ripple-lib').RippleAPI;
 
-const {axios} = require('../index')
+const offlineApi = new Xrp();
+const router = express.Router();
 
-const {XRP} = require('../constants')
+const {XRP, TXRP} = require('../constants');
+
+const chain = process.env.API_URL.endsWith('main') ? XRP : TXRP;
 
 router.post('/wallet', (req, res) => {
-  const wallet = offlineApi.generateAddress()
-  res.json(wallet)
-})
+  const wallet = offlineApi.generateAddress();
+  res.json(wallet);
+});
 
 router.post('/transfer', async ({headers, body}, res) => {
-  const {chain, account, secret, destinationTag, ...withdrawal} = body
+  const {
+    account, secret, destinationTag, ...withdrawal
+  } = body;
 
-  const api = new xrp({server: chain === XRP ? MAINNET : TESTNET})
+  const api = new Xrp({server: chain === XRP ? 'wss://s1.ripple.com' : 'wss://s.altnet.rippletest.net:51233'});
   api.on('error', (errorCode, errorMessage) => {
-    console.log(errorCode + ': ' + errorMessage)
+    console.log(`${errorCode}: ${errorMessage}`);
     res.status(500).json({
       error: 'Unable to connect to XRP server.',
       errorCode: 'withdrawal.connect',
       data: {
         originalErrorCode: errorCode,
-        originalErrorMessage: errorMessage
-      }
-    })
-  })
+        originalErrorMessage: errorMessage,
+      },
+    });
+  });
 
   api.connect().then(async () => {
-    withdrawal.currency = chain
+    withdrawal.currency = XRP;
     try {
-      withdrawal.fee = await api.getFee()
+      withdrawal.fee = await api.getFee();
     } catch (e) {
+      console.error(e);
       res.status(500).send({
         error: 'Unable to calculate fee.',
-        code: 'withdrawal.fee'
-      })
-      return
+        code: 'withdrawal.fee',
+      });
+      return;
     }
 
-    let resp
+    let resp;
     try {
-      resp = await axios({
-        method: 'POST',
-        headers: {
-          'content-type': headers['content-type'] || 'application/json',
-          'accept': headers['accept'] || 'application/json',
-          'authorization': headers['authorization']
-        },
-        url: `api/v1/withdrawal`,
-        data: {...withdrawal, attr: destinationTag}
-      })
-    } catch ({response}) {
-      console.error(response.data)
-      res.status(response.status).send(response.data)
-      return
+      resp = await storeWithdrawal({...withdrawal, attr: destinationTag}, res, headers);
+    } catch (_) {
+      return;
     }
 
-    const {id} = resp.data
-    const {amount, fee, targetAddress} = withdrawal
+    const {id} = resp.data;
+    const {amount, fee, targetAddress} = withdrawal;
 
     const payment = {
       source: {
         address: account,
         amount: {
           currency: 'drops',
-          value: (amount * 1000000) + ''
+          value: `${amount * 1000000}`,
         },
-        tag: id
+        tag: id,
       },
       destination: {
         address: targetAddress,
         minAmount: {
           currency: 'drops',
-          value: (amount * 1000000) + ''
+          value: `${amount * 1000000}`,
         },
-        tag: destinationTag
+        tag: destinationTag,
+      },
+    };
+
+    let signedTransaction;
+    try {
+      signedTransaction = await offlineApi.preparePayment(account, payment, {fee})
+        .then(tx => offlineApi.sign(tx.txJSON, secret).signedTransaction);
+    } catch (e) {
+      console.error(e);
+      try {
+        await cancelWithdrawal(id, res, headers);
+      } catch (_) {
       }
+      return;
     }
     try {
-      const {signedTransaction} = await api.preparePayment(account, payment, {fee})
-        .then(tx => api.sign(tx.txJSON, secret))
+      await broadcast({
+        txData: signedTransaction,
+        withdrawalId: id,
+        currency: XRP,
+      }, res, headers);
+    } catch (_) {
+    }
 
-      axios({
-        method: 'POST',
-        headers: {
-          'content-type': headers['content-type'] || 'application/json',
-          'accept': headers['accept'] || 'application/json',
-          'authorization': headers['authorization']
-        },
-        url: `api/v1/withdrawal/broadcast`,
-        data: {
-          txData: signedTransaction,
-          withdrawalId: id,
-          currency: chain,
-          testnet: chain !== XRP
-        }
-      })
-        .then(({data: txId}) => res.json({txId}))
-        .catch(({response}) => {
-          console.error(response.data, response.status)
-          if (response.status === 412) {
-            res.status(response.status).json({
-              txId: response.data,
-              id,
-              error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
-              code: 'withdrawal.not.completed'
-            })
-          } else {
-            axios({
-              method: 'DELETE',
-              headers: {
-                'content-type': headers['content-type'] || 'application/json',
-                'accept': headers['accept'] || 'application/json',
-                'authorization': headers['authorization']
-              },
-              url: `api/v1/withdrawal/${id}`
-            }).then(() => res.status(500).json({
-              error: 'Unable to broadcast transaction, withdrawal cancelled.',
-              code: 'withdrawal.hex.cancelled'
-            }))
-              .catch(({response}) => res.status(response.status).json({
-                data: response.data,
-                error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
-                code: 'withdrawal.hex.not.cancelled',
-                id
-              }))
-          }
-        })
-    } catch (e) {
-      console.error(e)
-      axios({
-        method: 'DELETE',
-        headers: {
-          'content-type': headers['content-type'] || 'application/json',
-          'accept': headers['accept'] || 'application/json',
-          'authorization': headers['authorization']
-        },
-        url: `api/v1/withdrawal/${id}`
-      }).then(() => res.status(500).json({
-        error: 'Unable to sign transaction, withdrawal cancelled.',
-        data: {
-          originalError: e.engine_result_message,
-          originalErrorCode: e.engine_result
-        },
-        code: 'withdrawal.hex.cancelled'
-      }))
-        .catch(({response}) => res.status(response.status).json({
-          data: {
-            ...response.data,
-            originalError: e.engine_result_message,
-            originalErrorCode: e.engine_result
-          },
-          error: 'Unable to sign transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
-          code: 'withdrawal.hex.not.cancelled',
-          id
-        }))
+    try {
+      await cancelWithdrawal(id, res, headers);
+    } catch (_) {
     }
   }).then(() => api.disconnect())
-    .catch(e => {
-      console.error(e)
+    .catch((e) => {
+      console.error(e);
       res.status(500).send({
         error: 'Unable to connect to blockchain.',
         code: 'withdrawal.connection',
-      })
-    })
-})
+      });
+    });
+});
 
-module.exports = router
+module.exports = router;
