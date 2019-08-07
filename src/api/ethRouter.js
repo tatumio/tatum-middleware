@@ -17,7 +17,7 @@ const {
 
 const chain = process.env.API_URL.endsWith('main') ? ETH : ROPSTEN;
 
-router.post('/wallet', (_, res) => {
+router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
   const wallet = ethService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
@@ -40,7 +40,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   const {
     mnemonic, index, ...withdrawal
   } = body;
-  const {amount, targetAddress, currency} = withdrawal;
+  const {amount, address, currency} = withdrawal;
 
   const i = parseInt(index);
   const fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i);
@@ -53,7 +53,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   if (currency === 'ETH') {
     tx = {
       from: 0,
-      to: targetAddress.trim(),
+      to: address.trim(),
       value: amount,
       gasPrice: web3.utils.toWei('1', 'wei'),
     };
@@ -70,7 +70,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     tx = {
       from: 0,
       to: CONTRACT_ADDRESSES[currency],
-      data: contract.methods.transfer(targetAddress.trim(), new BigNumber(amount).multipliedBy(10).pow(CONTRACT_DECIMALS[currency]).toString(16)).encodeABI(),
+      data: contract.methods.transfer(address.trim(), new BigNumber(amount).multipliedBy(10).pow(CONTRACT_DECIMALS[currency]).toString(16)).encodeABI(),
       gasPrice: web3.utils.toWei('1', 'wei'),
     };
   }
@@ -111,6 +111,7 @@ router.post('/transfer', async ({body, headers}, res) => {
       withdrawalId: id,
       currency,
     }, id, res, headers);
+    return;
   } catch (_) {
   }
 
@@ -210,7 +211,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   const {
     mnemonic, index, tokenAddress, ...withdrawal
   } = body;
-  const {amount, targetAddress, currency} = withdrawal;
+  const {amount, address, currency} = withdrawal;
 
   const i = parseInt(index);
   const fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i);
@@ -223,7 +224,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   const tx = {
     from: 0,
     to: tokenAddress.trim(),
-    data: contract.methods.transfer(targetAddress.trim(), new BigNumber(amount).multipliedBy(10).pow(18).toString(16)).encodeABI(),
+    data: contract.methods.transfer(address.trim(), new BigNumber(amount).multipliedBy(10).pow(18).toString(16)).encodeABI(),
     gasPrice: web3.utils.toWei('1', 'wei'),
   };
 

@@ -26,12 +26,12 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/util/v2/eth', ethRouter);
-app.use('/util/v2/btc', btcRouter);
-app.use('/util/v2/xrp', xrpRouter);
+app.use('/v2/ethereum', ethRouter);
+app.use('/v2/bitcoin', btcRouter);
+app.use('/v2/xrp', xrpRouter);
 
-app.use('/util/v2/jwt', jwtRouter);
-app.use('/util/v2/qr', qrCodeRouter);
+app.use('/v2/jwt', jwtRouter);
+app.use('/v2/qr', qrCodeRouter);
 
 app.use(async ({
   url, method, headers, body: data,
@@ -44,7 +44,7 @@ app.use(async ({
       data,
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },

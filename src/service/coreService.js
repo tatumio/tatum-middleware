@@ -6,8 +6,9 @@ const storeWithdrawal = async (data, res, headers) => {
       method: 'POST',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
       },
       url: `v2/withdrawal`,
       data,
@@ -25,7 +26,7 @@ const broadcast = async (data, id, res, headers) => {
       method: 'POST',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
@@ -54,7 +55,7 @@ const broadcastErc20 = async (data, id, res, headers) => {
       method: 'POST',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
@@ -74,7 +75,7 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
       method: 'POST',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
@@ -98,11 +99,11 @@ const deployErc20 = async (data, res, headers) => {
       method: 'POST',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/erc20/`,
+      url: `v2/ethereum/erc20/`,
       data,
     });
   } catch (e) {
@@ -118,7 +119,7 @@ const cancelWithdrawal = async (id, res, headers) => {
       method: 'DELETE',
       headers: {
         'content-type': headers['content-type'] || 'application/json',
-        accept: headers.accept || 'application/json',
+        accept: 'application/json',
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },

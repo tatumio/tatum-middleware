@@ -1,5 +1,5 @@
 # The instructions for the first stage
-FROM node:lts-alpine as builder
+FROM node:12-alpine as builder
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}

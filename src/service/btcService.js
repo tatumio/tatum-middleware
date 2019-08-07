@@ -31,17 +31,19 @@ const prepareTransaction = (data, out, chain, amount, fee, mnemonic) => {
   const {xpub} = generateWallet(chain, mnemonic);
   const network = chain === BTC ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
   const tx = new bitcoin.TransactionBuilder(network);
-  let amountWeHave = new BigNumber(0);
   data.forEach((input) => {
-    tx.addInput(input.vIn, input.vInIndex);
-    amountWeHave = amountWeHave.plus(input.amount);
+    if (input.vIn !== '-1') {
+      tx.addInput(input.vIn, input.vInIndex);
+    }
   });
 
-  const amountToKeep = Number(amountWeHave.minus(fee).minus(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR));
   tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
-  tx.addOutput(calculateAddress(xpub, chain, 0), amountToKeep);
+  tx.addOutput(calculateAddress(xpub, chain, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   data.forEach((input, i) => {
     // when there is no address field present, input is pool transfer to 0
+    if (input.vIn === '-1') {
+      return;
+    }
     const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(chain, mnemonic, input.address ? input.address.derivationKey : 0), network);
     tx.sign(i, ecPair);
   });

@@ -8,7 +8,7 @@ const btcService = require('../service/btcService');
 
 const chain = process.env.API_URL.endsWith('main') ? BTC : TBTC;
 
-router.post('/wallet', (_, res) => {
+router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
   const wallet = btcService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
@@ -30,7 +30,7 @@ router.post('/wallet/xpriv', ({body}, res) => {
   res.json(privateKeyWIF);
 });
 
-router.post('/withdrawal', async ({headers, body}, res) => {
+router.post('/transfer', async ({headers, body}, res) => {
   const {mnemonic, ...withdrawal} = body;
 
   if (!withdrawal.fee) {
@@ -45,13 +45,12 @@ router.post('/withdrawal', async ({headers, body}, res) => {
   const {id, data} = resp.data;
 
   const {
-    currency, amount, fee, targetAddress,
+    amount, fee, address,
   } = withdrawal;
 
   let txData;
   try {
-    txData = btcService.prepareTransaction(data, targetAddress, chain, amount, fee, mnemonic);
-    console.log('tx raw hex:', txData);
+    txData = btcService.prepareTransaction(data, address, chain, amount, fee, mnemonic);
   } catch (e) {
     console.error(e);
     try {
@@ -64,8 +63,9 @@ router.post('/withdrawal', async ({headers, body}, res) => {
     await broadcast({
       txData,
       withdrawalId: id,
-      currency,
+      currency: BTC,
     }, id, res, headers);
+    return;
   } catch (_) {
   }
 

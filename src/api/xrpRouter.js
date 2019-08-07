@@ -1,7 +1,7 @@
-const {storeWithdrawal, cancelWithdrawal, broadcast} = require('../service/coreService');
 
 const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
+const {storeWithdrawal, cancelWithdrawal, broadcast} = require('../service/coreService');
 
 const offlineApi = new Xrp();
 const router = express.Router();
@@ -10,7 +10,7 @@ const {XRP, TXRP} = require('../constants');
 
 const chain = process.env.API_URL.endsWith('main') ? XRP : TXRP;
 
-router.post('/wallet', (req, res) => {
+router.get('/wallet', (req, res) => {
   const wallet = offlineApi.generateAddress();
   res.json(wallet);
 });
@@ -93,6 +93,7 @@ router.post('/transfer', async ({headers, body}, res) => {
         withdrawalId: id,
         currency: XRP,
       }, res, headers);
+      return;
     } catch (_) {
     }
 
