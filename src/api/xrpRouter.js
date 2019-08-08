@@ -1,4 +1,3 @@
-
 const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
 const {storeWithdrawal, cancelWithdrawal, broadcast} = require('../service/coreService');
@@ -36,7 +35,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   api.connect().then(async () => {
     withdrawal.currency = XRP;
     try {
-      withdrawal.fee = await api.getFee();
+      withdrawal.fee = Number(await api.getFee());
     } catch (e) {
       console.error(e);
       res.status(500).send({
@@ -48,13 +47,13 @@ router.post('/transfer', async ({headers, body}, res) => {
 
     let resp;
     try {
-      resp = await storeWithdrawal({...withdrawal, attr: destinationTag}, res, headers);
+      resp = await storeWithdrawal({...withdrawal, attr: `${destinationTag}`}, res, headers);
     } catch (_) {
       return;
     }
 
     const {id} = resp.data;
-    const {amount, fee, targetAddress} = withdrawal;
+    const {amount, fee, address} = withdrawal;
 
     const payment = {
       source: {
@@ -63,10 +62,9 @@ router.post('/transfer', async ({headers, body}, res) => {
           currency: 'drops',
           value: `${amount * 1000000}`,
         },
-        tag: id,
       },
       destination: {
-        address: targetAddress,
+        address,
         minAmount: {
           currency: 'drops',
           value: `${amount * 1000000}`,
@@ -77,8 +75,8 @@ router.post('/transfer', async ({headers, body}, res) => {
 
     let signedTransaction;
     try {
-      signedTransaction = await offlineApi.preparePayment(account, payment, {fee})
-        .then(tx => offlineApi.sign(tx.txJSON, secret).signedTransaction);
+      const prepared = await api.preparePayment(account, payment, {fee: `${fee}`});
+      signedTransaction = (await offlineApi.sign(prepared.txJSON, secret)).signedTransaction;
     } catch (e) {
       console.error(e);
       try {
@@ -92,7 +90,7 @@ router.post('/transfer', async ({headers, body}, res) => {
         txData: signedTransaction,
         withdrawalId: id,
         currency: XRP,
-      }, res, headers);
+      }, id, res, headers);
       return;
     } catch (_) {
     }

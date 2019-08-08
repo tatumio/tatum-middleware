@@ -44,7 +44,7 @@ const broadcast = async (data, id, res, headers) => {
       code: 'withdrawal.not.completed',
     });
   } catch (e) {
-    console.error(e.response.data, e.response.status);
+    console.error(e.response);
     throw e;
   }
 };
