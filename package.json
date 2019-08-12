@@ -14,7 +14,7 @@
   "scripts": {
     "start": "node src/index.js",
     "lint": "eslint --fix src",
-    "doc": "markdown-swagger ./openapi.yaml ./README.md",
+    "doc": "markdown-swagger ./swagger.yaml ./README.md",
     "dev": "API_URL=https://dev.tatum.io/dev nodemon src/index.js",
     "test": "mocha"
   },
