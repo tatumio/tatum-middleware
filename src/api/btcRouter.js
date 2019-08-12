@@ -26,8 +26,8 @@ router.post('/wallet/xpriv', ({body}, res) => {
   const {index, mnemonic} = body;
   const i = parseInt(index);
 
-  const privateKeyWIF = btcService.calculatePrivateKey(chain, mnemonic, i);
-  res.json(privateKeyWIF);
+  const key = btcService.calculatePrivateKey(chain, mnemonic, i);
+  res.json({key});
 });
 
 router.post('/transfer', async ({headers, body}, res) => {

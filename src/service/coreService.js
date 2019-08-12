@@ -49,26 +49,6 @@ const broadcast = async (data, id, res, headers) => {
   }
 };
 
-const broadcastErc20 = async (data, id, res, headers) => {
-  try {
-    return await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `v2/withdrawal/broadcast`,
-      data,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(error.response.status).data(error.response.data);
-    throw error;
-  }
-};
-
 const storeErc20Address = async (symbol, address, responseData, res, headers) => {
   try {
     await axios({
@@ -145,6 +125,5 @@ module.exports = {
   broadcast,
   cancelWithdrawal,
   deployErc20,
-  broadcastErc20,
   storeErc20Address,
 };

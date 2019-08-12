@@ -42,7 +42,8 @@
     "qrcode": "^1.4.1",
     "ripple-lib": "^1.2.1",
     "swagger-ui-express": "^4.0.2",
-    "web3": "^1.2.0"
+    "web3": "^1.2.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "assert": "^1.4.1",

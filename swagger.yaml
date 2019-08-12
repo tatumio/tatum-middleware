@@ -1,0 +1,894 @@
+openapi: 3.0.0
+info:
+  description: REST API documentation for Tatum Middleware. Tatum Middleware is a client to
+    Tatum Blockchain API Core.
+  version: 2.0.0
+  title: Tatum Middleware API
+tags:
+  - name: JWT helper
+    description: Endpoint used to create valid JWT authorization bearer token from your API
+      key.
+  - name: QR code helper
+    description: Endpoint used to create QR codes from blockchain addresses.
+  - name: Bitcoin blockchain helper
+    description: "<p>Prerequisites: <br/><ul><li><a
+      href=\"#tatum-middleware-api-customer-endpoint\">Customer</a></li></ul></p><p>Operations with Bitcoin blockchain, such as wallet generation or
+      sending transactions to blockchain. Tatum supports 2 chains - Mainnet,
+      which is regular live chain, and Testnet3, which is test chain used for
+      test purposes. Coins on test chain have no value and can be obtained from
+      Faucet, e.g. <a
+      href=\"https://coinfaucet.eu/en/btc-testnet/\">https://coinfaucet.eu/en/btc-testnet/</a>.<br/>In order to start using Bitcoin blockchain, first we
+      need to create a wallet. At Tatum, we support BIP44 HD wallets. It is very
+      convenient, since we can generate 2^32-1 addresses from 1 mnemonic phrase.
+      Mnemonic phrase consists of 12 special words in defined order, from which
+      we can restore access to all addresses and private keys generated from
+      it.<br/>Each address is identified by 3 main values:<ul><li>Private Key -
+      your secret value, which should never be revealed</li><li>Public Key -
+      public address to be published</li><li>Derivation index - index of
+      generated address</li></ul></p><p>Tatum follows BIP44 specification and
+      generates for Bitcoin wallet with derivation path m'/44'/0'/0'/0. More
+      about BIP44 HD wallets can be found here - <a
+      href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>.</p>"
+  - name: Ethereum blockchain helper
+    description: "<p>Prerequisites: <br/><ul><li><a
+      href=\"#tatum-middleware-api-customer-endpoint\">Customer</a></li></ul></p><p>Operations with Bitcoin blockchain, such as wallet generation or
+      sending transactions to blockchain. Tatum supports 2 chains - Mainnet,
+      which is regular live chain, and Ropsten, which is test chain used for
+      test purposes. Coins on test chain have no value and can be obtained from
+      Faucet, e.g. <a
+      href=\"https://faucet.ropsten.be/\">https://faucet.ropsten.be/</a>.<br/>In
+      order to start using Ethereum blockchain, first we need to create a
+      wallet. At Tatum, we support BIP44 HD wallets. It is very convenient,
+      since we can generate 2^32-1 addresses from 1 mnemonic phrase. Mnemonic
+      phrase consists of 12 special words in defined order, from which we can
+      restore access to all accounts and private keys generated from
+      it.<br/>Each account is identified by 3 main values:<ul><li>Private Key -
+      your secret value, which should never be revealed</li><li>Public Key -
+      public address to be published</li><li>Derivation index - index of
+      generated address</li></ul></p><p>Tatum follows BIP44 specification and
+      generates for Ethereum wallet with derivation path m'/44'/60'/0'/0. More
+      about BIP44 HD wallets can be found here - <a
+      href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>.</p>"
+  - name: XRP blockchain helper
+    description: '<p>Prerequisites: <br/><ul><li><a
+      href="#tatum-middleware-api-customer-endpoint">Customer</a></li></ul></p><p>Operations
+      with XRP blockchain, such as account generation or sending transactions to
+      blockchain. Tatum supports 2 chains - Mainnet, which is regular live
+      chain, and Test chain, which is used for test purposes. Coins on test
+      chain have no value and can be obtained from Faucet, e.g. <a
+      href="https://developers.ripple.com/xrp-test-net-faucet.html">https://developers.ripple.com/xrp-test-net-faucet.html</a>.<br/>In
+      order to start using XRP blockchain, first we need to create and XRP
+      account. In XRP, same account is used for Mainnet and Test chain. In order
+      to have account activated, it must be credited with 20 XRP. Because of
+      this obstacle, it is common to use 1 account for all customers and
+      distinguish them via Destination tags. At Tatum, when we create deposit
+      address for account, we generate deposit tag for the same account.</p>'
+paths:
+  /v2/jwt/{key}/{secret}:
+    get:
+      parameters:
+        - name: key
+          in: path
+          description: API Key
+          required: true
+          schema:
+            type: string
+        - name: secret
+          in: path
+          description: API Key secret
+          required: true
+          schema:
+            type: string
+      operationId: generateJwt
+      summary: Generate JWT token.
+      description: <p>Generate valid JWT token from API Key. This token is used to
+        authorize access to Tatum Blockchain API. JWT token is valid only for 30
+        minutes and it should be renewed ideally with every new request.</p>
+      tags:
+        - JWT helper
+      responses:
+        "200":
+          description: Valid JWT token
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/xrp/wallet:
+    get:
+      summary: Generate XRP account.
+      description: <p>Generate XRP account. 1 common XRP account is used for all customer
+        accounts within Tatum and are distinguished by tag. We can generate as
+        many accounts as we want, but as soon as one is used for address
+        generation, this one will be used for generation of DestinationTag.</p>
+      operationId: generateXrpWallet
+      tags:
+        - XRP blockchain helper
+      responses:
+        "200":
+          description: Object containing address and secret for generated account.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/XrpWallet"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/xrp/transfer:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/XrpTransfer"
+        required: true
+      operationId: transferXrp
+      summary: Send XRP from account to account
+      description: <p>Send XRP from account to account. This will create Tatum internal
+        withdrawal request with ID. If every system works as expected,
+        withdrawal request is marked as complete and transaction id is assigned
+        to it.<ul><li>If XRP server connection is unavailable, withdrawal
+        request is cancelled.</li><li>If blockchain transfer is successful, but
+        is it not possible to reach Tatum Blockchain API, transaction id of
+        blockchain transaction is returned and withdrawal request must be
+        completed manually, otherwise all other withdrawals will be
+        pending.</li></ul></p>
+      tags:
+        - XRP blockchain helper
+      responses:
+        "200":
+          description: txHash of successful transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxHash"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+          jwt_key: []
+  /v2/bitcoin/wallet:
+    get:
+      operationId: generateBtcWallet
+      summary: Generate wallet.
+      description: <p>Generate wallet. This will create BIP44 HD wallet with predefined
+        derivation path and returns mnemonic phrase and extended public and
+        private key to be used for address generation.</p>
+      tags:
+        - Bitcoin blockchain helper
+      responses:
+        "200":
+          description: Object containing mnemonic, xpriv and xpub for generated wallet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/bitcoin/wallet/xpub/{xpub}/{i}:
+    get:
+      parameters:
+        - name: xpub
+          in: path
+          description: xpub to generate address from
+          required: true
+          schema:
+            type: string
+        - name: i
+          in: path
+          description: derivation index of address
+          required: true
+          schema:
+            type: integer
+      operationId: calculateBtcAddress
+      summary: Calculate BTC address
+      description: <p>Calculate address from extended public key on Testnet / Mainnet for
+        given derivation path index.</p>
+      tags:
+        - Bitcoin blockchain helper
+      responses:
+        "200":
+          description: Generated address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedAddress"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/bitcoin/wallet/xpriv:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/XPrivBtc"
+        required: true
+      operationId: calculateBtcPrviKey
+      summary: Calculate BTC private key
+      description: <p>Calculate private key of address from mnemonic on Testnet / Mainnet
+        for given derivation path index.</p>
+      tags:
+        - Bitcoin blockchain helper
+      responses:
+        "200":
+          description: Generated private key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrivKey"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/bitcoin/transfer:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferBtc"
+        required: true
+      operationId: transferBtc
+      summary: Send BTC from address to address
+      description: <p>Send BTC from address to address. This will create Tatum internal
+        withdrawal request with ID. If every system works as expected,
+        withdrawal request is marked as complete and transaction id is assigned
+        to it.<ul><li>If Bitcoin server connection is unavailable, withdrawal
+        request is cancelled.</li><li>If blockchain transfer is successful, but
+        is it not possible to reach Tatum Blockchain API, transaction id of
+        blockchain transaction is returned and withdrawal request must be
+        completed manually, otherwise all other withdrawals will be
+        pending.</li></ul></p>
+      tags:
+        - Bitcoin blockchain helper
+      responses:
+        "200":
+          description: txHash of successful transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxHash"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+          jwt_key: []
+  /v2/ethereum/wallet:
+    get:
+      operationId: generateEthWallet
+      summary: Generate ETH wallet.
+      description: <p>Generate wallet. This will create BIP44 HD wallet with predefined
+        derivation path and returns mnemonic phrase and extended public and
+        private key to be used for address generation.</p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: Object containing mnemonic, xpriv and xpub for generated wallet.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Wallet"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/ethereum/wallet/xpub/{pub}/{i}:
+    get:
+      parameters:
+        - name: pub
+          in: path
+          description: xpub to generate address from
+          required: true
+          schema:
+            type: string
+        - name: i
+          in: path
+          description: derivation index of address
+          required: true
+          schema:
+            type: integer
+      operationId: calculateEthAddress
+      summary: Calculate ETH address
+      description: <p>Calculate address from xpub for given derivation path index.</p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: Generated address
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratedAddress"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/ethereum/wallet/xpriv:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/XPrivEth"
+        required: true
+      operationId: calculateEthPrivKey
+      summary: Calculate private key of ETH address
+      description: <p>Calculate private key of address from mnemonic on Ropsten / Mainnet
+        for given derivation path index.</p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: Generated private key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrivKey"
+        "404":
+          description: Not found
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /v2/ethereum/transfer:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EthTransfer"
+        required: true
+      operationId: transferEth
+      summary: Send ETH from account to account
+      description: Send ETH from account to account. This will create Tatum internal
+        withdrawal request with ID. If every system works as expected,
+        withdrawal request is marked as complete and transaction id is assigned
+        to it.<ul><li>If Ethereum server connection is unavailable, withdrawal
+        request is cancelled.</li><li>If blockchain transfer is successful, but
+        is it not possible to reach Tatum Blockchain API, transaction id of
+        blockchain transaction is returned and withdrawal request must be
+        completed manually, otherwise all other withdrawals will be
+        pending.</li></ul></p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: txHash of successful transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxHash"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+          jwt_key: []
+  /v2/ethereum/erc20/deploy:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Erc20Deploy"
+        required: true
+      operationId: deployErc20
+      summary: Deploy ETH ERC20 Smart Contract.
+      description: <p>Deploy ETH ERC20 Smart Contract. Response could take quite a lot of
+        time, average time of creation is 3-4 minutes. After deploying contract
+        to blockchain, contract address will become available and must be stored
+        within Tatum, otherwise it will not be possible to interact with it.</p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: information about ERC20 smart contract
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Erc20Token"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+          jwt_key: []
+  /v2/ethereum/erc20/transfer:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Erc20Transfer"
+        required: true
+      operationId: transferErc20
+      summary: Transfer ETH ERC20
+      description: <p>Transfer ETH ERC20 Smart Contract Tokens from account to account.
+        This will create Tatum internal withdrawal request with ID. If every
+        system works as expected, withdrawal request is marked as complete and
+        transaction id is assigned to it.<ul><li>If Ethereum server connection
+        is unavailable, withdrawal request is cancelled.</li><li>If blockchain
+        transfer is successful, but is it not possible to reach Tatum Blockchain
+        API, transaction id of blockchain transaction is returned and withdrawal
+        request must be completed manually, otherwise all other withdrawals will
+        be pending.</li></ul></p>
+      tags:
+        - Ethereum blockchain helper
+      responses:
+        "200":
+          description: txHash of successful transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxHash"
+        "400":
+          description: Invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - api_key: []
+          jwt_key: []
+servers:
+  - url: http://localhost:6543/
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: x-api-key
+      in: header
+    jwt_key:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'JWT token generated from `apiKey` field of your API Key and current
+              timestamp signed by `secret` of your API Key passed as Bearer token in
+              authorization header, e.g. `authorization: Bearer
+              12kjn128n123n12i3n`.<br/>`{"apiKey": "your_api_key", "created":
+              current_timestamp_millis}`<br/>How to create valid **JWT** can be found
+              at <a href="https://jwt.io">https://jwt.io</a>, or you can use our JWT
+              helper.'
+  schemas:
+    WalletGenerateBtc:
+      properties:
+        chain:
+          type: string
+          description: Chain to generate address.
+          example: BTC
+          enum:
+            - BTC
+            - TBTC
+    GeneratedAddress:
+      properties:
+        address:
+          type: string
+          description: Generated address.
+          example: mtQygZAEbmgBCPJNMYRjGxa4C3kgTNdmXM
+    PrivKey:
+      properties:
+        key:
+          type: string
+          description: Generated private key.
+          example: cTmS2jBWXgFaXZ2xG9jhn67TiyTshnMp3UedamzEhGm6BZV1vLgQ
+    TxHash:
+      properties:
+        txId:
+          type: string
+          description: txHash of successful transaction.
+          example: c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9
+    XPrivBtc:
+      required:
+        - chain
+        - mnemonic
+        - index
+      properties:
+        chain:
+          type: string
+          description: chain - BTC for Mainnet or TBTC for Testnet3
+          example: BTC
+          enum:
+            - BTC
+            - TBTC
+        mnemonic:
+          type: string
+          description: mnemonic to generate private key from
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        index:
+          type: integer
+          description: derivation index of private key
+          example: 4
+    TransferBtc:
+      required:
+        - senderAccountId
+        - address
+        - amount
+        - mnemonic
+      properties:
+        senderAccountId:
+          type: string
+          description: Sender account ID
+          example: 7c21ed165e294db78b95f0f181086d6f
+        address:
+          type: string
+          description: Blockchain address to send assets to
+          example: mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7
+        amount:
+          type: number
+          description: Amount to be sent in btc
+          minimum: 0
+          exclusiveMinimum: false
+          example: "0.02"
+        senderNote:
+          type: string
+          description: Note visible to owner of withdrawing account
+          example: Sender note
+        compliant:
+          type: boolean
+          description: Compliance check, if withdrawal is not compliant, it will not be
+            processed.
+          example: false
+        mnemonic:
+          type: string
+          description: Mnemonic seed - usually 12 words with access to whole wallet.
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+    XrpWallet:
+      properties:
+        secret:
+          type: string
+          description: generated secret for account
+          example: snSFTHdvSYQKKkYntvEt8cnmZuPJB
+        address:
+          type: string
+          description: generated account address
+          example: rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV
+    Wallet:
+      properties:
+        mnemonic:
+          type: string
+          description: generated mnemonic for wallet
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        xpriv:
+          type: string
+          description: generated xpriv for wallet with derivation path according to BIP44
+          example: xprvA1srLWNaGEkhdSJg6cLTMAziUpQcefpu2ZnKH2PXGiXEPKTdVPHjLFp4aZSSqSsaLMNrWXoj6TsyyUqh18T1hbiQkC42aWjXB9HnpmmqrYr
+        xpub:
+          type: string
+          description: generated xpub for wallet with derivation path according to BIP44
+          example: xpub6EsCk1uU6cJzqvP9CdsTiJwT2rF748YkPnhv5Qo8q44DG7nn2vbyt48YRsNSUYS44jFCW9gwvD9kLQu9AuqXpTpM1c5hgg9PsuBLdeNncid
+    WalletGenerateEth:
+      properties:
+        chain:
+          type: string
+          description: chain - 'mainnet' or 'ropsten'
+          example: ropsten
+          enum:
+            - mainnet
+            - ropsten
+    Erc20Token:
+      properties:
+        transactionHash:
+          type: string
+          description: tx hash of deployment of smart contract
+          example: "0x93feef50a0754d5b815964ec41a744b8b60fd83bac7657386b21cd8a7c38a3b1"
+        contractAddress:
+          type: string
+          description: address of generated smart contract
+          example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+    XPrivEth:
+      required:
+        - mnemonic
+        - index
+      properties:
+        mnemonic:
+          type: string
+          description: mnemonic to generate private key from
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        index:
+          type: integer
+          description: derivation index of private key
+          example: 0
+    EthTransfer:
+      required:
+        - mnemonic
+        - index
+        - senderAccountId
+        - address
+        - currency
+        - amount
+      properties:
+        currency:
+          type: string
+          description: Currency to transfer from Ethereum Blockchain Account
+          example: ETH
+          enum:
+            - USDT
+            - LEO
+            - LINK
+            - MKR
+            - USDC
+            - BAT
+            - TUSD
+            - PAX
+            - ETH
+        mnemonic:
+          type: string
+          description: mnemonic to generate private key of sender
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        index:
+          type: integer
+          description: derivation index of sender address of sender
+          example: 0
+        senderAccountId:
+          type: string
+          description: Sender account ID
+          example: 7c21ed165e294db78b95f0f181086d6f
+        address:
+          type: string
+          description: Blockchain address to send assets
+          example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        amount:
+          type: number
+          description: Amount to be sent
+          minimum: 0
+          exclusiveMinimum: false
+          example: 100000
+        senderNote:
+          type: string
+          description: Note visible to owner of withdrawing account
+          example: Sender note
+        compliant:
+          type: boolean
+          description: Compliance check, if withdrawal is not compliant, it will not be
+            processed.
+          example: false
+    XrpTransfer:
+      required:
+        - account
+        - secret
+        - senderAccountId
+        - address
+        - amount
+      properties:
+        account:
+          type: string
+          description: XRP account address. Must be the one used for generating deposit
+            tags.
+          example: rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV
+        secret:
+          type: string
+          description: Secret for account
+          example: snSFTHdvSYQKKkYntvEt8cnmZuPJB
+        senderAccountId:
+          type: string
+          description: Sender account ID
+          example: 35ab5ea8e48c4b179cadea653c6d732e
+        address:
+          type: string
+          description: Blockchain address to send assets
+          example: rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV
+        destinationTag:
+          type: integer
+          description: Destination tag of recipient account, if any.
+          example: 12355
+        amount:
+          type: number
+          description: Amount to be sent, in XRP.
+          example: 10000
+          minimum: 0
+          exclusiveMinimum: false
+        senderNote:
+          type: string
+          description: Note visible to owner of withdrawing account.
+          example: Sender note
+        compliant:
+          type: boolean
+          description: Compliance check, if withdrawal is not compliant, it will not be
+            processed.
+          example: false
+    Erc20Transfer:
+      required:
+        - mnemonic
+        - index
+        - senderAccountId
+        - address
+        - currency
+        - amount
+        - tokenAddress
+      properties:
+        mnemonic:
+          type: string
+          description: mnemonic to generate private key of holder of ERC20 token
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        index:
+          type: integer
+          description: derivation index of sender address of holder of ERC20 token
+          example: 0
+        senderAccountId:
+          type: string
+          description: Sender account ID
+          example: 7c21ed165e294db78b95f0f181086d6f
+        address:
+          type: string
+          description: Blockchain address to send ERC20 token to
+          example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+        currency:
+          type: string
+          description: ERC20 symbol
+          example: MY_SYMBOL
+        amount:
+          type: integer
+          description: Amount to be sent in wei
+          example: 100000
+        senderNote:
+          type: string
+          description: Note visible to owner of withdrawing account
+          example: Sender note
+        compliant:
+          type: boolean
+          description: Compliance check, if withdrawal is not compliant, it will not be
+            processed.
+          example: false
+        tokenAddress:
+          type: string
+          description: address of ERC20 token
+          example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
+    Erc20Deploy:
+      required:
+        - mnemonic
+        - payIndex
+        - name
+        - description
+        - supply
+        - basePair
+      properties:
+        mnemonic:
+          type: string
+          description: mnemonic to generate private key of deployer of ERC20
+          example: urge pulp usage sister evidence arrest palm math please chief egg
+            abuse
+        payIndex:
+          type: integer
+          description: derivation index of address to pay for deployment of ERC20
+          example: 0
+        name:
+          type: string
+          description: Name of the ERC20 token - stored as a symbol on Blockchain
+          example: MT
+        description:
+          type: string
+          description: Description of the ERC20 token
+          example: My ERC20 Token
+        supply:
+          type: integer
+          description: max supply of ERC20 token
+          example: 10000000
+        basePair:
+          type: string
+          description: Base pair for ERC20 token. 1 token will be equal to 1 unit of base
+            pair. Transaction value will be calculated according to this base
+            pair.
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        field:
+          type: string
+          description: Define field in request object, if any, which fails validation or
+            raises error.
+          example: payment.senderAccountId
+        code:
+          type: string
+          description: Unique error code which identifies error.
+          example: payment.amount.notNull
+        message:
+          type: string
+          description: Description of the error.
+          example: Payment amount must be greater than 0.
+        id:
+          type: number
+          description: Optional id of failed request object, e.g. id of withdrawal from
+            Tatum ledger in case of failure.
+          example: 1
+        txId:
+          type: string
+          description: Optional transaction id of blockchain transaction in case of failure.
+        data:
+          type: object
+          description: Additional data specific to blockchain or error code.

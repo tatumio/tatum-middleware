@@ -3,7 +3,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('../swagger.json');
+const YAML = require('yamljs');
+
+const swaggerDocument = YAML.load(`${process.cwd()}/swagger.yaml`);
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
