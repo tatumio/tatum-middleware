@@ -5,12 +5,12 @@ info:
   version: 2.0.0
   title: Tatum Middleware API
 tags:
-  - name: JWT helper
+  - name: JWT API
     description: Endpoint used to create valid JWT authorization bearer token from your API
       key.
-  - name: QR code helper
+  - name: QR code API
     description: Endpoint used to create QR codes from blockchain addresses.
-  - name: Bitcoin blockchain helper
+  - name: Bitcoin blockchain API
     description: "<p>Prerequisites: <br/><ul><li><a
       href=\"#tatum-middleware-api-customer-endpoint\">Customer</a></li></ul></p><p>Operations with Bitcoin blockchain, such as wallet generation or
       sending transactions to blockchain. Tatum supports 2 chains - Mainnet,
@@ -29,7 +29,7 @@ tags:
       generates for Bitcoin wallet with derivation path m'/44'/0'/0'/0. More
       about BIP44 HD wallets can be found here - <a
       href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>.</p>"
-  - name: Ethereum blockchain helper
+  - name: Ethereum blockchain API
     description: "<p>Prerequisites: <br/><ul><li><a
       href=\"#tatum-middleware-api-customer-endpoint\">Customer</a></li></ul></p><p>Operations with Bitcoin blockchain, such as wallet generation or
       sending transactions to blockchain. Tatum supports 2 chains - Mainnet,
@@ -49,7 +49,7 @@ tags:
       generates for Ethereum wallet with derivation path m'/44'/60'/0'/0. More
       about BIP44 HD wallets can be found here - <a
       href=\"https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki\">https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki</a>.</p>"
-  - name: XRP blockchain helper
+  - name: XRP blockchain API
     description: '<p>Prerequisites: <br/><ul><li><a
       href="#tatum-middleware-api-customer-endpoint">Customer</a></li></ul></p><p>Operations
       with XRP blockchain, such as account generation or sending transactions to
@@ -85,7 +85,7 @@ paths:
         authorize access to Tatum Blockchain API. JWT token is valid only for 30
         minutes and it should be renewed ideally with every new request.</p>
       tags:
-        - JWT helper
+        - JWT API
       responses:
         "200":
           description: Valid JWT token
@@ -106,7 +106,7 @@ paths:
         generation, this one will be used for generation of DestinationTag.</p>
       operationId: generateXrpWallet
       tags:
-        - XRP blockchain helper
+        - XRP blockchain API
       responses:
         "200":
           description: Object containing address and secret for generated account.
@@ -142,7 +142,7 @@ paths:
         completed manually, otherwise all other withdrawals will be
         pending.</li></ul></p>
       tags:
-        - XRP blockchain helper
+        - XRP blockchain API
       responses:
         "200":
           description: txHash of successful transaction
@@ -175,7 +175,7 @@ paths:
         derivation path and returns mnemonic phrase and extended public and
         private key to be used for address generation.</p>
       tags:
-        - Bitcoin blockchain helper
+        - Bitcoin blockchain API
       responses:
         "200":
           description: Object containing mnemonic, xpriv and xpub for generated wallet.
@@ -211,7 +211,7 @@ paths:
       description: <p>Calculate address from extended public key on Testnet / Mainnet for
         given derivation path index.</p>
       tags:
-        - Bitcoin blockchain helper
+        - Bitcoin blockchain API
       responses:
         "200":
           description: Generated address
@@ -240,7 +240,7 @@ paths:
       description: <p>Calculate private key of address from mnemonic on Testnet / Mainnet
         for given derivation path index.</p>
       tags:
-        - Bitcoin blockchain helper
+        - Bitcoin blockchain API
       responses:
         "200":
           description: Generated private key
@@ -276,7 +276,7 @@ paths:
         completed manually, otherwise all other withdrawals will be
         pending.</li></ul></p>
       tags:
-        - Bitcoin blockchain helper
+        - Bitcoin blockchain API
       responses:
         "200":
           description: txHash of successful transaction
@@ -309,7 +309,7 @@ paths:
         derivation path and returns mnemonic phrase and extended public and
         private key to be used for address generation.</p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: Object containing mnemonic, xpriv and xpub for generated wallet.
@@ -344,7 +344,7 @@ paths:
       summary: Calculate ETH address
       description: <p>Calculate address from xpub for given derivation path index.</p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: Generated address
@@ -373,7 +373,7 @@ paths:
       description: <p>Calculate private key of address from mnemonic on Ropsten / Mainnet
         for given derivation path index.</p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: Generated private key
@@ -409,7 +409,7 @@ paths:
         completed manually, otherwise all other withdrawals will be
         pending.</li></ul></p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: txHash of successful transaction
@@ -449,7 +449,7 @@ paths:
         to blockchain, contract address will become available and must be stored
         within Tatum, otherwise it will not be possible to interact with it.</p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: information about ERC20 smart contract
@@ -494,7 +494,7 @@ paths:
         request must be completed manually, otherwise all other withdrawals will
         be pending.</li></ul></p>
       tags:
-        - Ethereum blockchain helper
+        - Ethereum blockchain API
       responses:
         "200":
           description: txHash of successful transaction
@@ -537,7 +537,7 @@ components:
               12kjn128n123n12i3n`.<br/>`{"apiKey": "your_api_key", "created":
               current_timestamp_millis}`<br/>How to create valid **JWT** can be found
               at <a href="https://jwt.io">https://jwt.io</a>, or you can use our JWT
-              helper.'
+              API.'
   schemas:
     WalletGenerateBtc:
       properties:
