@@ -235,7 +235,7 @@ paths:
             schema:
               $ref: "#/components/schemas/XPrivBtc"
         required: true
-      operationId: calculateBtcPrviKey
+      operationId: calculateBtcPrivKey
       summary: Calculate BTC private key
       description: <p>Calculate private key of address from mnemonic on Testnet / Mainnet
         for given derivation path index.</p>
@@ -539,15 +539,6 @@ components:
               at <a href="https://jwt.io">https://jwt.io</a>, or you can use our JWT
               API.'
   schemas:
-    WalletGenerateBtc:
-      properties:
-        chain:
-          type: string
-          description: Chain to generate address.
-          example: BTC
-          enum:
-            - BTC
-            - TBTC
     GeneratedAddress:
       properties:
         address:
@@ -568,17 +559,9 @@ components:
           example: c83f8818db43d9ba4accfe454aa44fc33123d47a4f89d47b314d6748eb0e9bc9
     XPrivBtc:
       required:
-        - chain
         - mnemonic
         - index
       properties:
-        chain:
-          type: string
-          description: chain - BTC for Mainnet or TBTC for Testnet3
-          example: BTC
-          enum:
-            - BTC
-            - TBTC
         mnemonic:
           type: string
           description: mnemonic to generate private key from
@@ -648,15 +631,6 @@ components:
           type: string
           description: generated xpub for wallet with derivation path according to BIP44
           example: xpub6EsCk1uU6cJzqvP9CdsTiJwT2rF748YkPnhv5Qo8q44DG7nn2vbyt48YRsNSUYS44jFCW9gwvD9kLQu9AuqXpTpM1c5hgg9PsuBLdeNncid
-    WalletGenerateEth:
-      properties:
-        chain:
-          type: string
-          description: chain - 'mainnet' or 'ropsten'
-          example: ropsten
-          enum:
-            - mainnet
-            - ropsten
     Erc20Token:
       properties:
         transactionHash:
@@ -698,6 +672,7 @@ components:
             - USDT
             - LEO
             - LINK
+            - FREE
             - MKR
             - USDC
             - BAT
