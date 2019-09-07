@@ -5,13 +5,7 @@ const router = express.Router();
 
 router.get('/:key/:secret', ({ params }, res) => {
   const { key, secret } = params;
-  const token = jwt.sign({ apiKey: key, created: new Date().getTime() }, secret, {
-    noTimestamp: true,
-    header: {
-      alg: 'HS256',
-      typ: 'JWT',
-    },
-  });
+  const token = jwt.sign({ apiKey: key, created: Date.now() }, secret);
   res.json(token);
 });
 
