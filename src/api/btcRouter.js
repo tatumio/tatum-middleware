@@ -6,7 +6,7 @@ const {TBTC, BTC} = require('../constants');
 const commonService = require('../service/commonService');
 const btcService = require('../service/btcService');
 
-const chain = process.env.API_URL.endsWith('main') ? BTC : TBTC;
+const chain = process.env.API_URL.includes('api-') ? BTC : TBTC;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
@@ -31,11 +31,33 @@ router.post('/wallet/xpriv', ({body}, res) => {
 });
 
 router.post('/transfer', async ({headers, body}, res) => {
-  const {mnemonic, ...withdrawal} = body;
+  const {
+    mnemonic, keyPair, attr, ...withdrawal
+  } = body;
 
   if (!withdrawal.fee) {
     withdrawal.fee = 0.0005;
   }
+
+  if (keyPair && mnemonic) {
+    res.send(400).json({
+      error: 'Either keyPair or mnemonic must be present, not both.',
+      code: 'transaction.mnemonic.keyPair.both',
+    });
+    return;
+  }
+  if (!keyPair && !mnemonic && !attr) {
+    res.send(400).json({
+      error: 'Either keyPair or mnemonic and attr must be present.',
+      code: 'transaction.mnemonic.keyPair.missing',
+    });
+    return;
+  }
+  if (!keyPair && (!mnemonic || !attr)) {
+    res.send(400).json({error: 'Mnemonic and attr must be present.', code: 'transaction.attr.keyPair.missing'});
+    return;
+  }
+
   let resp;
   try {
     resp = await storeWithdrawal(withdrawal, res, headers);
@@ -45,12 +67,12 @@ router.post('/transfer', async ({headers, body}, res) => {
   const {id, data} = resp.data;
 
   const {
-    amount, fee, address,
+    amount, address,
   } = withdrawal;
 
   let txData;
   try {
-    txData = btcService.prepareTransaction(data, address, chain, amount, fee, mnemonic);
+    txData = btcService.prepareTransaction(data, address, chain, amount, mnemonic, keyPair, attr);
   } catch (e) {
     console.error(e);
     try {

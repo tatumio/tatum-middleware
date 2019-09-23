@@ -565,8 +565,7 @@ components:
         mnemonic:
           type: string
           description: mnemonic to generate private key from
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
         index:
           type: integer
           description: derivation index of private key
@@ -576,15 +575,33 @@ components:
         - senderAccountId
         - address
         - amount
-        - mnemonic
       properties:
         senderAccountId:
           type: string
           description: Sender account ID
+          maxLength: 50
           example: 7c21ed165e294db78b95f0f181086d6f
+        keyPair:
+          description: Array of assigned blockchain addresses with their private keys. Either mnemonic and index, or keyPair must be present - depends on the type of account and xpub.
+          type: array
+          items:
+            type: object
+            properties:
+              address: Blockchain address assigned to account withdrawal is made from.
+              private: Private key of blockchain address.
+          attr:
+            description: <p>Used to parametrize withdrawal. For account with manually assigned addresses, used as a change address for left coins from transaction.</p>
+            maxLength: 100
+            type: string
+        paymentId:
+          type: string
+          maxLength: 100
+          description: Identificator of the payment, shown for created Transaction within Tatum sender account.
+          example: 1234
         address:
           type: string
           description: Blockchain address to send assets to
+          maxLength: 100
           example: mpTwPdF8up9kidgcAStriUPwRdnE9MRAg7
         amount:
           type: number
@@ -594,6 +611,7 @@ components:
           example: "0.02"
         senderNote:
           type: string
+          maxLength: 255
           description: Note visible to owner of withdrawing account
           example: Sender note
         compliant:
@@ -602,10 +620,10 @@ components:
             processed.
           example: false
         mnemonic:
+          maxLength: 255
           type: string
           description: Mnemonic seed - usually 12 words with access to whole wallet.
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
     XrpWallet:
       properties:
         secret:
@@ -621,8 +639,7 @@ components:
         mnemonic:
           type: string
           description: generated mnemonic for wallet
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
         xpriv:
           type: string
           description: generated xpriv for wallet with derivation path according to BIP44
@@ -649,21 +666,22 @@ components:
         mnemonic:
           type: string
           description: mnemonic to generate private key from
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
         index:
           type: integer
           description: derivation index of private key
           example: 0
     EthTransfer:
       required:
-        - mnemonic
-        - index
         - senderAccountId
         - address
         - currency
         - amount
       properties:
+        privateKey:
+          type: string
+          maxLength: 100
+          description: Private key of sender address. Either mnemonic and index, or privateKey must be present - depends on the type of account and xpub.
         currency:
           type: string
           description: Currency to transfer from Ethereum Blockchain Account
@@ -681,9 +699,9 @@ components:
             - ETH
         mnemonic:
           type: string
+          maxLength: 255
           description: mnemonic to generate private key of sender
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
         index:
           type: integer
           description: derivation index of sender address of sender
@@ -691,10 +709,12 @@ components:
         senderAccountId:
           type: string
           description: Sender account ID
+          maxLength: 50
           example: 7c21ed165e294db78b95f0f181086d6f
         address:
           type: string
           description: Blockchain address to send assets
+          maxLength: 100
           example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         amount:
           type: number
@@ -705,6 +725,7 @@ components:
         senderNote:
           type: string
           description: Note visible to owner of withdrawing account
+          maxLength: 255
           example: Sender note
         compliant:
           type: boolean
@@ -721,20 +742,28 @@ components:
       properties:
         account:
           type: string
-          description: XRP account address. Must be the one used for generating deposit
-            tags.
+          maxLength: 100
+          description: XRP account address. Must be the one used for generating deposit tags.
           example: rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV
         secret:
           type: string
+          maxLength: 100
           description: Secret for account
           example: snSFTHdvSYQKKkYntvEt8cnmZuPJB
+        paymentId:
+          type: string
+          maxLength: 100
+          description: Identificator of the payment, shown for created Transaction within Tatum sender account.
+          example: 1234
         senderAccountId:
           type: string
           description: Sender account ID
+          maxLength: 50
           example: 35ab5ea8e48c4b179cadea653c6d732e
         address:
           type: string
           description: Blockchain address to send assets
+          maxLength: 100
           example: rPRxSZzTFd6Yez3UMxFUPJvnhUhjewpjfV
         destinationTag:
           type: integer
@@ -749,6 +778,7 @@ components:
         senderNote:
           type: string
           description: Note visible to owner of withdrawing account.
+          maxLength: 255
           example: Sender note
         compliant:
           type: boolean
@@ -757,19 +787,21 @@ components:
           example: false
     Erc20Transfer:
       required:
-        - mnemonic
-        - index
         - senderAccountId
         - address
         - currency
         - amount
         - tokenAddress
       properties:
+        privateKey:
+          type: string
+          maxLength: 100
+          description: Private key of sender address. Either mnemonic and index, or privateKey must be present - depends on the type of account and xpub.
         mnemonic:
           type: string
+          maxLength: 255
           description: mnemonic to generate private key of holder of ERC20 token
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+          example: urge pulp usage sister evidence arrest palm math please chief egg abuse
         index:
           type: integer
           description: derivation index of sender address of holder of ERC20 token
@@ -777,14 +809,17 @@ components:
         senderAccountId:
           type: string
           description: Sender account ID
+          maxLength: 50
           example: 7c21ed165e294db78b95f0f181086d6f
         address:
           type: string
           description: Blockchain address to send ERC20 token to
+          maxLength: 100
           example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
         currency:
           type: string
           description: ERC20 symbol
+          maxLength: 30
           example: MY_SYMBOL
         amount:
           type: integer
@@ -793,6 +828,7 @@ components:
         senderNote:
           type: string
           description: Note visible to owner of withdrawing account
+          maxLength: 255
           example: Sender note
         compliant:
           type: boolean
@@ -805,18 +841,24 @@ components:
           example: "0x687422eEA2cB73B5d3e242bA5456b782919AFc85"
     Erc20Deploy:
       required:
-        - mnemonic
-        - payIndex
         - name
         - description
         - supply
         - basePair
       properties:
         mnemonic:
+          maxLength: 255
+          description: "Mnemonic to generate private key of deployer of ERC20. From this account gas will be paid. Either mnemonic and payIndex or privateKey must be present, not both."
+          example: "urge pulp usage sister evidence arrest palm math please chief egg abuse"
           type: string
-          description: mnemonic to generate private key of deployer of ERC20
-          example: urge pulp usage sister evidence arrest palm math please chief egg
-            abuse
+        address:
+          description: Address on Ethereum blockchain, which will be used as ERC20 deposit address. Either mnemonic, or address must be present, not both.
+          maxLength: 100
+          type: string
+        privateKey:
+          description: Private key of Ethereum account address, from which gas for deployment of ERC20 will be paid.
+          type: string
+          maxLength: 100
         payIndex:
           type: integer
           description: derivation index of address to pay for deployment of ERC20
@@ -824,20 +866,202 @@ components:
         name:
           type: string
           description: Name of the ERC20 token - stored as a symbol on Blockchain
+          maxLength: 30
           example: MT
         description:
           type: string
           description: Description of the ERC20 token
+          maxLength: 100
           example: My ERC20 Token
         supply:
           type: integer
           description: max supply of ERC20 token
           example: 10000000
         basePair:
+          maxLength: 30
           type: string
+          enum:
+            - AED
+            - AFN
+            - ALL
+            - AMD
+            - ANG
+            - AOA
+            - ARS
+            - AUD
+            - AWG
+            - AZN
+            - BAM
+            - BBD
+            - BDT
+            - BGN
+            - BHD
+            - BIF
+            - BMD
+            - BND
+            - BOB
+            - BRL
+            - BSD
+            - BTN
+            - BWP
+            - BYN
+            - BYR
+            - BZD
+            - CAD
+            - CDF
+            - CHF
+            - CLF
+            - CLP
+            - CNY
+            - COP
+            - CRC
+            - CUC
+            - CUP
+            - CVE
+            - CZK
+            - DJF
+            - DKK
+            - DOP
+            - DZD
+            - EGP
+            - ERN
+            - ETB
+            - EUR
+            - FJD
+            - FKP
+            - GBP
+            - GEL
+            - GGP
+            - GHS
+            - GIP
+            - GMD
+            - GNF
+            - GTQ
+            - GYD
+            - HKD
+            - HNL
+            - HRK
+            - HTG
+            - HUF
+            - IDR
+            - ILS
+            - IMP
+            - INR
+            - IQD
+            - IRR
+            - ISK
+            - JEP
+            - JMD
+            - JOD
+            - JPY
+            - KES
+            - KGS
+            - KHR
+            - KMF
+            - KPW
+            - KRW
+            - KWD
+            - KYD
+            - KZT
+            - LAK
+            - LBP
+            - LKR
+            - LRD
+            - LSL
+            - LTL
+            - LVL
+            - LYD
+            - MAD
+            - MDL
+            - MGA
+            - MKD
+            - MMK
+            - MNT
+            - MOP
+            - MRO
+            - MUR
+            - MVR
+            - MWK
+            - MXN
+            - MYR
+            - MZN
+            - NAD
+            - NGN
+            - NIO
+            - NOK
+            - NPR
+            - NZD
+            - OMR
+            - PAB
+            - PEN
+            - PGK
+            - PHP
+            - PKR
+            - PLN
+            - PYG
+            - QAR
+            - RON
+            - RSD
+            - RUB
+            - RWF
+            - SAR
+            - SBD
+            - SCR
+            - SDG
+            - SEK
+            - SGD
+            - SHP
+            - SLL
+            - SOS
+            - SRD
+            - STD
+            - SVC
+            - SYP
+            - SZL
+            - THB
+            - TJS
+            - TMT
+            - TND
+            - TOP
+            - TRY
+            - TTD
+            - TWD
+            - TZS
+            - UAH
+            - UGX
+            - USD
+            - UYU
+            - UZS
+            - VEF
+            - VND
+            - VUV
+            - WST
+            - XAF
+            - XAG
+            - XAU
+            - XCD
+            - XDR
+            - XOF
+            - XPF
+            - YER
+            - ZAR
+            - ZMK
+            - ZMW
+            - ZWL
+            - BTC
+            - ETH
+            - XRP
+            - USDT
+            - LEO
+            - LINK
+            - FREE
+            - MKR
+            - USDC
+            - BAT
+            - TUSD
+            - PAX
           description: Base pair for ERC20 token. 1 token will be equal to 1 unit of base
-            pair. Transaction value will be calculated according to this base
-            pair.
+            pair. Transaction value will be calculated according to this base pair.
     Error:
       required:
         - code

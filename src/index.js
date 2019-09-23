@@ -32,7 +32,7 @@ app.use('/v2/ethereum', ethRouter);
 app.use('/v2/bitcoin', btcRouter);
 app.use('/v2/xrp', xrpRouter);
 
-app.use('/v2/jwt', jwtRouter);
+app.use('/v2/apiKey', jwtRouter);
 app.use('/v2/qr', qrCodeRouter);
 
 app.use(async ({

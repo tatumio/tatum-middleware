@@ -7,7 +7,7 @@ const router = express.Router();
 
 const {XRP, TXRP} = require('../constants');
 
-const chain = process.env.API_URL.endsWith('main') ? XRP : TXRP;
+const chain = process.env.API_URL.includes('api-') ? XRP : TXRP;
 
 router.get('/wallet', (req, res) => {
   const wallet = offlineApi.generateAddress();
@@ -33,7 +33,6 @@ router.post('/transfer', async ({headers, body}, res) => {
   });
 
   api.connect().then(async () => {
-    withdrawal.currency = XRP;
     try {
       withdrawal.fee = Number(await api.getFee());
     } catch (e) {

@@ -27,8 +27,7 @@ const calculateAddress = (xpub, chain, index) => {
   return w.derivePath(`${index}`).keyPair.getAddress();
 };
 
-const prepareTransaction = (data, out, chain, amount, fee, mnemonic) => {
-  const {xpub} = generateWallet(chain, mnemonic);
+const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeAddress) => {
   const network = chain === BTC ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
   const tx = new bitcoin.TransactionBuilder(network);
   data.forEach((input) => {
@@ -38,14 +37,27 @@ const prepareTransaction = (data, out, chain, amount, fee, mnemonic) => {
   });
 
   tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
-  tx.addOutput(calculateAddress(xpub, chain, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  if (mnemonic) {
+    const {xpub} = generateWallet(chain, mnemonic);
+    tx.addOutput(calculateAddress(xpub, chain, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  } else if (keyPair && changeAddress) {
+    tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  } else {
+    throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');
+  }
   data.forEach((input, i) => {
     // when there is no address field present, input is pool transfer to 0
     if (input.vIn === '-1') {
       return;
     }
-    const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(chain, mnemonic, input.address ? input.address.derivationKey : 0), network);
-    tx.sign(i, ecPair);
+    if (mnemonic) {
+      const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(chain, mnemonic, input.address ? input.address.derivationKey : 0), network);
+      tx.sign(i, ecPair);
+    } else {
+      const privateKey = keyPair.find(k => k.address === input.address.address);
+      const ecPair = bitcoin.ECPair.fromWIF(privateKey.private, network);
+      tx.sign(i, ecPair);
+    }
   });
 
   return tx.build().toHex();
