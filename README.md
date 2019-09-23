@@ -23,7 +23,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 </p>
 
 #### Example script to start docker container: <br/>
-```docker run -e API_URL=https://dev.tatum.io/dev -p 6543:6543/tcp tatumio/tatum-middleware```
+```docker run -e API_URL=https://sandbox.tatum.io -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps Tatum Core API as is described in <a target="_blank" href="https://www.tatum.io/apidoc.html#tatum-middleware-api">Developer Section</a>.<br/>
