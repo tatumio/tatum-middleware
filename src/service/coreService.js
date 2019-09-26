@@ -57,7 +57,7 @@ const broadcast = async (data, id, res, headers) => {
       data,
     });
     if (response.data.completed) {
-      res.json({txId: response.data.txId});
+      res.json({txId: response.data.txId, id});
       return;
     }
     res.status(200).json({

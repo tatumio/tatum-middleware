@@ -678,6 +678,9 @@ components:
         - currency
         - amount
       properties:
+        nonce:
+          type: number
+          description: Nonce to be set to Ethereum transaction. If not present, last known nonce will be used.
         privateKey:
           type: string
           maxLength: 100
@@ -696,6 +699,7 @@ components:
             - BAT
             - TUSD
             - PAX
+            - PLTC
             - ETH
         mnemonic:
           type: string
@@ -793,6 +797,9 @@ components:
         - amount
         - tokenAddress
       properties:
+        nonce:
+          type: number
+          description: Nonce to be set to Ethereum transaction. If not present, last known nonce will be used.
         privateKey:
           type: string
           maxLength: 100
@@ -1060,6 +1067,7 @@ components:
             - BAT
             - TUSD
             - PAX
+            - PLTC
           description: Base pair for ERC20 token. 1 token will be equal to 1 unit of base
             pair. Transaction value will be calculated according to this base pair.
     Error:

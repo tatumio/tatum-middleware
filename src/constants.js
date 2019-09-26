@@ -20,6 +20,7 @@ const CONTRACT_ADDRESSES = {
   BAT: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
   TUSD: '0x0000000000085d4780B73119b644AE5ecd22b376',
   PAX: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
+  PLTC: '0x0c6e8a8358cbde54f8e4cd7f07d5ac38aec8c5a4',
 };
 
 const CONTRACT_DECIMALS = {
@@ -32,6 +33,7 @@ const CONTRACT_DECIMALS = {
   BAT: 18,
   TUSD: 18,
   PAX: 18,
+  PLTC: 18,
 };
 
 module.exports = {
