@@ -21,7 +21,7 @@ const chain = process.env.API_URL.includes('api-') ? ETH : ROPSTEN;
 const getGasPriceInWei = async (res) => {
   try {
     const {data} = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
-    return Web3.utils.toWei(new BigNumber(data.average).dividedBy(10).toString(), 'gwei');
+    return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
   } catch (e) {
     console.error(e);
     res.status(500).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
