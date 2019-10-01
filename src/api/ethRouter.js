@@ -48,6 +48,83 @@ router.post('/wallet/xpriv', ({body}, res) => {
   res.json({key});
 });
 
+router.post('/transaction', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    to,
+    amount,
+    currency,
+    fee,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+
+  let tx;
+  if (currency === 'ETH') {
+    tx = {
+      from: 0,
+      to: to.trim(),
+      value: web3.utils.toWei(amount, 'ether'),
+      gasPrice,
+      nonce,
+    };
+  } else {
+    if (!Object.keys(CONTRACT_ADDRESSES).includes(currency)) {
+      res.status(400).json({
+        error: 'Unsupported ETH ERC20 blockchain.',
+        code: 'eth.erc20.unsupported',
+      });
+      return;
+    }
+    const contract = new web3.eth.Contract(tokenABI, CONTRACT_ADDRESSES[currency]);
+
+    tx = {
+      from: 0,
+      to: CONTRACT_ADDRESSES[currency],
+      data: contract.methods.transfer(to.trim(), new BigNumber(amount).multipliedBy(10).pow(CONTRACT_DECIMALS[currency]).toString(16)).encodeABI(),
+      gasPrice,
+      nonce,
+    };
+  }
+
+  await ethService.blockchainTransaction(fee, tx, fromPrivateKey, web3, res, headers);
+});
+
+router.post('/erc20/transaction', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    to,
+    amount,
+    fee,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+  const contract = new web3.eth.Contract(tokenABI, contractAddress);
+
+  const tx = {
+    from: 0,
+    to: contractAddress.trim(),
+    data: contract.methods.transfer(to.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString(16)}`).encodeABI(),
+    gasPrice,
+    nonce,
+  };
+
+  await ethService.blockchainTransaction(fee, tx, fromPrivateKey, web3, res, headers);
+});
+
 router.post('/transfer', async ({body, headers}, res) => {
   const {
     mnemonic, index, privateKey, nonce, ...withdrawal
@@ -76,7 +153,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     tx = {
       from: 0,
       to: address.trim(),
-      value: web3.utils.toWei(`${amount}`, 'ether'),
+      value: web3.utils.toWei(amount, 'ether'),
       gasPrice,
       nonce,
     };

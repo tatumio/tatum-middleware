@@ -1,5 +1,6 @@
 const hdkey = require('ethereumjs-wallet/hdkey');
 const bip39 = require('bip39');
+const {broadcastEth} = require('./coreService');
 
 const {
   ROPSTEN, ETH_DERIVATION_PATH, TESTNET_DERIVATION_PATH,
@@ -26,8 +27,45 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
   return derivePath.getWallet().getPrivateKeyString();
 };
 
+const blockchainTransaction = async (fee, transaction, fromPriv, web3, res, headers) => {
+  const tx = {...transaction};
+  if (fee) {
+    tx.gas = fee.gasLimit;
+  } else {
+    try {
+      tx.gas = await web3.eth.estimateGas(tx);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({
+        error: 'Unable to calculate gas limit for transaction',
+        code: 'eth.transaction.gas',
+      });
+      return;
+    }
+  }
+  let txData;
+  try {
+    txData = await web3.eth.accounts.signTransaction(tx, fromPriv);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Unable to sign transaction',
+      code: 'eth.transaction.gas',
+    });
+    return;
+  }
+
+  try {
+    await broadcastEth({
+      txData: txData.rawTransaction,
+    }, res, headers);
+  } catch (_) {
+  }
+};
+
 module.exports = {
   generateWallet,
   calculateAddress,
   calculatePrivateKey,
+  blockchainTransaction,
 };
