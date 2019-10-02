@@ -43,6 +43,29 @@ const broadcastEth = async (data, res, headers) => {
   }
 };
 
+const broadcastXrp = async (data, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `v2/xrp/broadcast`,
+      data,
+    });
+    res.status(200).json({
+      txId: response.data,
+    });
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
 const broadcast = async (data, id, res, headers) => {
   try {
     const response = await axios({
@@ -147,6 +170,7 @@ module.exports = {
   storeWithdrawal,
   broadcast,
   broadcastEth,
+  broadcastXrp,
   cancelWithdrawal,
   deployErc20,
   storeErc20Address,

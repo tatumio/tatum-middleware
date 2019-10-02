@@ -226,7 +226,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   }
 });
 
-router.post('/erc20/deploy', async ({body, headers}, res) => {
+router.post('/erc20/deploy/offchain', async ({body, headers}, res) => {
   const {
     mnemonic, payIndex, privateKey, nonce, ...erc20
   } = body;
@@ -329,6 +329,79 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   //     code: 'ethereum.erc20.broadcast.failed',
   //     message: `Unable to broadcast transaction due to ${e.message}`,
   //   }));
+});
+
+router.post('/erc20/deploy', async ({body, headers}, res) => {
+  const {
+    name,
+    address,
+    symbol,
+    supply,
+    digits,
+    fromPrivateKey,
+    fee,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+
+  const contract = new web3.eth.Contract(tokenABI, null, {
+    data: tokenByteCode,
+  });
+  const deploy = contract.deploy({
+    arguments: [
+      name,
+      symbol,
+      address,
+      digits,
+      `0x${new BigNumber(supply).multipliedBy(new BigNumber(10).pow(digits)).toString(16)}`,
+      `0x${new BigNumber(supply).multipliedBy(new BigNumber(10).pow(digits)).toString(16)}`,
+    ],
+  });
+
+  let gasLimit;
+  try {
+    gasLimit = fee ? fee.gasLimit : await web3.eth.estimateGas({
+      from: 0,
+      data: deploy.encodeABI(),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Unable to calculate gas limit for transaction',
+      code: 'eth.transaction.gas',
+    });
+    return;
+  }
+
+  let txData;
+  try {
+    txData = await web3.eth.accounts.signTransaction({
+      from: 0,
+      gasLimit,
+      gasPrice,
+      data: deploy.encodeABI(),
+      nonce,
+    }, fromPrivateKey);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Unable to sign transaction for contract creation.',
+      code: 'eth.erc20.sign',
+    });
+    return;
+  }
+
+  try {
+    await broadcastEth({
+      txData: txData.rawTransaction,
+    }, res, headers);
+  } catch (_) {
+  }
 });
 
 router.post('/erc20/transfer', async ({body, headers}, res) => {
