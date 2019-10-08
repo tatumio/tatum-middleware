@@ -15,7 +15,7 @@ const {
   INFURA_KEY, ETH, ROPSTEN, CONTRACT_ADDRESSES, CONTRACT_DECIMALS,
 } = require('../constants');
 
-const chain = process.env.API_URL.includes('api-') ? ETH : ROPSTEN;
+const chain = process.env.API_URL.includes('test') || process.env.API_URL.includes('sandbox') ? ROPSTEN : ETH;
 
 const getGasPriceInWei = async (res) => {
   try {

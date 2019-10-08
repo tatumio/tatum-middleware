@@ -4,7 +4,7 @@ const {TBTC, BTC} = require('../constants');
 const commonService = require('../service/commonService');
 const btcService = require('../service/btcService');
 
-const chain = process.env.API_URL.includes('api-') ? BTC : TBTC;
+const chain = process.env.API_URL.includes('test') || process.env.API_URL.includes('sandbox') ? TBTC : BTC;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();

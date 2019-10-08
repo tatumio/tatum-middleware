@@ -7,7 +7,7 @@ const router = express.Router();
 
 const {XRP, TXRP} = require('../constants');
 
-const chain = process.env.API_URL.includes('api-') ? XRP : TXRP;
+const chain = process.env.API_URL.includes('test') || process.env.API_URL.includes('sandbox') ? TXRP : XRP;
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {
