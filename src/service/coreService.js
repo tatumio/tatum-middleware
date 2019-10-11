@@ -20,6 +20,59 @@ const storeWithdrawal = async (data, res, headers) => {
   }
 };
 
+const getUTXO = async (hash, index, headers) => {
+  const response = await axios({
+    method: 'GET',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      accept: 'application/json',
+      authorization: headers.authorization,
+      'x-api-key': headers['x-api-key'],
+    },
+    url: `v2/blockchain/bitcoin/utxo/${hash}/${index}`,
+  });
+  return response.data;
+};
+
+const getTxByAddress = async (address, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `v2/blockchain/bitcoin/transaction/address/${address}/true`,
+    });
+    return response.data;
+  } catch (e) {
+    return [];
+  }
+};
+
+const broadcastBtc = async (data, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `v2/blockchain/bitcoin/broadcast`,
+      data,
+    });
+    res.status(200).json(response.data);
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
 const broadcastEth = async (data, res, headers) => {
   try {
     const response = await axios({
@@ -165,9 +218,12 @@ const cancelWithdrawal = async (id, res, headers) => {
 module.exports = {
   storeWithdrawal,
   broadcast,
+  broadcastBtc,
   broadcastEth,
   broadcastXrp,
   cancelWithdrawal,
   deployErc20,
+  getUTXO,
+  getTxByAddress,
   storeErc20Address,
 };

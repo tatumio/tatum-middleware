@@ -15,7 +15,7 @@ const {
 } = require('../constants');
 
 const router = express.Router();
-const chain = process.env.API_URL.includes('test') || process.env.API_URL.includes('sandbox') ? ROPSTEN : ETH;
+const chain = process.env.API_URL.includes('api') ? ETH : ROPSTEN;
 
 const getGasPriceInWei = async (res) => {
   try {

@@ -15,7 +15,7 @@ const {
   INFURA_KEY, ETH, ROPSTEN, CONTRACT_ADDRESSES, CONTRACT_DECIMALS,
 } = require('../constants');
 
-const chain = process.env.API_URL.includes('test') || process.env.API_URL.includes('sandbox') ? ROPSTEN : ETH;
+const chain = process.env.API_URL.includes('api') ? ETH : ROPSTEN;
 
 const getGasPriceInWei = async (res) => {
   try {
@@ -40,7 +40,7 @@ router.get('/wallet/xpub/:pub/:i', ({params}, res) => {
   res.send({address});
 });
 
-router.post('/wallet/xpriv', ({body}, res) => {
+router.post('/wallet/priv', ({body}, res) => {
   const {index, mnemonic} = body;
   const i = parseInt(index);
   const key = ethService.calculatePrivateKey(chain, mnemonic, i);
