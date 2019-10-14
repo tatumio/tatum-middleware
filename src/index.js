@@ -2,13 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
-
-const swaggerDocument = YAML.load(`${process.cwd()}/swagger.yaml`);
+const {generateJwt} = require('./service/commonService');
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  if (process.env.JWT_KEY && process.env.JWT_SECRET) {
+    config.headers.authorization = `Bearer ${generateJwt(process.env.JWT_KEY, process.env.JWT_SECRET)}`;
+  }
+  return config;
 });
 
 module.exports = {
@@ -30,16 +34,15 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/v2/blockchain/ethereum', ethBlockchainRouter);
-app.use('/v2/offchain/ethereum', ethOffchainRouter);
-app.use('/v2/blockchain/bitcoin', btcBlockchainRouter);
-app.use('/v2/offchain/bitcoin', btcOffchainRouter);
-app.use('/v2/blockchain/xrp', xrpBlockchainRouter);
-app.use('/v2/offchain/xrp', xrpOffchainRouter);
+app.use('/ethereum/v2', ethBlockchainRouter);
+app.use('/offchain/v2/ethereum', ethOffchainRouter);
+app.use('/bitcoin/v2', btcBlockchainRouter);
+app.use('/offchain/v2/bitcoin', btcOffchainRouter);
+app.use('/xrp/v2', xrpBlockchainRouter);
+app.use('/offchain/v2/xrp', xrpOffchainRouter);
 
-app.use('/v2/apiKey', jwtRouter);
-app.use('/v2/blockchain/qr', qrCodeRouter);
+app.use('/util/v2/apiKey', jwtRouter);
+app.use('/util/v2/qr', qrCodeRouter);
 
 app.use(async ({
   url, method, headers, body: data,

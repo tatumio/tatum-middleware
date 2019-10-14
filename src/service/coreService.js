@@ -10,7 +10,7 @@ const storeWithdrawal = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/offchain/withdrawal`,
+      url: `offchain/v2/withdrawal`,
       data,
     });
   } catch (e) {
@@ -29,7 +29,7 @@ const getUTXO = async (hash, index, headers) => {
       authorization: headers.authorization,
       'x-api-key': headers['x-api-key'],
     },
-    url: `v2/blockchain/bitcoin/utxo/${hash}/${index}`,
+    url: `bitcoin/v2/utxo/${hash}/${index}`,
   });
   return response.data;
 };
@@ -44,7 +44,7 @@ const getTxByAddress = async (address, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/blockchain/bitcoin/transaction/address/${address}/true`,
+      url: `bitcoin/v2/transaction/address/${address}/true`,
     });
     return response.data;
   } catch (e) {
@@ -62,7 +62,7 @@ const broadcastBtc = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/blockchain/bitcoin/broadcast`,
+      url: `bitcoin/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -83,7 +83,7 @@ const broadcastEth = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/blockchain/ethereum/broadcast`,
+      url: `ethereum/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -104,7 +104,7 @@ const broadcastXrp = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/blockchain/xrp/broadcast`,
+      url: `xrp/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -125,7 +125,7 @@ const broadcast = async (data, id, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/offchain/withdrawal/broadcast`,
+      url: `offchain/v2/withdrawal/broadcast`,
       data,
     });
     if (response.data.completed) {
@@ -154,7 +154,7 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/offchain/ethereum/erc20/${symbol}/${address}`,
+      url: `offchain/v2/ethereum/erc20/${symbol}/${address}`,
     });
     res.json(responseData);
   } catch (error) {
@@ -178,7 +178,7 @@ const deployErc20 = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/offchain/ethereum/erc20/`,
+      url: `offchain/v2/ethereum/erc20/`,
       data,
     });
   } catch (e) {
@@ -198,7 +198,7 @@ const cancelWithdrawal = async (id, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `v2/offchain/withdrawal/${id}`,
+      url: `offchain/v2/withdrawal/${id}`,
     });
     res.status(500).json({
       error: 'Unable to broadcast transaction, withdrawal cancelled.',
