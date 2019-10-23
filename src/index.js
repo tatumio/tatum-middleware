@@ -21,6 +21,7 @@ module.exports = {
 
 const ethBlockchainRouter = require('./api/ethBlockchainRouter');
 const ethOffchainRouter = require('./api/ethOffchainRouter');
+const bnbBlockchainRouter = require('./api/bnbBlockchainRouter');
 const btcBlockchainRouter = require('./api/btcBlockchainRouter');
 const btcOffchainRouter = require('./api/btcOffchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
@@ -34,6 +35,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/bnb/v2', bnbBlockchainRouter);
 app.use('/ethereum/v2', ethBlockchainRouter);
 app.use('/offchain/v2/ethereum', ethOffchainRouter);
 app.use('/bitcoin/v2', btcBlockchainRouter);

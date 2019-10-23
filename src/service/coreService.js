@@ -52,6 +52,26 @@ const getTxByAddress = async (address, headers) => {
   }
 };
 
+const getBnbAccount = async (address, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `bnb/v2/account/${address}`,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
 const broadcastBtc = async (data, res, headers) => {
   try {
     const response = await axios({
@@ -84,6 +104,27 @@ const broadcastEth = async (data, res, headers) => {
         'x-api-key': headers['x-api-key'],
       },
       url: `ethereum/v2/broadcast`,
+      data,
+    });
+    res.status(200).json(response.data);
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const broadcastBnb = async (data, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `bnb/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -221,6 +262,8 @@ module.exports = {
   broadcastBtc,
   broadcastEth,
   broadcastXrp,
+  broadcastBnb,
+  getBnbAccount,
   cancelWithdrawal,
   deployErc20,
   getUTXO,

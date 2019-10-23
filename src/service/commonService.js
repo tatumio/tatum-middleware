@@ -1,7 +1,7 @@
 const bip39 = require('bip39');
 const jwt = require('jsonwebtoken');
 
-const generateMnemonic = () => bip39.generateMnemonic();
+const generateMnemonic = strength => bip39.generateMnemonic(strength);
 
 const generateJwt = (key, secret) => jwt.sign({ apiKey: key, created: Date.now() }, secret);
 
