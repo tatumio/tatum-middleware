@@ -43,7 +43,7 @@ app.use('/offchain/v2/bitcoin', btcOffchainRouter);
 app.use('/xrp/v2', xrpBlockchainRouter);
 app.use('/offchain/v2/xrp', xrpOffchainRouter);
 
-app.use('/util/v2/apiKey', jwtRouter);
+app.use('/util/v2/jwtKey', jwtRouter);
 app.use('/util/v2/qr', qrCodeRouter);
 
 app.use(async ({
