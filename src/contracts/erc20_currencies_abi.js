@@ -1,4 +1,166 @@
 module.exports = {
+  XCON: [{
+    constant: true,
+    inputs: [],
+    name: 'name',
+    outputs: [{name: '', type: 'string'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_spender', type: 'address'}, {name: '_value', type: 'uint256'}],
+    name: 'approve',
+    outputs: [{name: '', type: 'bool'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [{name: '', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_from', type: 'address'}, {name: '_to', type: 'address'}, {
+      name: '_value',
+      type: 'uint256',
+    }],
+    name: 'transferFrom',
+    outputs: [{name: '', type: 'bool'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [],
+    name: 'decimals',
+    outputs: [{name: '', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [],
+    name: 'initialSupply',
+    outputs: [{name: '', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_value', type: 'uint256'}],
+    name: 'burn',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_spender', type: 'address'}, {name: '_subtractedValue', type: 'uint256'}],
+    name: 'decreaseApproval',
+    outputs: [{name: 'success', type: 'bool'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [{name: '_owner', type: 'address'}],
+    name: 'balanceOf',
+    outputs: [{name: 'balance', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [],
+    name: 'owner',
+    outputs: [{name: '', type: 'address'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [],
+    name: 'symbol',
+    outputs: [{name: '', type: 'string'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_to', type: 'address'}, {name: '_value', type: 'uint256'}],
+    name: 'transfer',
+    outputs: [{name: '', type: 'bool'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: '_spender', type: 'address'}, {name: '_addedValue', type: 'uint256'}],
+    name: 'increaseApproval',
+    outputs: [{name: 'success', type: 'bool'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    constant: true,
+    inputs: [{name: '_owner', type: 'address'}, {name: '_spender', type: 'address'}],
+    name: 'allowance',
+    outputs: [{name: 'remaining', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  }, {
+    constant: false,
+    inputs: [{name: 'newOwner', type: 'address'}],
+    name: 'transferOwnership',
+    outputs: [],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  }, {
+    inputs: [], payable: false, stateMutability: 'nonpayable', type: 'constructor',
+  }, {
+    anonymous: false,
+    inputs: [{indexed: true, name: 'previousOwner', type: 'address'}, {
+      indexed: true,
+      name: 'newOwner',
+      type: 'address',
+    }],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  }, {
+    anonymous: false,
+    inputs: [{indexed: true, name: 'burner', type: 'address'}, {
+      indexed: false,
+      name: 'value',
+      type: 'uint256',
+    }],
+    name: 'Burn',
+    type: 'event',
+  }, {
+    anonymous: false,
+    inputs: [{indexed: true, name: 'owner', type: 'address'}, {
+      indexed: true,
+      name: 'spender',
+      type: 'address',
+    }, {indexed: false, name: 'value', type: 'uint256'}],
+    name: 'Approval',
+    type: 'event',
+  }, {
+    anonymous: false,
+    inputs: [{indexed: true, name: 'from', type: 'address'}, {
+      indexed: true,
+      name: 'to',
+      type: 'address',
+    }, {indexed: false, name: 'value', type: 'uint256'}],
+    name: 'Transfer',
+    type: 'event',
+  }],
   PLTC: [{
     constant: false,
     inputs: [],
@@ -229,7 +391,9 @@ module.exports = {
     payable: false,
     stateMutability: 'nonpayable',
     type: 'function',
-  }, {inputs: [], payable: false, stateMutability: 'nonpayable', type: 'constructor'}, {
+  }, {
+    inputs: [], payable: false, stateMutability: 'nonpayable', type: 'constructor',
+  }, {
     payable: true,
     stateMutability: 'payable',
     type: 'fallback',
@@ -534,8 +698,11 @@ module.exports = {
   }, {
     inputs: [{name: '_initialSupply', type: 'uint256'}, {name: '_name', type: 'string'}, {
       name: '_symbol',
-      type: 'string'
-    }, {name: '_decimals', type: 'uint256'}], payable: false, stateMutability: 'nonpayable', type: 'constructor',
+      type: 'string',
+    }, {name: '_decimals', type: 'uint256'}],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'constructor',
   }, {
     anonymous: false, inputs: [{indexed: false, name: 'amount', type: 'uint256'}], name: 'Issue', type: 'event',
   }, {
@@ -547,7 +714,7 @@ module.exports = {
     inputs: [{indexed: false, name: 'feeBasisPoints', type: 'uint256'}, {
       indexed: false,
       name: 'maxFee',
-      type: 'uint256'
+      type: 'uint256',
     }],
     name: 'Params',
     type: 'event',
@@ -556,7 +723,7 @@ module.exports = {
     inputs: [{indexed: false, name: '_blackListedUser', type: 'address'}, {
       indexed: false,
       name: '_balance',
-      type: 'uint256'
+      type: 'uint256',
     }],
     name: 'DestroyedBlackFunds',
     type: 'event',
@@ -572,7 +739,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'owner', type: 'address'}, {
       indexed: true,
       name: 'spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -581,7 +748,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'from', type: 'address'}, {
       indexed: true,
       name: 'to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}],
     name: 'Transfer',
     type: 'event',
@@ -666,10 +833,10 @@ module.exports = {
     constant: false,
     inputs: [{name: '_cloneTokenName', type: 'string'}, {
       name: '_cloneDecimalUnits',
-      type: 'uint8'
+      type: 'uint8',
     }, {name: '_cloneTokenSymbol', type: 'string'}, {
       name: '_snapshotBlock',
-      type: 'uint256'
+      type: 'uint256',
     }, {name: '_transfersEnabled', type: 'bool'}],
     name: 'createCloneToken',
     outputs: [{name: '', type: 'address'}],
@@ -744,7 +911,7 @@ module.exports = {
     constant: false,
     inputs: [{name: '_spender', type: 'address'}, {name: '_amount', type: 'uint256'}, {
       name: '_extraData',
-      type: 'bytes'
+      type: 'bytes',
     }],
     name: 'approveAndCall',
     outputs: [{name: 'success', type: 'bool'}],
@@ -801,7 +968,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_token', type: 'address'}, {
       indexed: true,
       name: '_controller',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: '_amount', type: 'uint256'}],
     name: 'ClaimedTokens',
     type: 'event',
@@ -810,7 +977,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_from', type: 'address'}, {
       indexed: true,
       name: '_to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: '_amount', type: 'uint256'}],
     name: 'Transfer',
     type: 'event',
@@ -819,7 +986,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_cloneToken', type: 'address'}, {
       indexed: false,
       name: '_snapshotBlock',
-      type: 'uint256'
+      type: 'uint256',
     }],
     name: 'NewCloneToken',
     type: 'event',
@@ -828,7 +995,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_owner', type: 'address'}, {
       indexed: true,
       name: '_spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: '_amount', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -837,7 +1004,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'previousControler', type: 'address'}, {
       indexed: true,
       name: 'newController',
-      type: 'address'
+      type: 'address',
     }],
     name: 'ControlTransferred',
     type: 'event',
@@ -982,7 +1149,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'from', type: 'address'}, {
       indexed: true,
       name: 'to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'tokens', type: 'uint256'}],
     name: 'Transfer',
     type: 'event',
@@ -991,7 +1158,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'tokenOwner', type: 'address'}, {
       indexed: true,
       name: 'spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'tokens', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -1099,7 +1266,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'from', type: 'address'}, {
       indexed: true,
       name: 'to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}, {indexed: false, name: 'data', type: 'bytes'}],
     name: 'Transfer',
     type: 'event',
@@ -1108,7 +1275,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'owner', type: 'address'}, {
       indexed: true,
       name: 'spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -1337,11 +1504,11 @@ module.exports = {
     inputs: [{indexed: true, name: 'sig', type: 'bytes4'}, {
       indexed: true,
       name: 'guy',
-      type: 'address'
+      type: 'address',
     }, {indexed: true, name: 'foo', type: 'bytes32'}, {indexed: true, name: 'bar', type: 'bytes32'}, {
       indexed: false,
       name: 'wad',
-      type: 'uint256'
+      type: 'uint256',
     }, {indexed: false, name: 'fax', type: 'bytes'}],
     name: 'LogNote',
     type: 'event',
@@ -1350,7 +1517,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'from', type: 'address'}, {
       indexed: true,
       name: 'to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}],
     name: 'Transfer',
     type: 'event',
@@ -1359,7 +1526,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'owner', type: 'address'}, {
       indexed: true,
       name: 'spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: 'value', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -1414,7 +1581,7 @@ module.exports = {
     inputs: [{indexed: false, name: 'previousAdmin', type: 'address'}, {
       indexed: false,
       name: 'newAdmin',
-      type: 'address'
+      type: 'address',
     }],
     name: 'AdminChanged',
     type: 'event',
@@ -1556,10 +1723,10 @@ module.exports = {
   }, {
     inputs: [{name: '_ethFundDeposit', type: 'address'}, {
       name: '_batFundDeposit',
-      type: 'address'
+      type: 'address',
     }, {name: '_fundingStartBlock', type: 'uint256'}, {name: '_fundingEndBlock', type: 'uint256'}],
     payable: false,
-    type: 'constructor'
+    type: 'constructor',
   }, {
     anonymous: false,
     inputs: [{indexed: true, name: '_to', type: 'address'}, {indexed: false, name: '_value', type: 'uint256'}],
@@ -1575,7 +1742,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_from', type: 'address'}, {
       indexed: true,
       name: '_to',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: '_value', type: 'uint256'}],
     name: 'Transfer',
     type: 'event',
@@ -1584,7 +1751,7 @@ module.exports = {
     inputs: [{indexed: true, name: '_owner', type: 'address'}, {
       indexed: true,
       name: '_spender',
-      type: 'address'
+      type: 'address',
     }, {indexed: false, name: '_value', type: 'uint256'}],
     name: 'Approval',
     type: 'event',
@@ -1652,7 +1819,7 @@ module.exports = {
     inputs: [{indexed: true, name: 'previousOwner', type: 'address'}, {
       indexed: true,
       name: 'newOwner',
-      type: 'address'
+      type: 'address',
     }],
     name: 'ProxyOwnershipTransferred',
     type: 'event',
@@ -1661,7 +1828,7 @@ module.exports = {
     inputs: [{indexed: false, name: 'currentOwner', type: 'address'}, {
       indexed: false,
       name: 'pendingOwner',
-      type: 'address'
+      type: 'address',
     }],
     name: 'NewPendingOwner',
     type: 'event',
@@ -1721,7 +1888,7 @@ module.exports = {
     inputs: [{indexed: false, name: 'previousAdmin', type: 'address'}, {
       indexed: false,
       name: 'newAdmin',
-      type: 'address'
+      type: 'address',
     }],
     name: 'AdminChanged',
     type: 'event',

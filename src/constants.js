@@ -24,6 +24,7 @@ const CONTRACT_ADDRESSES = {
   TUSD: '0x0000000000085d4780B73119b644AE5ecd22b376',
   PAX: '0x8e870d67f660d95d5be530380d0ec0bd388289e1',
   PLTC: '0x0c6e8a8358cbde54f8e4cd7f07d5ac38aec8c5a4',
+  XCON: '0x0f237d5ea7876e0e2906034d98fdb20d43666ad4',
 };
 
 const CONTRACT_DECIMALS = {
@@ -37,6 +38,7 @@ const CONTRACT_DECIMALS = {
   TUSD: 18,
   PAX: 18,
   PLTC: 18,
+  XCON: 18,
 };
 
 module.exports = {
