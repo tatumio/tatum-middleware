@@ -34,7 +34,7 @@ router.get('/wallet', (_, res) => {
   res.json({mnemonic, ...wallet});
 });
 
-router.get('/wallet/xpub/:pub/:i', ({params}, res) => {
+router.get('/address/:pub/:i', ({params}, res) => {
   const {i, pub} = params;
   const address = ethService.calculateAddress(pub, i);
   res.send({address});

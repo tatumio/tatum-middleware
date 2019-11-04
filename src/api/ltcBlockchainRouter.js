@@ -3,16 +3,18 @@ const bitcoin = require('bitcoinjs-lib');
 const BigNumber = require('bignumber.js');
 
 const router = express.Router();
-const {TBTC, BTC} = require('../constants');
+const {
+  TLTC, LTC, LTC_NETWORK_MAINNET, LTC_NETWORK_TESTNET,
+} = require('../constants');
 const commonService = require('../service/commonService');
-const {getTxByAddressBtc, getUTXOBtc, broadcastBtc} = require('../service/coreService');
-const btcService = require('../service/btcService');
+const {getTxByAddressLtc, getUTXOLtc, broadcastLtc} = require('../service/coreService');
+const ltcService = require('../service/ltcService');
 
-const chain = process.env.API_URL.includes('api') ? BTC : TBTC;
+const chain = process.env.API_URL.includes('api') ? LTC : TLTC;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
-  const wallet = btcService.generateWallet(chain, mnemonic);
+  const wallet = ltcService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
 });
 
@@ -20,7 +22,7 @@ router.get('/address/:xpub/:i', ({params}, res) => {
   const {i, xpub} = params;
   const index = parseInt(i);
 
-  const address = btcService.calculateAddress(xpub, chain, index);
+  const address = ltcService.calculateAddress(xpub, chain, index);
   res.send({address});
 });
 
@@ -28,7 +30,7 @@ router.post('/wallet/priv', ({body}, res) => {
   const {index, mnemonic} = body;
   const i = parseInt(index);
 
-  const key = btcService.calculatePrivateKey(chain, mnemonic, i);
+  const key = ltcService.calculatePrivateKey(chain, mnemonic, i);
   res.json({key});
 });
 
@@ -38,12 +40,12 @@ router.post('/transaction', async ({body, headers}, res) => {
     res.send(400).json({error: 'Either UTXO, or addresses must be present.', code: 'bitcoin.transaction.invalid.body'});
     return;
   }
-  const network = (chain === TBTC) ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
+  const network = (chain === TLTC) ? LTC_NETWORK_TESTNET : LTC_NETWORK_MAINNET;
   const tx = new bitcoin.TransactionBuilder(network);
   const privateKeysToSign = [];
   if (fromAddress) {
     for (const item of fromAddress) {
-      const txs = await getTxByAddressBtc(item.address, headers);
+      const txs = await getTxByAddressLtc(item.address, headers);
       for (const t of txs) {
         if (t.confirmations < 6) {
           continue;
@@ -53,7 +55,7 @@ router.post('/transaction', async ({body, headers}, res) => {
             continue;
           }
           try {
-            await getUTXOBtc(t.hash, i, headers);
+            await getUTXOLtc(t.hash, i, headers);
             tx.addInput(t.hash, i);
             privateKeysToSign.push(item.privateKey);
           } catch (e) {
@@ -82,7 +84,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     res.status(400).json({error: 'No spendable inputs.', code: 'bitcoin.transaction.invalid.body'});
     return;
   }
-  await broadcastBtc({txData}, res, headers);
+  await broadcastLtc({txData}, res, headers);
 });
 
 module.exports = router;

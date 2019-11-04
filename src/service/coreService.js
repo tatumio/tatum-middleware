@@ -20,7 +20,7 @@ const storeWithdrawal = async (data, res, headers) => {
   }
 };
 
-const getUTXO = async (hash, index, headers) => {
+const getUTXOBtc = async (hash, index, headers) => {
   const response = await axios({
     method: 'GET',
     headers: {
@@ -34,7 +34,21 @@ const getUTXO = async (hash, index, headers) => {
   return response.data;
 };
 
-const getTxByAddress = async (address, headers) => {
+const getUTXOLtc = async (hash, index, headers) => {
+  const response = await axios({
+    method: 'GET',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      accept: 'application/json',
+      authorization: headers.authorization,
+      'x-api-key': headers['x-api-key'],
+    },
+    url: `litecoin/v2/utxo/${hash}/${index}`,
+  });
+  return response.data;
+};
+
+const getTxByAddressBtc = async (address, headers) => {
   try {
     const response = await axios({
       method: 'GET',
@@ -45,6 +59,24 @@ const getTxByAddress = async (address, headers) => {
         'x-api-key': headers['x-api-key'],
       },
       url: `bitcoin/v2/transaction/address/${address}/true`,
+    });
+    return response.data;
+  } catch (e) {
+    return [];
+  }
+};
+
+const getTxByAddressLtc = async (address, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `litecoin/v2/transaction/address/${address}/true`,
     });
     return response.data;
   } catch (e) {
@@ -83,6 +115,27 @@ const broadcastBtc = async (data, res, headers) => {
         'x-api-key': headers['x-api-key'],
       },
       url: `bitcoin/v2/broadcast`,
+      data,
+    });
+    res.status(200).json(response.data);
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const broadcastLtc = async (data, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `litecoin/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -260,13 +313,16 @@ module.exports = {
   storeWithdrawal,
   broadcast,
   broadcastBtc,
+  broadcastLtc,
   broadcastEth,
   broadcastXrp,
   broadcastBnb,
   getBnbAccount,
   cancelWithdrawal,
   deployErc20,
-  getUTXO,
-  getTxByAddress,
+  getUTXOLtc,
+  getUTXOBtc,
+  getTxByAddressBtc,
+  getTxByAddressLtc,
   storeErc20Address,
 };

@@ -17,7 +17,7 @@ router.get('/wallet', (_, res) => {
   res.json({mnemonic, ...wallet});
 });
 
-router.get('/wallet/xpub/:pub/:i', ({params}, res) => {
+router.get('/address/:pub/:i', ({params}, res) => {
   const {i, pub} = params;
   const address = bnbService.calculateAddress(pub, chain, parseInt(i));
   res.send({address});
