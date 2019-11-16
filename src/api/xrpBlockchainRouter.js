@@ -9,7 +9,7 @@ const {XRP, TXRP} = require('../constants');
 
 const chain = process.env.API_URL.includes('api') ? XRP : TXRP;
 
-router.get('/wallet', (req, res) => {
+router.get('/account', (req, res) => {
   const wallet = offlineApi.generateAddress();
   res.json(wallet);
 });

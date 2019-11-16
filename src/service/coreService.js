@@ -209,6 +209,67 @@ const broadcastXrp = async (data, res, headers) => {
   }
 };
 
+const getFeeXlm = async (res, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `xlm/v2/fee`,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const getAccountXlm = async (accountId, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `xlm/v2/account/${accountId}`,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const broadcastXlm = async (data, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        authorization: headers.authorization,
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `xlm/v2/broadcast`,
+      data,
+    });
+    res.status(200).json(response.data);
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
 const broadcast = async (data, id, res, headers) => {
   try {
     const response = await axios({
@@ -316,6 +377,9 @@ module.exports = {
   broadcastLtc,
   broadcastEth,
   broadcastXrp,
+  broadcastXlm,
+  getFeeXlm,
+  getAccountXlm,
   broadcastBnb,
   getBnbAccount,
   cancelWithdrawal,
