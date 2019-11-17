@@ -19,6 +19,7 @@ module.exports = {
   axios: axiosInstance,
 };
 
+const vetBlockchainRouter = require('./api/vetBlockchainRouter');
 const ethBlockchainRouter = require('./api/ethBlockchainRouter');
 const ethOffchainRouter = require('./api/ethOffchainRouter');
 const bnbBlockchainRouter = require('./api/bnbBlockchainRouter');
@@ -39,6 +40,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/bnb/v2', bnbBlockchainRouter);
+app.use('/vet/v2', vetBlockchainRouter);
 app.use('/ethereum/v2', ethBlockchainRouter);
 app.use('/offchain/v2/ethereum', ethOffchainRouter);
 app.use('/bitcoin/v2', btcBlockchainRouter);

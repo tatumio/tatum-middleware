@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "author": "Samuel Sramko, samuel.sramko@tatum.io",
   "description": "Tatum Middleware is a client to Tatum Blockchain API.",
   "repository": {
@@ -44,6 +44,7 @@
     "ripple-lib": "^1.2.1",
     "stellar-sdk": "^3.3.0",
     "swagger-ui-express": "^4.0.2",
+    "thorify": "^1.4.0",
     "web3": "^1.2.0",
     "yamljs": "^0.3.0"
   },

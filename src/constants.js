@@ -1,4 +1,6 @@
 const TBTC = 'TBTC';
+const VET = 'VET';
+const TVET = 'TVET';
 const ROPSTEN = 'ropsten';
 const TLTC = 'TLTC';
 const LTC = 'LTC';
@@ -9,6 +11,7 @@ const ETH = 'mainnet';
 const XRP = 'XRP';
 const TXRP = 'TXRP';
 const ETH_DERIVATION_PATH = 'm/44\'/60\'/0\'/0';
+const VET_DERIVATION_PATH = 'm/44\'/818\'/0\'/0';
 const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0';
 const LTC_DERIVATION_PATH = 'm/44\'/2\'/0\'/0';
 const BNB_DERIVATION_PATH = 'm/44\'/714\'/0\'/0';
@@ -38,7 +41,7 @@ const LTC_NETWORK_MAINNET = {
   pubKeyHash: 0x30,
   scriptHash: 0x32,
   wif: 0xb0,
-}
+};
 
 const CONTRACT_ADDRESSES = {
   USDT: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -79,14 +82,17 @@ module.exports = {
   BNB_DERIVATION_PATH,
   BTC_DERIVATION_PATH,
   LTC_DERIVATION_PATH,
+  VET_DERIVATION_PATH,
   LTC,
   TLTC,
   TESTNET_DERIVATION_PATH,
   INFURA_KEY,
   XRP,
   TXRP,
+  VET,
+  TVET,
   CONTRACT_ADDRESSES,
   CONTRACT_DECIMALS,
   LTC_NETWORK_MAINNET,
-  LTC_NETWORK_TESTNET
+  LTC_NETWORK_TESTNET,
 };

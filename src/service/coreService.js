@@ -104,7 +104,7 @@ const getBnbAccount = async (address, res, headers) => {
   }
 };
 
-const broadcastBtc = async (data, res, headers) => {
+const broadcastBlockchain = async (endpoint, data, res, headers) => {
   try {
     const response = await axios({
       method: 'POST',
@@ -114,7 +114,7 @@ const broadcastBtc = async (data, res, headers) => {
         authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
-      url: `bitcoin/v2/broadcast`,
+      url: `${endpoint}/v2/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -123,90 +123,35 @@ const broadcastBtc = async (data, res, headers) => {
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
+};
+
+const broadcastBtc = async (data, res, headers) => {
+  await broadcastBlockchain('bitcoin', data, res, headers);
 };
 
 const broadcastLtc = async (data, res, headers) => {
-  try {
-    const response = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `litecoin/v2/broadcast`,
-      data,
-    });
-    res.status(200).json(response.data);
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
+  await broadcastBlockchain('litecoin', data, res, headers);
 };
 
 const broadcastEth = async (data, res, headers) => {
-  try {
-    const response = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `ethereum/v2/broadcast`,
-      data,
-    });
-    res.status(200).json(response.data);
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
+  await broadcastBlockchain('ethereum', data, res, headers);
+};
+
+const broadcastVet = async (data, res, headers) => {
+  await broadcastBlockchain('vet', data, res, headers);
 };
 
 const broadcastBnb = async (data, res, headers) => {
-  try {
-    const response = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `bnb/v2/broadcast`,
-      data,
-    });
-    res.status(200).json(response.data);
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
+  await broadcastBlockchain('bnb', data, res, headers);
 };
 
 const broadcastXrp = async (data, res, headers) => {
-  try {
-    const response = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `xrp/v2/broadcast`,
-      data,
-    });
-    res.status(200).json(response.data);
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
+  await broadcastBlockchain('xrp', data, res, headers);
+};
+
+
+const broadcastXlm = async (data, res, headers) => {
+  await broadcastBlockchain('xlm', data, res, headers);
 };
 
 const getFeeXlm = async (res, headers) => {
@@ -242,27 +187,6 @@ const getAccountXlm = async (accountId, res, headers) => {
       url: `xlm/v2/account/${accountId}`,
     });
     return response.data;
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
-};
-
-const broadcastXlm = async (data, res, headers) => {
-  try {
-    const response = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        authorization: headers.authorization,
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `xlm/v2/broadcast`,
-      data,
-    });
-    res.status(200).json(response.data);
   } catch (e) {
     console.error(e.response);
     res.status(e.response.status).send(e.response.data);
@@ -378,9 +302,10 @@ module.exports = {
   broadcastEth,
   broadcastXrp,
   broadcastXlm,
+  broadcastVet,
+  broadcastBnb,
   getFeeXlm,
   getAccountXlm,
-  broadcastBnb,
   getBnbAccount,
   cancelWithdrawal,
   deployErc20,
