@@ -34,6 +34,20 @@ const getUTXOBtc = async (hash, index, headers) => {
   return response.data;
 };
 
+const getUTXOBch = async (address, headers) => {
+  const response = await axios({
+    method: 'GET',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      accept: 'application/json',
+      authorization: headers.authorization,
+      'x-api-key': headers['x-api-key'],
+    },
+    url: `bcash/v2/utxo/${address}`,
+  });
+  return response.data;
+};
+
 const getUTXOLtc = async (hash, index, headers) => {
   const response = await axios({
     method: 'GET',
@@ -127,6 +141,10 @@ const broadcastBlockchain = async (endpoint, data, res, headers) => {
 
 const broadcastBtc = async (data, res, headers) => {
   await broadcastBlockchain('bitcoin', data, res, headers);
+};
+
+const broadcastBch = async (data, res, headers) => {
+  await broadcastBlockchain('bcash', data, res, headers);
 };
 
 const broadcastLtc = async (data, res, headers) => {
@@ -304,6 +322,7 @@ module.exports = {
   broadcastXlm,
   broadcastVet,
   broadcastBnb,
+  broadcastBch,
   getFeeXlm,
   getAccountXlm,
   getBnbAccount,
@@ -311,6 +330,7 @@ module.exports = {
   deployErc20,
   getUTXOLtc,
   getUTXOBtc,
+  getUTXOBch,
   getTxByAddressBtc,
   getTxByAddressLtc,
   storeErc20Address,

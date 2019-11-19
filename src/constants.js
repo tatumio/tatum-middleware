@@ -4,6 +4,8 @@ const TVET = 'TVET';
 const ROPSTEN = 'ropsten';
 const TLTC = 'TLTC';
 const LTC = 'LTC';
+const BCH = 'BCH';
+const TBCH = 'TBCH';
 const BTC = 'BTC';
 const BNB = 'BNB';
 const TBNB = 'TBNB';
@@ -13,6 +15,7 @@ const TXRP = 'TXRP';
 const ETH_DERIVATION_PATH = 'm/44\'/60\'/0\'/0';
 const VET_DERIVATION_PATH = 'm/44\'/818\'/0\'/0';
 const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0';
+const BCH_DERIVATION_PATH = 'm/44\'/145\'/0\'/0';
 const LTC_DERIVATION_PATH = 'm/44\'/2\'/0\'/0';
 const BNB_DERIVATION_PATH = 'm/44\'/714\'/0\'/0';
 const TESTNET_DERIVATION_PATH = 'm/44\'/1\'/0\'/0';
@@ -81,6 +84,7 @@ module.exports = {
   ETH_DERIVATION_PATH,
   BNB_DERIVATION_PATH,
   BTC_DERIVATION_PATH,
+  BCH_DERIVATION_PATH,
   LTC_DERIVATION_PATH,
   VET_DERIVATION_PATH,
   LTC,
@@ -91,6 +95,8 @@ module.exports = {
   TXRP,
   VET,
   TVET,
+  BCH,
+  TBCH,
   CONTRACT_ADDRESSES,
   CONTRACT_DECIMALS,
   LTC_NETWORK_MAINNET,
