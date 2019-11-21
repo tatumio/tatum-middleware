@@ -1,5 +1,8 @@
 const hdkey = require('ethereumjs-wallet/hdkey');
 const bip39 = require('bip39');
+const axios = require('axios');
+const BigNumber = require('bignumber.js');
+const Web3 = require('web3');
 const {broadcastEth} = require('./coreService');
 
 const {
@@ -11,6 +14,17 @@ const generateWallet = (chain, mnemonic) => {
   const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
   const derivePath = hdwallet.derivePath(path);
   return {xpub: derivePath.publicExtendedKey(), xpriv: derivePath.privateExtendedKey()};
+};
+
+const getGasPriceInWei = async (res) => {
+  try {
+    const {data} = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
+    return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+    throw e;
+  }
 };
 
 const calculateAddress = (pub, i) => {
@@ -25,6 +39,36 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
   const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
   const derivePath = hdwallet.derivePath(path).deriveChild(i);
   return derivePath.getWallet().getPrivateKeyString();
+};
+
+const erc721Transaction = async (web3, res, privKey, to, data, nonce, fee) => {
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
+  const tx = {
+    from: 0,
+    to: to.trim(),
+    data,
+    gasPrice,
+    nonce,
+  };
+
+  if (fee) {
+    tx.gas = fee.gasLimit;
+  } else {
+    try {
+      tx.gas = await web3.eth.estimateGas(tx);
+    } catch (e) {
+      console.error(e);
+      res.status(500).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+      throw e;
+    }
+  }
+  try {
+    return (await web3.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({code: 'eth.transaction.hash', message: 'Unable to calculate transaction hash.'});
+    throw e;
+  }
 };
 
 const blockchainTransaction = async (fee, transaction, fromPriv, web3, res, headers) => {
@@ -68,4 +112,6 @@ module.exports = {
   calculateAddress,
   calculatePrivateKey,
   blockchainTransaction,
+  erc721Transaction,
+  getGasPriceInWei,
 };

@@ -1,11 +1,12 @@
 const express = require('express');
-const axios = require('axios');
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 const {broadcastEth} = require('../service/coreService');
 
 const tokenABI = require('../contracts/token_abi');
 const tokenByteCode = require('../contracts/token_bytecode');
+const erc721ABI = require('../contracts/erc721/erc721_abi');
+const erc721ByteCode = require('../contracts/erc721/erc721_bytecode');
 const commonService = require('../service/commonService');
 const ethService = require('../service/ethService');
 
@@ -17,27 +18,10 @@ const {
 
 const chain = process.env.API_URL.includes('api') ? ETH : ROPSTEN;
 
-const getGasPriceInWei = async (res) => {
-  try {
-    const {data} = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
-    return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
-  } catch (e) {
-    console.error(e);
-    res.status(500).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
-    throw e;
-  }
-};
-
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
   const wallet = ethService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
-});
-
-router.get('/address/:pub/:i', ({params}, res) => {
-  const {i, pub} = params;
-  const address = ethService.calculateAddress(pub, i);
-  res.send({address});
 });
 
 router.post('/wallet/priv', ({body}, res) => {
@@ -62,7 +46,7 @@ router.post('/transaction', async ({body, headers}, res) => {
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
-  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await ethService.getGasPriceInWei(res);
 
   let tx;
   if (currency === 'ETH') {
@@ -110,7 +94,7 @@ router.post('/erc20/transaction', async ({body, headers}, res) => {
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
-  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await ethService.getGasPriceInWei(res);
   const contract = new web3.eth.Contract(tokenABI, contractAddress);
 
   const tx = {
@@ -140,7 +124,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
-  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei();
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await ethService.getGasPriceInWei(res);
 
   const contract = new web3.eth.Contract(tokenABI, null, {
     data: tokenByteCode,
@@ -193,6 +177,146 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     await broadcastEth({
       txData: txData.rawTransaction,
     }, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/erc721/deploy', async ({body, headers}, res) => {
+  const {
+    name,
+    symbol,
+    fromPrivateKey,
+    fee,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await ethService.getGasPriceInWei(res);
+
+  const contract = new web3.eth.Contract(erc721ABI, null, {
+    data: erc721ByteCode,
+  });
+  const deploy = contract.deploy({arguments: [name, symbol]});
+
+  let gasLimit;
+  try {
+    gasLimit = fee ? fee.gasLimit : await web3.eth.estimateGas({
+      from: 0,
+      data: deploy.encodeABI(),
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Unable to calculate gas limit for transaction',
+      code: 'eth.transaction.gas',
+    });
+    return;
+  }
+
+  let txData;
+  try {
+    txData = await web3.eth.accounts.signTransaction({
+      from: 0,
+      gasLimit,
+      gasPrice,
+      data: deploy.encodeABI(),
+      nonce,
+    }, fromPrivateKey);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      error: 'Unable to sign transaction for contract creation.',
+      code: 'eth.erc20.sign',
+    });
+    return;
+  }
+
+  try {
+    await broadcastEth({
+      txData: txData.rawTransaction,
+    }, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/erc721/transaction', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    to,
+    tokenId,
+    fee,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const contract = new web3.eth.Contract(erc721ABI, contractAddress);
+
+  const txData = await ethService.erc721Transaction(web3, res, fromPrivateKey, contractAddress,
+    contract.methods.safeTransferFrom(web3.eth.accounts.wallet[0].address, to.trim(), tokenId).encodeABI(),
+    nonce, fee);
+
+  try {
+    await broadcastEth({txData}, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/erc721/mint', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    to,
+    tokenId,
+    url,
+    fee,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const contract = new web3.eth.Contract(erc721ABI, contractAddress);
+
+  const txData = await ethService.erc721Transaction(web3, res, fromPrivateKey, contractAddress,
+    contract.methods.mintWithTokenURI(to.trim(), tokenId, url).encodeABI(), nonce, fee);
+
+  try {
+    await broadcastEth({txData}, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/erc721/burn', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    tokenId,
+    fee,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const contract = new web3.eth.Contract(erc721ABI, contractAddress);
+
+  const txData = await ethService.erc721Transaction(web3, res, fromPrivateKey, contractAddress,
+    contract.methods.burn(tokenId).encodeABI(), nonce, fee);
+
+  try {
+    await broadcastEth({txData}, res, headers);
   } catch (_) {
   }
 });
