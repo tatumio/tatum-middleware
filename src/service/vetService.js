@@ -21,10 +21,11 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
   return derivePath.getWallet().getPrivateKeyString();
 };
 
-const blockchainTransaction = async (amount, to, privKey, fee, client, res, headers) => {
+const blockchainTransaction = async (amount, to, privKey, fee, client, res, headers, data) => {
   const tx = {
     from: client.eth.accounts.wallet[0].address,
     to: to.trim(),
+    data: data ? client.utils.toHex(data) : undefined,
     value: client.utils.toWei(`${amount}`, 'ether'),
   };
 

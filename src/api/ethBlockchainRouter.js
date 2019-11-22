@@ -39,6 +39,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     currency,
     fee,
     nonce,
+    data,
   } = body;
 
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
@@ -55,6 +56,7 @@ router.post('/transaction', async ({body, headers}, res) => {
       to: to.trim(),
       value: web3.utils.toWei(amount, 'ether'),
       gasPrice,
+      data: data ? web3.utils.toHex(data) : undefined,
       nonce,
     };
   } else {

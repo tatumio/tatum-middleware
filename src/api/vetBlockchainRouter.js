@@ -33,6 +33,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     to,
     amount,
     fee,
+    data,
   } = body;
 
   const client = thorify(new Web3(), chain === TVET
@@ -44,7 +45,7 @@ router.post('/transaction', async ({body, headers}, res) => {
   client.eth.defaultAccount = client.eth.accounts.wallet[0].address;
 
   try {
-    const txData = await vetService.blockchainTransaction(amount, to, fromPrivateKey, fee, client, res, headers);
+    const txData = await vetService.blockchainTransaction(amount, to, fromPrivateKey, fee, client, res, headers, data);
     await broadcastVet({txData}, res, headers);
   } catch (_) {
   }

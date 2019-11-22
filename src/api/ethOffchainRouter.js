@@ -30,7 +30,7 @@ const getGasPriceInWei = async (res) => {
 
 router.post('/transfer', async ({body, headers}, res) => {
   const {
-    mnemonic, index, privateKey, nonce, ...withdrawal
+    mnemonic, index, privateKey, nonce, data, ...withdrawal
   } = body;
   const {amount, address, currency} = withdrawal;
 
@@ -58,6 +58,7 @@ router.post('/transfer', async ({body, headers}, res) => {
       to: address.trim(),
       value: web3.utils.toWei(amount, 'ether'),
       gasPrice,
+      data: data ? web3.utils.toHex(data) : undefined,
       nonce,
     };
   } else {
