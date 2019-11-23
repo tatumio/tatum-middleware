@@ -30,6 +30,7 @@ const bcashOffchainRouter = require('./api/bcashOffchainRouter');
 const ltcBlockchainRouter = require('./api/ltcBlockchainRouter');
 const ltcOffchainRouter = require('./api/ltcOffchainRouter');
 const xlmBlockchainRouter = require('./api/xlmBlockchainRouter');
+const neoBlockchainRouter = require('./api/neoBlockchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
 const xrpOffchainRouter = require('./api/xrpOffchainRouter');
 const jwtRouter = require('./api/jwtRouter');
@@ -52,6 +53,7 @@ app.use('/offchain/v2/bitcoin', btcOffchainRouter);
 app.use('/litecoin/v2', ltcBlockchainRouter);
 app.use('/offchain/v2/litecoin', ltcOffchainRouter);
 app.use('/xlm/v2', xlmBlockchainRouter);
+app.use('/neo/v2', neoBlockchainRouter);
 app.use('/xrp/v2', xrpBlockchainRouter);
 app.use('/offchain/v2/xrp', xrpOffchainRouter);
 

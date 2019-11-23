@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "2.0.16",
+  "version": "2.0.17",
   "author": "Samuel Sramko, samuel.sramko@tatum.io",
   "description": "Tatum Middleware is a client to Tatum Blockchain API.",
   "repository": {
@@ -27,6 +27,7 @@
   "private": true,
   "dependencies": {
     "@binance-chain/javascript-sdk": "^2.16.0",
+    "@cityofzion/neon-js": "^4.7.1",
     "axios": "^0.18.1",
     "bignumber.js": "^9.0.0",
     "bip32": "^2.0.4",
