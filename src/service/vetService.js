@@ -61,7 +61,6 @@ const estimateGas = async (data, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `vet/v2/transaction/gas`,

@@ -7,15 +7,17 @@ const LTC = 'LTC';
 const BCH = 'BCH';
 const TBCH = 'TBCH';
 const BTC = 'BTC';
+const BSV = 'BSV';
+const TBSV = 'TBSV';
 const BNB = 'BNB';
 const TBNB = 'TBNB';
 const ETH = 'mainnet';
 const XRP = 'XRP';
-const TXRP = 'TXRP';
 const ETH_DERIVATION_PATH = 'm/44\'/60\'/0\'/0';
 const VET_DERIVATION_PATH = 'm/44\'/818\'/0\'/0';
 const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0';
 const BCH_DERIVATION_PATH = 'm/44\'/145\'/0\'/0';
+const BSV_DERIVATION_PATH = 'm/44\'/236\'/0\'/0';
 const LTC_DERIVATION_PATH = 'm/44\'/2\'/0\'/0';
 const BNB_DERIVATION_PATH = 'm/44\'/714\'/0\'/0';
 const TESTNET_DERIVATION_PATH = 'm/44\'/1\'/0\'/0';
@@ -74,6 +76,30 @@ const CONTRACT_DECIMALS = {
   XCON: 18,
 };
 
+const BSV_NETWORK_MAINNET = {
+  messagePrefix: 'mainnet',
+  bech32: '',
+  bip32: {
+    public: 0x0488b21e,
+    private: 0x0488ade4,
+  },
+  pubKeyHash: 0x00,
+  wif: 0x80,
+  scriptHash: 0x05,
+};
+
+const BSV_NETWORK_TESTNET = {
+  messagePrefix: 'mainnet',
+  bech32: '',
+  bip32: {
+    public: 0x043587cf,
+    private: 0x04358394,
+  },
+  pubKeyHash: 0x6f,
+  wif: 0xef,
+  scriptHash: 0xc4,
+};
+
 module.exports = {
   TBTC,
   ROPSTEN,
@@ -87,18 +113,22 @@ module.exports = {
   BCH_DERIVATION_PATH,
   LTC_DERIVATION_PATH,
   VET_DERIVATION_PATH,
+  BSV_DERIVATION_PATH,
   LTC,
   TLTC,
   TESTNET_DERIVATION_PATH,
   INFURA_KEY,
   XRP,
-  TXRP,
   VET,
   TVET,
   BCH,
   TBCH,
+  BSV,
+  TBSV,
   CONTRACT_ADDRESSES,
   CONTRACT_DECIMALS,
   LTC_NETWORK_MAINNET,
   LTC_NETWORK_TESTNET,
+  BSV_NETWORK_MAINNET,
+  BSV_NETWORK_TESTNET
 };

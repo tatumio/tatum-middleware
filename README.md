@@ -15,12 +15,6 @@ Tatum Middleware Docker container must/can be run with following environment var
   * API_URL - URL of Tatum Core API that Tatum Middleware will communicate with, must be present<br/>
   For sandbox installation, use `https://sandbox.tatum.io`.<br/>
   For production installation, use `https://api.tatum.io`.<br/>
-  * JWT_KEY - If only 1 JWT Authorization Bearer is used for this Middleware, JWT_KEY and JWT_SECRET may 
-  be added to autogenerate fresh valid Authorization Bearer JWT before each request. 
-  Both JWT_KEY and JWT_SECRET must be present, otherwise Authorization HTTP Header value will be used instead.  
-  * JWT_SECRET - If only 1 JWT Authorization Bearer is used for this Middleware, JWT_KEY and JWT_SECRET may 
-    be added to autogenerate fresh valid Authorization Bearer JWT before each request. 
-    Both JWT_KEY and JWT_SECRET must be present, otherwise Authorization HTTP Header value will be used instead.
   * INFURA_KEY - API key to Infura to communicate with Ethereum blockchain. Defaults to Tatum internal key.<br/>
   <b>It is highly recommended to change this value.</b>
 <p>
@@ -28,11 +22,8 @@ Tatum Middleware Docker container exposes port `6543`, on which REST API server 
 In order to publish exposed port outside of the docker container, `-p` flag should be used with defined mapping.
 </p>
 
-#### Example script to start docker container without JWT Bearer auto generation: <br/>
+#### Example script to start docker container<br/>
 ```docker run -e API_URL=https://sandbox.tatum.io -p 6543:6543/tcp tatumio/tatum-middleware```
-
-#### Example script to start docker container with JWT Bearer auto generation: <br/>
-```docker run -e API_URL=https://sandbox.tatum.io -e JWT_KEY=3d1197f3-cc43-48ea-9a39-1af141a41605 -e JWT_SECRET=26e2c367-4d98-43cc-802e-75bf2255cabb -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps Tatum Core API as is described in <a target="_blank" href="https://tatum.io/introduction.html">Developer Section</a>.<br/>

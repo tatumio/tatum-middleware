@@ -8,13 +8,6 @@ const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
 });
 
-axiosInstance.interceptors.request.use((config) => {
-  if (process.env.JWT_KEY && process.env.JWT_SECRET) {
-    config.headers.authorization = `Bearer ${generateJwt(process.env.JWT_KEY, process.env.JWT_SECRET)}`;
-  }
-  return config;
-});
-
 module.exports = {
   axios: axiosInstance,
 };
@@ -23,6 +16,8 @@ const vetBlockchainRouter = require('./api/vetBlockchainRouter');
 const ethBlockchainRouter = require('./api/ethBlockchainRouter');
 const ethOffchainRouter = require('./api/ethOffchainRouter');
 const bnbBlockchainRouter = require('./api/bnbBlockchainRouter');
+const bsvBlockchainRouter = require('./api/bsvBlockchainRouter');
+const bsvOffchainRouter = require('./api/bsvOffchainRouter');
 const btcBlockchainRouter = require('./api/btcBlockchainRouter');
 const btcOffchainRouter = require('./api/btcOffchainRouter');
 const bcashBlockchainRouter = require('./api/bcashBlockchainRouter');
@@ -33,7 +28,6 @@ const xlmBlockchainRouter = require('./api/xlmBlockchainRouter');
 const neoBlockchainRouter = require('./api/neoBlockchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
 const xrpOffchainRouter = require('./api/xrpOffchainRouter');
-const jwtRouter = require('./api/jwtRouter');
 const qrCodeRouter = require('./api/qrCodeRouter');
 
 const serverPort = 6543;
@@ -50,6 +44,8 @@ app.use('/bcash/v2', bcashBlockchainRouter);
 app.use('/offchain/v2/bcash', bcashOffchainRouter);
 app.use('/bitcoin/v2', btcBlockchainRouter);
 app.use('/offchain/v2/bitcoin', btcOffchainRouter);
+app.use('/bsv/v2', bsvBlockchainRouter);
+app.use('/offchain/v2/bsv', bsvOffchainRouter);
 app.use('/litecoin/v2', ltcBlockchainRouter);
 app.use('/offchain/v2/litecoin', ltcOffchainRouter);
 app.use('/xlm/v2', xlmBlockchainRouter);
@@ -57,7 +53,6 @@ app.use('/neo/v2', neoBlockchainRouter);
 app.use('/xrp/v2', xrpBlockchainRouter);
 app.use('/offchain/v2/xrp', xrpOffchainRouter);
 
-app.use('/util/v2/jwtKey', jwtRouter);
 app.use('/util/v2/qr', qrCodeRouter);
 
 app.use(async ({
@@ -72,7 +67,6 @@ app.use(async ({
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
     });

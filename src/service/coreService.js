@@ -7,7 +7,6 @@ const storeWithdrawal = async (data, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `offchain/v2/withdrawal`,
@@ -26,7 +25,6 @@ const getUTXOBtc = async (hash, index, headers) => {
     headers: {
       'content-type': headers['content-type'] || 'application/json',
       accept: 'application/json',
-      authorization: headers.authorization,
       'x-api-key': headers['x-api-key'],
     },
     url: `bitcoin/v2/utxo/${hash}/${index}`,
@@ -40,7 +38,6 @@ const getUTXOBch = async (address, headers) => {
     headers: {
       'content-type': headers['content-type'] || 'application/json',
       accept: 'application/json',
-      authorization: headers.authorization,
       'x-api-key': headers['x-api-key'],
     },
     url: `bcash/v2/utxo/${address}`,
@@ -54,7 +51,6 @@ const getUTXOLtc = async (hash, index, headers) => {
     headers: {
       'content-type': headers['content-type'] || 'application/json',
       accept: 'application/json',
-      authorization: headers.authorization,
       'x-api-key': headers['x-api-key'],
     },
     url: `litecoin/v2/utxo/${hash}/${index}`,
@@ -69,10 +65,26 @@ const getTxByAddressBtc = async (address, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `bitcoin/v2/transaction/address/${address}/true`,
+    });
+    return response.data;
+  } catch (e) {
+    return [];
+  }
+};
+
+const getBsvTx = async (hash, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `bsv/v2/transaction/${hash}`,
     });
     return response.data;
   } catch (e) {
@@ -87,7 +99,6 @@ const getTxByAddressLtc = async (address, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `litecoin/v2/transaction/address/${address}/true`,
@@ -105,7 +116,6 @@ const getBnbAccount = async (address, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `bnb/v2/account/${address}`,
@@ -125,7 +135,6 @@ const broadcastBlockchain = async (endpoint, data, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `${endpoint}/v2/broadcast`,
@@ -145,6 +154,10 @@ const broadcastBtc = async (data, res, headers) => {
 
 const broadcastBch = async (data, res, headers) => {
   await broadcastBlockchain('bcash', data, res, headers);
+};
+
+const broadcastBsv = async (data, res, headers) => {
+  await broadcastBlockchain('bsv', data, res, headers);
 };
 
 const broadcastLtc = async (data, res, headers) => {
@@ -179,10 +192,28 @@ const getFeeXlm = async (res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `xlm/v2/fee`,
+    });
+    return response.data;
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const getFeeXrp = async (res, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `xrp/v2/fee`,
     });
     return response.data;
   } catch (e) {
@@ -199,7 +230,6 @@ const getAccountXlm = async (accountId, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `xlm/v2/account/${accountId}`,
@@ -219,7 +249,6 @@ const broadcast = async (data, id, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `offchain/v2/withdrawal/broadcast`,
@@ -248,7 +277,6 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `offchain/v2/ethereum/erc20/${symbol}/${address}`,
@@ -272,7 +300,6 @@ const deployErc20 = async (data, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `offchain/v2/ethereum/erc20/`,
@@ -292,7 +319,6 @@ const cancelWithdrawal = async (id, res, headers) => {
       headers: {
         'content-type': headers['content-type'] || 'application/json',
         accept: 'application/json',
-        authorization: headers.authorization,
         'x-api-key': headers['x-api-key'],
       },
       url: `offchain/v2/withdrawal/${id}`,
@@ -323,7 +349,10 @@ module.exports = {
   broadcastVet,
   broadcastBnb,
   broadcastBch,
+  broadcastBsv,
   getFeeXlm,
+  getFeeXrp,
+  getBsvTx,
   getAccountXlm,
   getBnbAccount,
   cancelWithdrawal,
