@@ -4,7 +4,7 @@ FROM node:12-alpine as builder
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-RUN apk --no-cache add python make g++ git
+RUN apk --no-cache add python make g++ git linux-headers eudev-dev
 RUN git config --global url.https://github.com/.insteadOf git://github.com/
 
 COPY package*.json ./

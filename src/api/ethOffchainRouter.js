@@ -35,7 +35,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   const {amount, address, currency} = withdrawal;
 
   let fromPriv;
-  if (mnemonic && index) {
+  if (mnemonic && index !== undefined) {
     const i = parseInt(index);
     fromPriv = mnemonic && index ? ethService.calculatePrivateKey(chain, mnemonic, i) : privateKey;
   } else if (privateKey) {
@@ -136,7 +136,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } = body;
 
   let fromPriv;
-  if (mnemonic && payIndex) {
+  if (mnemonic && payIndex !== undefined) {
     const i = parseInt(payIndex);
     fromPriv = mnemonic && payIndex ? ethService.calculatePrivateKey(chain, mnemonic, i) : privateKey;
   } else if (privateKey) {
@@ -210,11 +210,25 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   }
 
   try {
-    await broadcastEth({
-      txData: txData.rawTransaction,
-    }, res, headers);
-  } catch (_) {
+    const r = await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `ethereum/v2/broadcast`,
+      data: {
+        txData: txData.rawTransaction,
+      },
+    });
+    res.status(200).json({txId: r.data.txId, accountId: response.data.accountId});
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
   }
+
   // When we want to wait for contract creation, we can use this method - with gas big enough, it will be processed quickly
 
   // const {name} = erc20;
@@ -242,7 +256,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   const {amount, address, currency} = withdrawal;
 
   let fromPriv;
-  if (mnemonic && index) {
+  if (mnemonic && index !== undefined) {
     const i = parseInt(index);
     fromPriv = mnemonic && index ? ethService.calculatePrivateKey(chain, mnemonic, i) : privateKey;
   } else if (privateKey) {
