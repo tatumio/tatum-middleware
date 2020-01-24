@@ -1,8 +1,8 @@
 # Tatum Middleware 
-Tatum Middleware is a client to Tatum Blockchain API.
+Tatum Middleware is a client to BlockchainNow.
 
 ## Where to start
-In order to start work with Tatum Blockchain API, please contact us at <a target="_blank" href="mailto:hello@tatum.io">hello@tatum.io</a> in order to obtain access API key.
+In order to start work with BlockchainNow, please contact us at <a target="_blank" href="mailto:hello@tatum.io">hello@tatum.io</a> in order to obtain access API key.
 
 ## Install docker image
 Tatum Middleware docker image is available in Docker HUB under `tatumio/tatum-middleware` tag, see <a href="https://hub.docker.com/r/tatumio/tatum-middleware">https://hub.docker.com/r/tatumio/tatum-middleware</a>.
@@ -26,7 +26,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 ```docker run -e API_URL=https://sandbox.tatum.io -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
-Tatum Middleware wraps Tatum Core API as is described in <a target="_blank" href="https://tatum.io/introduction.html">Developer Section</a>.<br/>
+Tatum Middleware wraps BlockchainNow.<br/>
 On top of it, it brings simple utility functions such as creation of BIP44 compatible wallets, that are used within Tatum Core.<br/>
 Also, it gives developers simple options to send Ethereum and Bitcoin payments via local REST API.
 Some of the helpers methods sends mnemonic or private keys via HTTP protocol. It is highly recommended to
