@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # The instructions for second stage
-FROM node:lts-alpine
+FROM node:12-alpine
 
 WORKDIR /opt/tatum/middleware
 COPY --from=builder node_modules node_modules
