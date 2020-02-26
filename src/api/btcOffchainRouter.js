@@ -13,7 +13,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   } = body;
 
   if (!withdrawal.fee) {
-    withdrawal.fee = 0.0005;
+    withdrawal.fee = '0.0005';
   }
 
   if (keyPair && mnemonic) {
