@@ -25,13 +25,13 @@ router.post('/transfer', async ({headers, body}, res) => {
   }
   if (!keyPair && !mnemonic && !attr) {
     res.send(400).json({
-      error: 'Either keyPair or mnemonic and attr must be present.',
+      error: 'Either keyPair and attr or mnemonic must be present.',
       code: 'transaction.mnemonic.keyPair.missing',
     });
     return;
   }
-  if (!keyPair && (!mnemonic || !attr)) {
-    res.send(400).json({error: 'Mnemonic and attr must be present.', code: 'transaction.attr.keyPair.missing'});
+  if (!mnemonic && (!keyPair || !attr)) {
+    res.send(400).json({error: 'Keypair and attr must be present.', code: 'transaction.attr.keyPair.missing'});
     return;
   }
 
