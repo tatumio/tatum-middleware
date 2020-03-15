@@ -312,7 +312,7 @@ const deployErc20 = async (data, res, headers) => {
   }
 };
 
-const cancelWithdrawal = async (id, res, headers) => {
+const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
   try {
     await axios({
       method: 'DELETE',
@@ -321,7 +321,7 @@ const cancelWithdrawal = async (id, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/withdrawal/${id}`,
+      url: `offchain/v2/withdrawal/${id}?revert=${revert}`,
     });
     res.status(500).json({
       error: 'Unable to broadcast transaction, withdrawal cancelled.',

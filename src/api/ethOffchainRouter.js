@@ -323,7 +323,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers);
+    await cancelWithdrawal(id, res, headers, 'false');
   } catch (_) {
   }
 });
