@@ -4,7 +4,7 @@ const hdkey = require('hdkey');
 const BigNumber = require('bignumber.js');
 
 const {
-  LTC, TLTC, LTC_DERIVATION_PATH, TESTNET_DERIVATION_PATH, LTC_NETWORK_TESTNET, LTC_NETWORK_MAINNET
+  LTC, TLTC, LTC_DERIVATION_PATH, TESTNET_DERIVATION_PATH, LTC_NETWORK_TESTNET, LTC_NETWORK_MAINNET,
 } = require('../constants');
 
 const generateWallet = (chain, mnemonic) => {

@@ -5,7 +5,7 @@ const router = express.Router();
 const {TLTC, LTC} = require('../constants');
 const ltcService = require('../service/ltcService');
 
-const chain = process.env.API_URL.includes('api') ? LTC : TLTC;
+const chain = process.env.MODE === 'MAINNET' ? LTC : TLTC;
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {

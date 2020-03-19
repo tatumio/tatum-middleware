@@ -8,7 +8,7 @@ const commonService = require('../service/commonService');
 const {getTxByAddressBtc, getUTXOBtc, broadcastBtc} = require('../service/coreService');
 const btcService = require('../service/btcService');
 
-const chain = process.env.API_URL.includes('api') ? BTC : TBTC;
+const chain = process.env.MODE === 'MAINNET' ? BTC : TBTC;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();

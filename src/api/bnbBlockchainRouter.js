@@ -9,7 +9,7 @@ const {
   BNB, TBNB,
 } = require('../constants');
 
-const chain = process.env.API_URL.includes('api') ? BNB : TBNB;
+const chain = process.env.MODE === 'MAINNET' ? BNB : TBNB;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic(256);

@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "2.0.24",
+  "version": "3.0.0",
   "author": "Samuel Sramko, samuel.sramko@tatum.io",
   "description": "Tatum Middleware is a client to Tatum Blockchain API.",
   "repository": {
@@ -8,14 +8,14 @@
     "url": "https://github.com/tatumio/tatum-middleware.git"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12.0.0"
   },
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "lint": "eslint --fix src",
-    "dev": "API_URL=https://dev.tatum.io nodemon src/index.js",
-    "test": "API_URL=test mocha"
+    "dev": "API_URL=http://127.0.0.1:3000 MODE=TESTNET nodemon src/index.js",
+    "test": "API_URL=test MODE=TESTNET mocha"
   },
   "keywords": [
     "Tatum",
@@ -26,7 +26,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@binance-chain/javascript-sdk": "^2.16.0",
+    "@binance-chain/javascript-sdk": "^2.16.4",
     "@cityofzion/neon-js": "^4.7.1",
     "axios": "^0.18.1",
     "bignumber.js": "^9.0.0",
@@ -42,8 +42,7 @@
     "express": "4.16.4",
     "hdkey": "1.1.1",
     "lodash": "^4.17.15",
-    "qrcode": "^1.4.1",
-    "ripple-lib": "^1.2.1",
+    "ripple-lib": "^1.6.4",
     "stellar-sdk": "^3.3.0",
     "swagger-ui-express": "^4.0.2",
     "thorify": "^1.4.0",

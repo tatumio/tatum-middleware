@@ -15,7 +15,7 @@ const {
 } = require('../constants');
 
 const router = express.Router();
-const chain = process.env.API_URL.includes('api') ? ETH : ROPSTEN;
+const chain = process.env.MODE === 'MAINNET' ? ETH : ROPSTEN;
 
 const getGasPriceInWei = async (res) => {
   try {
@@ -210,23 +210,10 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   }
 
   try {
-    const r = await axios({
-      method: 'POST',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `ethereum/v2/broadcast`,
-      data: {
-        txData: txData.rawTransaction,
-      },
-    });
-    res.status(200).json({txId: r.data.txId, accountId: response.data.accountId});
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
+    await broadcastEth({
+      txData: txData.rawTransaction,
+    }, res, headers);
+  } catch (_) {
   }
 
   // When we want to wait for contract creation, we can use this method - with gas big enough, it will be processed quickly

@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const axios = require('axios');
-const {generateJwt} = require('./service/commonService');
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
@@ -28,7 +27,6 @@ const xlmBlockchainRouter = require('./api/xlmBlockchainRouter');
 const neoBlockchainRouter = require('./api/neoBlockchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
 const xrpOffchainRouter = require('./api/xrpOffchainRouter');
-const qrCodeRouter = require('./api/qrCodeRouter');
 
 const serverPort = 6543;
 
@@ -36,24 +34,22 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/bnb/v2', bnbBlockchainRouter);
-app.use('/vet/v2', vetBlockchainRouter);
-app.use('/ethereum/v2', ethBlockchainRouter);
-app.use('/offchain/v2/ethereum', ethOffchainRouter);
-app.use('/bcash/v2', bcashBlockchainRouter);
-app.use('/offchain/v2/bcash', bcashOffchainRouter);
-app.use('/bitcoin/v2', btcBlockchainRouter);
-app.use('/offchain/v2/bitcoin', btcOffchainRouter);
-app.use('/bsv/v2', bsvBlockchainRouter);
-app.use('/offchain/v2/bsv', bsvOffchainRouter);
-app.use('/litecoin/v2', ltcBlockchainRouter);
-app.use('/offchain/v2/litecoin', ltcOffchainRouter);
-app.use('/xlm/v2', xlmBlockchainRouter);
-app.use('/neo/v2', neoBlockchainRouter);
-app.use('/xrp/v2', xrpBlockchainRouter);
-app.use('/offchain/v2/xrp', xrpOffchainRouter);
-
-app.use('/util/v2/qr', qrCodeRouter);
+app.use('/v3/bnb', bnbBlockchainRouter);
+app.use('/v3/vet', vetBlockchainRouter);
+app.use('/v3/ethereum', ethBlockchainRouter);
+app.use('/v3/offchain/ethereum', ethOffchainRouter);
+app.use('/v3/bcash', bcashBlockchainRouter);
+app.use('/v3/offchain/bcash', bcashOffchainRouter);
+app.use('/v3/bitcoin', btcBlockchainRouter);
+app.use('/v3/offchain/bitcoin', btcOffchainRouter);
+app.use('/v3/bsv', bsvBlockchainRouter);
+app.use('/v3/offchain/bsv', bsvOffchainRouter);
+app.use('/v3/litecoin', ltcBlockchainRouter);
+app.use('/v3/offchain/litecoin', ltcOffchainRouter);
+app.use('/v3/xlm', xlmBlockchainRouter);
+app.use('/v3/neo', neoBlockchainRouter);
+app.use('/v3/xrp', xrpBlockchainRouter);
+app.use('/v3/offchain/xrp', xrpOffchainRouter);
 
 app.use(async ({
   url, method, headers, body: data,

@@ -9,7 +9,7 @@ const storeWithdrawal = async (data, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/withdrawal`,
+      url: `v3/offchain/withdrawal`,
       data,
     });
   } catch (e) {
@@ -27,7 +27,7 @@ const getUTXOBtc = async (hash, index, headers) => {
       accept: 'application/json',
       'x-api-key': headers['x-api-key'],
     },
-    url: `bitcoin/v2/utxo/${hash}/${index}`,
+    url: `v3/bitcoin/utxo/${hash}/${index}`,
   });
   return response.data;
 };
@@ -40,7 +40,7 @@ const getUTXOBch = async (address, headers) => {
       accept: 'application/json',
       'x-api-key': headers['x-api-key'],
     },
-    url: `bcash/v2/utxo/${address}`,
+    url: `v3/bcash/utxo/${address}`,
   });
   return response.data;
 };
@@ -53,7 +53,7 @@ const getUTXOLtc = async (hash, index, headers) => {
       accept: 'application/json',
       'x-api-key': headers['x-api-key'],
     },
-    url: `litecoin/v2/utxo/${hash}/${index}`,
+    url: `v3/litecoin/utxo/${hash}/${index}`,
   });
   return response.data;
 };
@@ -67,7 +67,7 @@ const getTxByAddressBtc = async (address, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `bitcoin/v2/transaction/address/${address}/true`,
+      url: `v3/bitcoin/transaction/address/${address}/true`,
     });
     return response.data;
   } catch (e) {
@@ -84,7 +84,7 @@ const getBsvTx = async (hash, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `bsv/v2/transaction/${hash}`,
+      url: `v3/bsv/transaction/${hash}`,
     });
     return response.data;
   } catch (e) {
@@ -101,7 +101,7 @@ const getTxByAddressLtc = async (address, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `litecoin/v2/transaction/address/${address}/true`,
+      url: `v3/litecoin/transaction/address/${address}/true`,
     });
     return response.data;
   } catch (e) {
@@ -118,7 +118,7 @@ const getBnbAccount = async (address, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `bnb/v2/account/${address}`,
+      url: `v3/bnb/account/${address}`,
     });
     return response.data;
   } catch (e) {
@@ -137,7 +137,7 @@ const broadcastBlockchain = async (endpoint, data, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `${endpoint}/v2/broadcast`,
+      url: `v3/${endpoint}/broadcast`,
       data,
     });
     res.status(200).json(response.data);
@@ -194,7 +194,7 @@ const getFeeXlm = async (res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `xlm/v2/fee`,
+      url: `v3/xlm/fee`,
     });
     return response.data;
   } catch (e) {
@@ -213,7 +213,7 @@ const getFeeXrp = async (res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `xrp/v2/fee`,
+      url: `v3/xrp/fee`,
     });
     return response.data;
   } catch (e) {
@@ -232,7 +232,7 @@ const getAccountXlm = async (accountId, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `xlm/v2/account/${accountId}`,
+      url: `v3/xlm/account/${accountId}`,
     });
     return response.data;
   } catch (e) {
@@ -251,7 +251,7 @@ const broadcast = async (data, id, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/withdrawal/broadcast`,
+      url: `v3/offchain/withdrawal/broadcast`,
       data,
     });
     if (response.data.completed) {
@@ -279,7 +279,7 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/ethereum/erc20/${symbol}/${address}`,
+      url: `v3/offchain/ethereum/erc20/${symbol}/${address}`,
     });
     res.json(responseData);
   } catch (error) {
@@ -302,7 +302,7 @@ const deployErc20 = async (data, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/ethereum/erc20/`,
+      url: `v3/offchain/ethereum/erc20/`,
       data,
     });
   } catch (e) {
@@ -321,7 +321,7 @@ const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `offchain/v2/withdrawal/${id}?revert=${revert}`,
+      url: `v3/offchain/withdrawal/${id}?revert=${revert}`,
     });
     res.status(500).json({
       error: 'Unable to broadcast transaction, withdrawal cancelled.',

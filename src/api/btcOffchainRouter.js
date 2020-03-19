@@ -5,7 +5,7 @@ const router = express.Router();
 const {TBTC, BTC} = require('../constants');
 const btcService = require('../service/btcService');
 
-const chain = process.env.API_URL.includes('api') ? BTC : TBTC;
+const chain = process.env.MODE === 'MAINNET' ? BTC : TBTC;
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {

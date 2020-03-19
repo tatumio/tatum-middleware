@@ -8,7 +8,7 @@ const commonService = require('../service/commonService');
 const {getBsvTx, broadcastBsv} = require('../service/coreService');
 const bsvService = require('../service/bsvService');
 
-const chain = process.env.API_URL.includes('api') ? BSV : TBSV;
+const chain = process.env.MODE === 'MAINNET' ? BSV : TBSV;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();

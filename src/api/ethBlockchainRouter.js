@@ -16,7 +16,7 @@ const {
   INFURA_KEY, ETH, ROPSTEN, CONTRACT_ADDRESSES, CONTRACT_DECIMALS,
 } = require('../constants');
 
-const chain = process.env.API_URL.includes('api') ? ETH : ROPSTEN;
+const chain = process.env.MODE === 'MAINNET' ? ETH : ROPSTEN;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
@@ -87,6 +87,7 @@ router.post('/erc20/transaction', async ({body, headers}, res) => {
     to,
     amount,
     fee,
+    digits,
     contractAddress,
     nonce,
   } = body;
@@ -102,7 +103,7 @@ router.post('/erc20/transaction', async ({body, headers}, res) => {
   const tx = {
     from: 0,
     to: contractAddress.trim(),
-    data: contract.methods.transfer(to.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString(16)}`).encodeABI(),
+    data: contract.methods.transfer(to.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(digits)).toString(16)}`).encodeABI(),
     gasPrice,
     nonce,
   };

@@ -12,7 +12,7 @@ const {
   VET, TVET,
 } = require('../constants');
 
-const chain = process.env.API_URL.includes('api') ? VET : TVET;
+const chain = process.env.MODE === 'MAINNET' ? VET : TVET;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();

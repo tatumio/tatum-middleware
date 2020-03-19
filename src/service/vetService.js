@@ -63,7 +63,7 @@ const estimateGas = async (data, res, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `vet/v2/transaction/gas`,
+      url: `v3/vet/transaction/gas`,
       data,
     });
     return response.data;

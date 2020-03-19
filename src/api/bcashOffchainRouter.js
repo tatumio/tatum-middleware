@@ -5,7 +5,7 @@ const router = express.Router();
 const {TBCH, BCH} = require('../constants');
 const bcashService = require('../service/bcashService');
 
-const chain = process.env.API_URL.includes('api') ? BCH : TBCH;
+const chain = process.env.MODE === 'MAINNET' ? BCH : TBCH;
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {

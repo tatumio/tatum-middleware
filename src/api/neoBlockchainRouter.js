@@ -1,10 +1,12 @@
 const express = require('express');
-const {create, sendAsset, doInvoke, claimGas} = require('@cityofzion/neon-js').default;
+const {
+  create, sendAsset, doInvoke, claimGas,
+} = require('@cityofzion/neon-js').default;
 const Neon = require('@cityofzion/neon-js');
 
 const router = express.Router();
 
-const network = process.env.API_URL.includes('api') ? 'MainNet' : 'TestNet';
+const network = process.env.MODE === 'MAINNET' ? 'MainNet' : 'TestNet';
 
 router.get('/wallet', (_, res) => {
   const privateKey = create.privateKey();

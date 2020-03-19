@@ -5,7 +5,7 @@ const {broadcastXlm, getAccountXlm, getFeeXlm} = require('../service/coreService
 const router = express.Router();
 
 let network;
-if (process.env.API_URL.includes('api')) {
+if (process.env.MODE === 'MAINNET') {
   network = StellarSDK.Networks.PUBLIC;
 } else {
   network = StellarSDK.Networks.TESTNET;

@@ -10,7 +10,7 @@ const commonService = require('../service/commonService');
 const {getTxByAddressLtc, getUTXOLtc, broadcastLtc} = require('../service/coreService');
 const ltcService = require('../service/ltcService');
 
-const chain = process.env.API_URL.includes('api') ? LTC : TLTC;
+const chain = process.env.MODE === 'MAINNET' ? LTC : TLTC;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();

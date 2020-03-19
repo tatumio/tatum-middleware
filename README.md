@@ -12,9 +12,11 @@ Tatum Middleware docker image is available in Docker HUB under `tatumio/tatum-mi
 
 ## Run docker image
 Tatum Middleware Docker container must/can be run with following environment variables:
-  * API_URL - URL of Tatum Core API that Tatum Middleware will communicate with, must be present<br/>
-  For sandbox installation, use `https://sandbox.tatum.io`.<br/>
-  For production installation, use `https://api.tatum.io`.<br/>
+  * API_URL - URL of Tatum Core API that Tatum Middleware will communicate with.<br/>
+    Use `https://api.tatum.io`.<br/>
+  * MODE - Mode of Tatum Core API that Tatum Middleware will communicate with.<br/>
+    For testnet installation, use `TESTNET`.<br/>
+    For production installation, use `MAINNET`.<br/>
   * INFURA_KEY - API key to Infura to communicate with Ethereum blockchain. Defaults to Tatum internal key.<br/>
   <b>It is highly recommended to change this value.</b>
 <p>
@@ -23,7 +25,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 </p>
 
 #### Example script to start docker container<br/>
-```docker run -e API_URL=https://sandbox.tatum.io -p 6543:6543/tcp tatumio/tatum-middleware```
+```docker run -e API_URL=https://api.tatum.io MODE=MAINNET -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps BlockchainNow.<br/>

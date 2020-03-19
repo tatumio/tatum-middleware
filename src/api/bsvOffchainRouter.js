@@ -5,7 +5,7 @@ const router = express.Router();
 const {TBSV, BSV} = require('../constants');
 const bsvService = require('../service/bsvService');
 
-const chain = process.env.API_URL.includes('api') ? BSV : TBSV;
+const chain = process.env.MODE === 'MAINNET' ? BSV : TBSV;
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {

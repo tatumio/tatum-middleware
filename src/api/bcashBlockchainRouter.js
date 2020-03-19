@@ -8,7 +8,7 @@ const commonService = require('../service/commonService');
 const {getUTXOBch, broadcastBch} = require('../service/coreService');
 const bchService = require('../service/bcashService');
 
-const chain = process.env.API_URL.includes('api') ? BCH : TBCH;
+const chain = process.env.MODE === 'MAINNET' ? BCH : TBCH;
 
 router.get('/wallet', (_, res) => {
   const mnemonic = commonService.generateMnemonic();
@@ -53,7 +53,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     for (const [i, item] of fromUTXO.entries()) {
       transactionBuilder.addInput(item.txHash, item.index);
       privateKeysToSign.push(item.privateKey);
-      amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)))
+      amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
     }
   }
   for (const item of to) {
@@ -61,7 +61,7 @@ router.post('/transaction', async ({body, headers}, res) => {
   }
 
   for (let i = 0; i < privateKeysToSign.length; i++) {
-    const ecPair = bitbox.ECPair.fromWIF(privateKeysToSign[i])
+    const ecPair = bitbox.ECPair.fromWIF(privateKeysToSign[i]);
     transactionBuilder.sign(i, ecPair, undefined, transactionBuilder.hashTypes.SIGHASH_ALL, amountToSign[i], transactionBuilder.signatureAlgorithms.SCHNORR);
   }
   let txData;
