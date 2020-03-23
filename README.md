@@ -25,7 +25,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 </p>
 
 #### Example script to start docker container<br/>
-```docker run -e API_URL=https://api.tatum.io MODE=MAINNET -p 6543:6543/tcp tatumio/tatum-middleware```
+```docker run -e API_URL=https://api.tatum.io -e MODE=MAINNET -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps BlockchainNow.<br/>
