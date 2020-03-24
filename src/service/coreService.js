@@ -128,7 +128,7 @@ const getBnbAccount = async (address, res, headers) => {
   }
 };
 
-const broadcastBlockchain = async (endpoint, data, res, headers) => {
+const broadcastBlockchain = async (endpoint, data, res, headers, finish = true) => {
   try {
     const response = await axios({
       method: 'POST',
@@ -140,7 +140,11 @@ const broadcastBlockchain = async (endpoint, data, res, headers) => {
       url: `v3/${endpoint}/broadcast`,
       data,
     });
-    res.status(200).json(response.data);
+    if (finish) {
+      res.status(200).json(response.data);
+    } else {
+      return response.data;
+    }
   } catch (e) {
     console.error(e.response);
     res.status(e.response.status).send(e.response.data);
@@ -164,8 +168,8 @@ const broadcastLtc = async (data, res, headers) => {
   await broadcastBlockchain('litecoin', data, res, headers);
 };
 
-const broadcastEth = async (data, res, headers) => {
-  await broadcastBlockchain('ethereum', data, res, headers);
+const broadcastEth = async (data, res, headers, finish = true) => {
+  return await broadcastBlockchain('ethereum', data, res, headers, finish);
 };
 
 const broadcastVet = async (data, res, headers) => {

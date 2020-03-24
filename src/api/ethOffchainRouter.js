@@ -114,6 +114,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   }
 
   const {id} = resp.data;
+  let r;
   try {
     await broadcast({
       txData: txData.rawTransaction,
@@ -121,11 +122,20 @@ router.post('/transfer', async ({body, headers}, res) => {
       currency,
     }, id, res, headers);
     return;
-  } catch (_) {
+  } catch (err) {
+    r = err.response;
   }
 
   try {
     await cancelWithdrawal(id, res, headers);
+    if (r) {
+      res.status(r.status).json({
+        data: r.data,
+        error: r.error,
+        code: r.code,
+        id,
+      });
+    }
   } catch (_) {
   }
 });
@@ -138,7 +148,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   let fromPriv;
   if (mnemonic && payIndex !== undefined) {
     const i = parseInt(payIndex);
-    fromPriv = mnemonic && payIndex ? ethService.calculatePrivateKey(chain, mnemonic, i) : privateKey;
+    fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i);
   } else if (privateKey) {
     fromPriv = privateKey;
   } else {
@@ -210,9 +220,10 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   }
 
   try {
-    await broadcastEth({
+    const r = await broadcastEth({
       txData: txData.rawTransaction,
-    }, res, headers);
+    }, res, headers, false);
+    res.status(200).json({txId: r.txId, id: response.data.accountId})
   } catch (_) {
   }
 
@@ -299,6 +310,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   }
   const {id} = resp.data;
 
+  let r;
   try {
     await broadcast({
       txData: txData.rawTransaction,
@@ -306,11 +318,20 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
       currency,
     }, id, res, headers);
     return;
-  } catch (_) {
+  } catch (err) {
+    r = err.response;
   }
 
   try {
     await cancelWithdrawal(id, res, headers, 'false');
+    if (r) {
+      res.status(r.status).json({
+        data: r.data,
+        error: r.error,
+        code: r.code,
+        id,
+      });
+    }
   } catch (_) {
   }
 });

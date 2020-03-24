@@ -58,6 +58,7 @@ router.post('/transfer', async ({headers, body}, res) => {
     }
   }
 
+  let r;
   try {
     await broadcast({
       txData,
@@ -65,11 +66,20 @@ router.post('/transfer', async ({headers, body}, res) => {
       currency: BCH,
     }, id, res, headers);
     return;
-  } catch (_) {
+  } catch (err) {
+    r = err.response;
   }
 
   try {
     await cancelWithdrawal(id, res, headers);
+    if (r) {
+      res.status(r.status).json({
+        data: r.data,
+        error: r.error,
+        code: r.code,
+        id,
+      });
+    }
   } catch (_) {
   }
 });

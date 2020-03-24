@@ -61,6 +61,7 @@ router.post('/transfer', async ({headers, body}, res) => {
     }
     return;
   }
+  let r;
   try {
     await broadcast({
       txData: signedTransaction,
@@ -68,11 +69,20 @@ router.post('/transfer', async ({headers, body}, res) => {
       currency: XRP,
     }, id, res, headers);
     return;
-  } catch (_) {
+  } catch (err) {
+    r = err.response;
   }
 
   try {
     await cancelWithdrawal(id, res, headers);
+    if (r) {
+      res.status(r.status).json({
+        data: r.data,
+        error: r.error,
+        code: r.code,
+        id,
+      });
+    }
   } catch (_) {
   }
 });
