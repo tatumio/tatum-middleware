@@ -39,17 +39,17 @@ app.use('/v3/vet', vetBlockchainRouter);
 app.use('/v3/ethereum', ethBlockchainRouter);
 app.use('/v3/offchain/ethereum', ethOffchainRouter);
 app.use('/v3/bcash', bcashBlockchainRouter);
-app.use('/v3/offchain/bcash', bcashOffchainRouter);
+// app.use('/v3/offchain/bcash', bcashOffchainRouter);
 app.use('/v3/bitcoin', btcBlockchainRouter);
 app.use('/v3/offchain/bitcoin', btcOffchainRouter);
 app.use('/v3/bsv', bsvBlockchainRouter);
-app.use('/v3/offchain/bsv', bsvOffchainRouter);
+// app.use('/v3/offchain/bsv', bsvOffchainRouter);
 app.use('/v3/litecoin', ltcBlockchainRouter);
-app.use('/v3/offchain/litecoin', ltcOffchainRouter);
+// app.use('/v3/offchain/litecoin', ltcOffchainRouter);
 app.use('/v3/xlm', xlmBlockchainRouter);
 app.use('/v3/neo', neoBlockchainRouter);
 app.use('/v3/xrp', xrpBlockchainRouter);
-app.use('/v3/offchain/xrp', xrpOffchainRouter);
+// app.use('/v3/offchain/xrp', xrpOffchainRouter);
 
 app.use(async ({
   url, method, headers, body: data,
