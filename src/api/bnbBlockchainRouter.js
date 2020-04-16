@@ -25,9 +25,7 @@ router.get('/address/:pub/:i', ({params}, res) => {
 
 router.post('/wallet/priv', ({body}, res) => {
   const {index, mnemonic} = body;
-  const i = parseInt(index);
-  const key = bnbService.calculatePrivateKey(chain, mnemonic, i);
-  res.json({key});
+  res.json(bnbService.calculatePrivateKey(chain, mnemonic, parseInt(index)));
 });
 
 router.post('/transaction', async ({body, headers}, res) => {
