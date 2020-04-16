@@ -1,3 +1,4 @@
+const BigNumber = require('bignumber.js');
 const {axios} = require('../index');
 
 const storeWithdrawal = async (data, res, headers) => {
@@ -168,9 +169,7 @@ const broadcastLtc = async (data, res, headers) => {
   await broadcastBlockchain('litecoin', data, res, headers);
 };
 
-const broadcastEth = async (data, res, headers, finish = true) => {
-  return await broadcastBlockchain('ethereum', data, res, headers, finish);
-};
+const broadcastEth = async (data, res, headers, finish = true) => broadcastBlockchain('ethereum', data, res, headers, finish);
 
 const broadcastVet = async (data, res, headers) => {
   await broadcastBlockchain('vet', data, res, headers);
@@ -218,6 +217,25 @@ const getFeeXrp = async (res, headers) => {
         'x-api-key': headers['x-api-key'],
       },
       url: `v3/xrp/fee`,
+    });
+    return new BigNumber(response.data.drops.base_fee).dividedBy(1000000).toString();
+  } catch (e) {
+    console.error(e.response);
+    res.status(e.response.status).send(e.response.data);
+    throw e;
+  }
+};
+
+const getAccountXrp = async (accountId, res, headers) => {
+  try {
+    const response = await axios({
+      method: 'GET',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `v3/xrp/account/${accountId}`,
     });
     return response.data;
   } catch (e) {
@@ -357,6 +375,7 @@ module.exports = {
   getFeeXlm,
   getFeeXrp,
   getBsvTx,
+  getAccountXrp,
   getAccountXlm,
   getBnbAccount,
   cancelWithdrawal,

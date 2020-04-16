@@ -1,6 +1,6 @@
 const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
-const {broadcastXrp, getFeeXrp} = require('../service/coreService');
+const {broadcastXrp, getFeeXrp, getAccountXrp} = require('../service/coreService');
 
 const offlineApi = new Xrp();
 const router = express.Router();
@@ -22,9 +22,11 @@ router.post('/transaction', async ({headers, body}, res) => {
   } = body;
 
   let f;
+  let account;
 
   try {
     f = fee || await getFeeXrp(res, headers);
+    account = await getAccountXrp(fromAccount, res, headers);
   } catch (e) {
     console.error(e);
     return;
@@ -51,7 +53,7 @@ router.post('/transaction', async ({headers, body}, res) => {
 
   let signedTransaction;
   try {
-    const prepared = await offlineApi.preparePayment(fromAccount, payment, {fee: `${f}`});
+    const prepared = await offlineApi.preparePayment(fromAccount, payment, {fee: `${f}`, sequence: account.account_data.Sequence, maxLedgerVersion: account.ledger_current_index + 5});
     signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
   } catch (e) {
     console.error(e);
