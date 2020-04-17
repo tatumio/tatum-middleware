@@ -1,5 +1,5 @@
 const {fromBase58, fromSeed} = require('bip32');
-const Transaction = require('@binance-chain/javascript-sdk/lib/tx');
+const {Transaction} = require('@binance-chain/javascript-sdk');
 const {networks} = require('bitcoinjs-lib');
 const BigNumber = require('bignumber.js');
 const {mnemonicToSeed} = require('bip39');
