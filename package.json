@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "author": "Samuel Sramko, samuel.sramko@tatum.io",
   "description": "Tatum Middleware is a client to Tatum Blockchain API.",
   "repository": {
@@ -13,6 +13,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "docker": "docker build . --tag tatumio/tatum-middleware:latest",
     "lint": "eslint --fix src",
     "dev": "API_URL=http://127.0.0.1:3000 MODE=TESTNET nodemon src/index.js",
     "test": "API_URL=test MODE=TESTNET mocha"
