@@ -69,7 +69,7 @@ router.post('/trust', async ({headers, body}, res) => {
   })
     .addOperation(StellarSDK.Operation.changeTrust({
       limit,
-      asset: new Asset(token, issuerAccount),
+      asset: new StellarSDK.Asset(token, issuerAccount),
     }))
     .setTimeout(30)
     .build();
