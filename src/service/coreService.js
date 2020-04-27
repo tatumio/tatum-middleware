@@ -188,25 +188,6 @@ const broadcastXlm = async (data, res, headers) => {
   await broadcastBlockchain('xlm', data, res, headers);
 };
 
-const getFeeXlm = async (res, headers) => {
-  try {
-    const response = await axios({
-      method: 'GET',
-      headers: {
-        'content-type': headers['content-type'] || 'application/json',
-        accept: 'application/json',
-        'x-api-key': headers['x-api-key'],
-      },
-      url: `v3/xlm/fee`,
-    });
-    return response.data;
-  } catch (e) {
-    console.error(e.response);
-    res.status(e.response.status).send(e.response.data);
-    throw e;
-  }
-};
-
 const getFeeXrp = async (res, headers) => {
   try {
     const response = await axios({
@@ -372,7 +353,6 @@ module.exports = {
   broadcastBnb,
   broadcastBch,
   broadcastBsv,
-  getFeeXlm,
   getFeeXrp,
   getBsvTx,
   getAccountXrp,
