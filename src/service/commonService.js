@@ -1,6 +1,6 @@
 const bip39 = require('bip39');
 
-const generateMnemonic = strength => bip39.generateMnemonic(strength);
+const generateMnemonic = mnemonic => (mnemonic || bip39.generateMnemonic(256));
 
 module.exports = {
   generateMnemonic,

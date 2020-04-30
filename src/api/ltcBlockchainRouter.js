@@ -12,8 +12,8 @@ const ltcService = require('../service/ltcService');
 
 const chain = process.env.MODE === 'MAINNET' ? LTC : TLTC;
 
-router.get('/wallet', (_, res) => {
-  const mnemonic = commonService.generateMnemonic();
+router.get('/wallet', (req, res) => {
+  const mnemonic = commonService.generateMnemonic(req.query.mnemonic);
   const wallet = ltcService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
 });

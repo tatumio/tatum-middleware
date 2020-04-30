@@ -10,8 +10,8 @@ const bchService = require('../service/bcashService');
 
 const chain = process.env.MODE === 'MAINNET' ? BCH : TBCH;
 
-router.get('/wallet', (_, res) => {
-  const mnemonic = commonService.generateMnemonic();
+router.get('/wallet', (req, res) => {
+  const mnemonic = commonService.generateMnemonic(req.query.mnemonic);
   const wallet = bchService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
 });

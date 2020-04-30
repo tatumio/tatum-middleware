@@ -10,8 +10,8 @@ const bsvService = require('../service/bsvService');
 
 const chain = process.env.MODE === 'MAINNET' ? BSV : TBSV;
 
-router.get('/wallet', (_, res) => {
-  const mnemonic = commonService.generateMnemonic();
+router.get('/wallet', (req, res) => {
+  const mnemonic = commonService.generateMnemonic(req.query.mnemonic);
   const wallet = bsvService.generateWallet(chain, mnemonic);
   res.json({mnemonic, ...wallet});
 });
