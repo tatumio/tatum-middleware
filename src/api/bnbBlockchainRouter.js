@@ -17,12 +17,6 @@ router.get('/wallet', (req, res) => {
   res.json({mnemonic, ...wallet});
 });
 
-router.get('/address/:pub/:i', ({params}, res) => {
-  const {i, pub} = params;
-  const address = bnbService.calculateAddress(pub, chain, parseInt(i));
-  res.send({address});
-});
-
 router.post('/wallet/priv', ({body}, res) => {
   const {index, mnemonic} = body;
   res.json(bnbService.calculatePrivateKey(chain, mnemonic, parseInt(index)));

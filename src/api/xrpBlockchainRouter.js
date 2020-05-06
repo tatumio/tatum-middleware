@@ -6,8 +6,8 @@ const offlineApi = new Xrp();
 const router = express.Router();
 
 router.get('/account', (req, res) => {
-  const wallet = offlineApi.generateAddress();
-  res.json(wallet);
+  const {address, secret} = offlineApi.generateAddress();
+  res.json({address, secret});
 });
 
 router.post('/transaction', async ({headers, body}, res) => {
@@ -53,7 +53,57 @@ router.post('/transaction', async ({headers, body}, res) => {
 
   let signedTransaction;
   try {
-    const prepared = await offlineApi.preparePayment(fromAccount, payment, {fee: `${f}`, sequence: account.account_data.Sequence, maxLedgerVersion: account.ledger_current_index + 5});
+    const prepared = await offlineApi.preparePayment(fromAccount, payment, {
+      fee: `${f}`,
+      sequence: account.account_data.Sequence,
+      maxLedgerVersion: account.ledger_current_index + 5
+    });
+    signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      error: 'Unable to sign transaction.',
+      code: 'xrp.sign.failed',
+    });
+    return;
+  }
+  try {
+    await broadcastXrp({
+      txData: signedTransaction,
+    }, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/trust', async ({headers, body}, res) => {
+  const {
+    fromAccount,
+    fromSecret,
+    token,
+    issuerAccount,
+    fee,
+    limit,
+  } = body;
+
+  let f;
+  let account;
+
+  try {
+    f = fee || await getFeeXrp(res, headers);
+    account = await getAccountXrp(fromAccount, res, headers);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+
+  let signedTransaction;
+  try {
+    const prepared = await offlineApi.prepareTrustline(fromAccount, {
+      currency: token,
+      counterparty: issuerAccount,
+      limit,
+      ripplingDisabled: true,
+    }, {fee: `${f}`, sequence: account.account_data.Sequence, maxLedgerVersion: account.ledger_current_index + 5});
     signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
   } catch (e) {
     console.error(e);

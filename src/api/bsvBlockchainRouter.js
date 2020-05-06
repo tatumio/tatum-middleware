@@ -16,14 +16,6 @@ router.get('/wallet', (req, res) => {
   res.json({mnemonic, ...wallet});
 });
 
-router.get('/address/:xpub/:i', ({params}, res) => {
-  const {i, xpub} = params;
-  const index = parseInt(i);
-
-  const address = bsvService.calculateAddress(xpub, chain, index);
-  res.send({address});
-});
-
 router.post('/wallet/priv', ({body}, res) => {
   const {index, mnemonic} = body;
   const i = parseInt(index);
