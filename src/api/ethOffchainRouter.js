@@ -23,7 +23,7 @@ const getGasPriceInWei = async (res) => {
     return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
   } catch (e) {
     console.error(e);
-    res.status(500).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+    res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
     throw e;
   }
 };
@@ -85,7 +85,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     gasLimit = await web3.eth.estimateGas(tx);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate gas limit for transaction',
       code: 'eth.transaction.gas',
     });
@@ -99,7 +99,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     txData = await web3.eth.accounts.signTransaction(tx, fromPriv);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to sign transaction',
       code: 'eth.transaction.gas',
     });
@@ -194,7 +194,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     });
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate gas limit for transaction',
       code: 'eth.transaction.gas',
     });
@@ -212,7 +212,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     }, fromPriv);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to sign transaction for contract creation.',
       code: 'eth.erc20.sign',
     });
@@ -226,25 +226,6 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     res.status(200).json({txId: r.txId, id: response.data.accountId})
   } catch (_) {
   }
-
-  // When we want to wait for contract creation, we can use this method - with gas big enough, it will be processed quickly
-
-  // const {name} = erc20;
-  // web3.eth.sendSignedTransaction(txData.rawTransaction)
-  //   .once('receipt', async (receipt) => {
-  //     try {
-  //       await storeErc20Address(name, receipt.contractAddress, {
-  //         transactionHash: receipt.transactionHash,
-  //         contractAddress: receipt.contractAddress,
-  //         ...response.data,
-  //       }, res, headers);
-  //     } catch (_) {
-  //     }
-  //   })
-  //   .on('error', e => res.status(400).json({
-  //     code: 'ethereum.erc20.broadcast.failed',
-  //     message: `Unable to broadcast transaction due to ${e.message}`,
-  //   }));
 });
 
 router.post('/erc20/transfer', async ({body, headers}, res) => {
@@ -283,7 +264,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     gasLimit = await web3.eth.estimateGas(tx);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate gas limit for transaction',
       code: 'eth.transaction.gas',
     });
@@ -295,7 +276,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     txData = await web3.eth.accounts.signTransaction(tx, fromPriv);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to sign transaction',
       code: 'eth.transaction.sign',
     });

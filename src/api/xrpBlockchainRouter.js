@@ -18,6 +18,8 @@ router.post('/transaction', async ({headers, body}, res) => {
     amount,
     fee,
     sourceTag,
+    token,
+    issuerAccount,
     destinationTag,
   } = body;
 
@@ -32,20 +34,23 @@ router.post('/transaction', async ({headers, body}, res) => {
     return;
   }
 
+  const currency = token || 'XRP';
   const payment = {
     source: {
-      address: fromAccount,
-      amount: {
-        currency: 'drops',
-        value: `${amount * 1000000}`,
+      address: account,
+      maxAmount: {
+        currency,
+        counterparty: issuerAccount,
+        value: amount,
       },
       tag: sourceTag,
     },
     destination: {
       address: to,
-      minAmount: {
-        currency: 'drops',
-        value: `${amount * 1000000}`,
+      amount: {
+        currency,
+        counterparty: issuerAccount,
+        value: amount,
       },
       tag: destinationTag,
     },
@@ -56,12 +61,12 @@ router.post('/transaction', async ({headers, body}, res) => {
     const prepared = await offlineApi.preparePayment(fromAccount, payment, {
       fee: `${f}`,
       sequence: account.account_data.Sequence,
-      maxLedgerVersion: account.ledger_current_index + 5
+      maxLedgerVersion: account.ledger_current_index + 5,
     });
     signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
   } catch (e) {
     console.error(e);
-    res.status(500).send({
+    res.status(403).send({
       error: 'Unable to sign transaction.',
       code: 'xrp.sign.failed',
     });
@@ -107,7 +112,55 @@ router.post('/trust', async ({headers, body}, res) => {
     signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
   } catch (e) {
     console.error(e);
-    res.status(500).send({
+    res.status(403).send({
+      error: 'Unable to sign transaction.',
+      code: 'xrp.sign.failed',
+    });
+    return;
+  }
+  try {
+    await broadcastXrp({
+      txData: signedTransaction,
+    }, res, headers);
+  } catch (_) {
+  }
+});
+
+router.post('/account/settings', async ({headers, body}, res) => {
+  const {
+    fromAccount,
+    fromSecret,
+    rippling,
+    requireDestinationTag,
+    fee,
+  } = body;
+
+  if (requireDestinationTag !== undefined && rippling !== undefined) {
+    res.status(403).send({
+      error: 'It is possible to set 1 parameter at a time.',
+      code: 'xrp.settings.multiple',
+    });
+    return;
+  }
+  let f;
+  let account;
+
+  try {
+    f = fee || await getFeeXrp(res, headers);
+    account = await getAccountXrp(fromAccount, res, headers);
+  } catch (e) {
+    console.error(e);
+    return;
+  }
+
+  let signedTransaction;
+  try {
+    const settings = rippling === undefined ? {requireDestinationTag} : {defaultRipple: rippling};
+    const prepared = await offlineApi.prepareSettings(fromAccount, settings, {fee: `${f}`, sequence: account.account_data.Sequence, maxLedgerVersion: account.ledger_current_index + 5});
+    signedTransaction = (await offlineApi.sign(prepared.txJSON, fromSecret)).signedTransaction;
+  } catch (e) {
+    console.error(e);
+    res.status(403).send({
       error: 'Unable to sign transaction.',
       code: 'xrp.sign.failed',
     });

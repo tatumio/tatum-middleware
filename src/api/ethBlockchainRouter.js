@@ -151,7 +151,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     });
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate gas limit for transaction',
       code: 'eth.transaction.gas',
     });
@@ -169,7 +169,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     }, fromPrivateKey);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to sign transaction for contract creation.',
       code: 'eth.erc20.sign',
     });
@@ -212,7 +212,7 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
     });
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate gas limit for transaction',
       code: 'eth.transaction.gas',
     });
@@ -230,7 +230,7 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
     }, fromPrivateKey);
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to sign transaction for contract creation.',
       code: 'eth.erc20.sign',
     });

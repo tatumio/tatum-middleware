@@ -11,8 +11,16 @@ const {XRP} = require('../constants');
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {
-    account, secret, destinationTag, ...withdrawal
+    account, secret, token, issuerAccount, sourceTag, ...withdrawal
   } = body;
+
+  if (withdrawal.attr && isNaN(parseInt(withdrawal.attr))) {
+    res.status(403).send({
+      error: 'Wrong attr of withdrawal, should be of uint32 type.',
+      code: 'attr.wrong.format',
+    });
+    return;
+  }
 
   try {
     withdrawal.fee = await getFeeXrp(res, headers);
@@ -23,7 +31,7 @@ router.post('/transfer', async ({headers, body}, res) => {
 
   let resp;
   try {
-    resp = await storeWithdrawal({...withdrawal, attr: `${destinationTag}`}, res, headers);
+    resp = await storeWithdrawal(withdrawal, res, headers);
   } catch (_) {
     return;
   }
@@ -31,21 +39,25 @@ router.post('/transfer', async ({headers, body}, res) => {
   const {id} = resp.data;
   const {amount, fee, address} = withdrawal;
 
+  const currency = token || 'XRP';
   const payment = {
     source: {
       address: account,
-      amount: {
-        currency: 'drops',
-        value: `${amount * 1000000}`,
+      maxAmount: {
+        currency,
+        counterparty: issuerAccount,
+        value: amount,
       },
+      tag: sourceTag,
     },
     destination: {
       address,
-      minAmount: {
-        currency: 'drops',
-        value: `${amount * 1000000}`,
+      amount: {
+        currency,
+        counterparty: issuerAccount,
+        value: amount,
       },
-      tag: destinationTag,
+      tag: parseInt(withdrawal.attr),
     },
   };
 

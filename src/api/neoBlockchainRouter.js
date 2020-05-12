@@ -22,7 +22,7 @@ router.post('/transaction', async ({body}, res) => {
     res.json({txId: response.txid});
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: `Unable to transfer assets. ${e}`,
       code: 'neo.transaction.failed',
     });
@@ -36,7 +36,7 @@ router.post('/claim', async ({body}, res) => {
     res.json({txId: response.txid});
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: `Unable to claim gas. ${e}`,
       code: 'neo.gas.failed',
     });
@@ -61,7 +61,7 @@ router.post('/invoke', async ({body}, res) => {
     res.json({txId: response.txid});
   } catch (e) {
     console.error(e);
-    res.status(500).json({
+    res.status(403).json({
       error: `Unable to transfer assets. ${e}`,
       code: 'neo.contract.failed',
     });

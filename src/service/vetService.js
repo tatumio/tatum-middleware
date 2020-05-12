@@ -36,7 +36,7 @@ const blockchainTransaction = async (amount, to, privKey, fee, client, res, head
       tx.gas = await estimateGas(tx, res, headers);
     } catch (e) {
       console.error(e);
-      res.status(500).json({
+      res.status(403).json({
         error: 'Unable to calculate gas limit for transaction.',
         code: 'vet.transaction.gas',
       });
@@ -45,7 +45,7 @@ const blockchainTransaction = async (amount, to, privKey, fee, client, res, head
   }
   const rawTransaction = (await client.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
   if (!rawTransaction) {
-    res.status(500).json({
+    res.status(403).json({
       error: 'Unable to calculate transaction hash.',
       code: 'vet.transaction.hash',
     });

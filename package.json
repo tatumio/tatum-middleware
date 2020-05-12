@@ -1,8 +1,8 @@
 {
   "name": "tatum-middleware",
-  "version": "3.0.11",
-  "author": "Samuel Sramko, samuel.sramko@tatum.io",
-  "description": "Tatum Middleware is a client to Tatum Blockchain API.",
+  "version": "3.1.0",
+  "author": "Tatum, hello@tatum.io",
+  "description": "Tatum Middleware is a client to Tatum API.",
   "repository": {
     "type": "git",
     "url": "https://github.com/tatumio/tatum-middleware.git"
@@ -22,7 +22,7 @@
     "Tatum",
     "OpenBanking",
     "Tatum Middleware",
-    "Tatum Blockchain API"
+    "Tatum API"
   ],
   "license": "MIT",
   "private": true,
