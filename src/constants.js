@@ -13,6 +13,7 @@ const BNB = 'BNB';
 const TBNB = 'TBNB';
 const ETH = 'mainnet';
 const XRP = 'XRP';
+const XLM = 'XLM';
 const ETH_DERIVATION_PATH = 'm/44\'/60\'/0\'/0';
 const VET_DERIVATION_PATH = 'm/44\'/818\'/0\'/0';
 const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0';
@@ -119,6 +120,7 @@ module.exports = {
   TESTNET_DERIVATION_PATH,
   INFURA_KEY,
   XRP,
+  XLM,
   VET,
   TVET,
   BCH,

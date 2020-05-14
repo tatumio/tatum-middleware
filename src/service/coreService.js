@@ -33,6 +33,19 @@ const getUTXOBtc = async (hash, index, headers) => {
   return response.data;
 };
 
+const getAccountById = async (index, headers) => {
+  const response = await axios({
+    method: 'GET',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      accept: 'application/json',
+      'x-api-key': headers['x-api-key'],
+    },
+    url: `v3/ledger/account/${index}`,
+  });
+  return response.data;
+};
+
 const getUTXOBch = async (address, headers) => {
   const response = await axios({
     method: 'GET',
@@ -258,8 +271,7 @@ const broadcast = async (data, id, res, headers) => {
       data,
     });
     if (response.data.completed) {
-      res.json({txId: response.data.txId, id});
-      return;
+      return res.json({txId: response.data.txId});
     }
     res.status(200).json({
       txId: response.data.txId,
@@ -358,6 +370,7 @@ module.exports = {
   getAccountXrp,
   getAccountXlm,
   getBnbAccount,
+  getAccountById,
   cancelWithdrawal,
   deployErc20,
   getUTXOLtc,

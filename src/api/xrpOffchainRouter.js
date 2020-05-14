@@ -2,6 +2,7 @@ const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
 const {
   storeWithdrawal, cancelWithdrawal, broadcast, getFeeXrp,
+  getAccountXrp, getAccountById,
 } = require('../service/coreService');
 
 const offlineApi = new Xrp();
@@ -20,6 +21,30 @@ router.post('/transfer', async ({headers, body}, res) => {
       code: 'attr.wrong.format',
     });
     return;
+  }
+
+  let senderAccount;
+  try {
+    senderAccount = await getAccountById(withdrawal.senderAccountId, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
+
+  if ((senderAccount.currency === XRP && token) || (senderAccount.currency !== XRP && !token)) {
+    return res.status(403).json({
+      message: 'Unsupported account currency.',
+      statusCode: 403,
+      errorCode: 'account.currency',
+    });
+  }
+
+  let acc;
+  try {
+    acc = await getAccountXrp(account, res, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
   }
 
   try {
@@ -63,7 +88,11 @@ router.post('/transfer', async ({headers, body}, res) => {
 
   let signedTransaction;
   try {
-    const prepared = await offlineApi.preparePayment(account, payment, {fee: `${fee}`});
+    const prepared = await offlineApi.preparePayment(account, payment, {
+      fee: `${fee}`,
+      sequence: acc.account_data.Sequence,
+      maxLedgerVersion: acc.ledger_current_index + 5,
+    });
     signedTransaction = (await offlineApi.sign(prepared.txJSON, secret)).signedTransaction;
   } catch (e) {
     console.error(e);

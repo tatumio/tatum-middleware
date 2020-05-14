@@ -2,6 +2,7 @@ const express = require('express');
 const StellarSDK = require('stellar-sdk');
 const {
   broadcast, cancelWithdrawal, getAccountXlm, storeWithdrawal,
+  getAccountById,
 } = require('../service/coreService');
 const {XLM} = require('../constants');
 
@@ -19,11 +20,34 @@ router.post('/transfer', async ({headers, body}, res) => {
     account, secret,
     token,
     issuerAccount,
+    initialize,
     ...withdrawal
   } = body;
 
+  let senderAccount;
+  try {
+    senderAccount = await getAccountById(withdrawal.senderAccountId, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
+
+  if ((senderAccount.currency === XLM && token) || (senderAccount.currency !== XLM && !token)) {
+    return res.status(403).json({
+      message: 'Unsupported account currency.',
+      statusCode: 403,
+      errorCode: 'account.currency',
+    });
+  }
+
   withdrawal.fee = '0.00001';
-  const acc = await getAccountXlm(account, res, headers);
+  let acc;
+  try {
+    acc = await getAccountXlm(account, res, headers)
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
 
   let resp;
   try {
@@ -49,6 +73,11 @@ router.post('/transfer', async ({headers, body}, res) => {
 
   let txData;
   try {
+    acc.sequenceNumber = () => acc.sequence;
+    acc.accountId = () => acc.account_id;
+    acc.incrementSequenceNumber = () => {
+      acc.sequence += 1;
+    };
     const tx = builder.addOperation(StellarSDK.Operation.payment({
       destination: address,
       asset: token ? new StellarSDK.Asset(token, issuerAccount) : StellarSDK.Asset.native(),
