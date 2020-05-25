@@ -555,6 +555,32 @@ module.exports = [
     constant: false,
     inputs: [
       {
+        internalType: 'address[]',
+        name: 'to',
+        type: 'address[]',
+      },
+      {
+        internalType: 'uint256[]',
+        name: 'tokenId',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'mintMultipleWithoutTokenURI',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
         internalType: 'uint256',
         name: 'tokenId',
         type: 'uint256',

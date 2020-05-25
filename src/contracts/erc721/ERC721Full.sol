@@ -31,6 +31,13 @@ contract ERC721Full is ERC721, ERC721Enumerable, ERC721Metadata, MinterRole {
         return true;
     }
 
+    function mintMultipleWithoutTokenURI(address[] memory to, uint256[] memory tokenId) public onlyMinter returns (bool) {
+      for (uint i=0; i < to.length; i++) {
+        _mint(to[i], tokenId[i]);
+      }
+      return true;
+    }
+
     function burn(uint256 tokenId) public {
         //solhint-disable-next-line max-line-length
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");

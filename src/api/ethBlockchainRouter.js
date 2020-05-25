@@ -299,6 +299,32 @@ router.post('/erc721/mint', async ({body, headers}, res) => {
   }
 });
 
+router.post('/erc721/mint/batch', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    to,
+    tokenId,
+    fee,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  const contract = new web3.eth.Contract(erc721ABI, contractAddress);
+
+  const txData = await ethService.erc721Transaction(web3, res, fromPrivateKey, contractAddress,
+    contract.methods.mintMultipleWithoutTokenURI(to.map(t => t.trim()), tokenId).encodeABI(), nonce, fee);
+
+  try {
+    await broadcastEth({txData}, res, headers);
+  } catch (_) {
+  }
+});
+
 router.post('/erc721/burn', async ({body, headers}, res) => {
   const {
     fromPrivateKey,
