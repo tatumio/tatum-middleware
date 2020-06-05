@@ -81,7 +81,7 @@ const getTxByAddressBtc = async (address, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `v3/bitcoin/transaction/address/${address}/true`,
+      url: `v3/bitcoin/transaction/address/${address}?pageSize=50`,
     });
     return response.data;
   } catch (e) {
@@ -115,7 +115,7 @@ const getTxByAddressLtc = async (address, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `v3/litecoin/transaction/address/${address}/true`,
+      url: `v3/litecoin/transaction/address/${address}?pageSize=50`,
     });
     return response.data;
   } catch (e) {
@@ -195,7 +195,6 @@ const broadcastBnb = async (data, res, headers) => {
 const broadcastXrp = async (data, res, headers) => {
   await broadcastBlockchain('xrp', data, res, headers);
 };
-
 
 const broadcastXlm = async (data, res, headers) => {
   await broadcastBlockchain('xlm', data, res, headers);
