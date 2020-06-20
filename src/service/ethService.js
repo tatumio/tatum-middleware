@@ -41,6 +41,37 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
   return derivePath.getWallet().getPrivateKeyString();
 };
 
+const scCall = async (web3, res, privKey, contractAddress, nonce, fee, methodABI, methodName, params) => {
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await this.getGasPriceInWei(res);
+  const contract = new web3.eth.Contract([methodABI], contractAddress);
+  const tx = {
+    from: 0,
+    to: contractAddress.trim(),
+    data: contract.methods[methodName](...params).encodeABI(),
+    gasPrice,
+    nonce,
+  };
+
+  if (fee) {
+    tx.gas = fee.gasLimit;
+  } else {
+    try {
+      tx.gas = await web3.eth.estimateGas(tx);
+    } catch (e) {
+      console.error(e);
+      res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+      throw e;
+    }
+  }
+  try {
+    return (await web3.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
+  } catch (e) {
+    console.error(e);
+    res.status(403).send({code: 'eth.transaction.hash', message: 'Unable to calculate transaction hash.'});
+    throw e;
+  }
+};
+
 const erc721Transaction = async (web3, res, privKey, to, data, nonce, fee) => {
   const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
   const tx = {
@@ -114,4 +145,5 @@ module.exports = {
   blockchainTransaction,
   erc721Transaction,
   getGasPriceInWei,
+  scCall,
 };

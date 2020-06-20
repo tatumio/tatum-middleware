@@ -245,6 +245,34 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
   }
 });
 
+router.post('/smartcontract', async ({body, headers}, res) => {
+  const {
+    fromPrivateKey,
+    fee,
+    params,
+    methodName,
+    methodABI,
+    contractAddress,
+    nonce,
+  } = body;
+
+  const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  if (methodABI.stateMutability === 'view') {
+    // @ts-ignore
+    const contract = new web3.eth.Contract([methodABI], contractAddress);
+    return res.json({data: await contract.methods[methodName](...params).call()});
+  }
+  web3.eth.accounts.wallet.clear();
+  web3.eth.accounts.wallet.add(fromPrivateKey);
+  web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
+
+  try {
+    const txData = await ethService.scCall(web3, res, fromPrivateKey, contractAddress, nonce, fee, methodABI, methodName, params);
+    await broadcastEth({txData}, res, headers);
+  } catch (_) {
+  }
+});
+
 router.post('/erc721/transaction', async ({body, headers}, res) => {
   const {
     fromPrivateKey,
