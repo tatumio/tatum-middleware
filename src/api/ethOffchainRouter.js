@@ -142,12 +142,12 @@ router.post('/transfer', async ({body, headers}, res) => {
 
 router.post('/erc20/deploy', async ({body, headers}, res) => {
   const {
-    mnemonic, payIndex, privateKey, nonce, ...erc20
+    mnemonic, index, privateKey, nonce, ...erc20
   } = body;
 
   let fromPriv;
-  if (mnemonic && payIndex !== undefined) {
-    const i = parseInt(payIndex);
+  if (mnemonic && index !== undefined) {
+    const i = parseInt(index);
     fromPriv = ethService.calculatePrivateKey(chain, mnemonic, i);
   } else if (privateKey) {
     fromPriv = privateKey;
