@@ -46,19 +46,6 @@ const getAccountById = async (index, headers) => {
   return response.data;
 };
 
-const getUTXOBch = async (address, headers) => {
-  const response = await axios({
-    method: 'GET',
-    headers: {
-      'content-type': headers['content-type'] || 'application/json',
-      accept: 'application/json',
-      'x-api-key': headers['x-api-key'],
-    },
-    url: `v3/bcash/utxo/${address}`,
-  });
-  return response.data;
-};
-
 const getUTXOLtc = async (hash, index, headers) => {
   const response = await axios({
     method: 'GET',
@@ -89,7 +76,7 @@ const getTxByAddressBtc = async (address, headers) => {
   }
 };
 
-const getBsvTx = async (hash, headers) => {
+const getBchTx = async (hash, headers) => {
   try {
     const response = await axios({
       method: 'GET',
@@ -98,7 +85,7 @@ const getBsvTx = async (hash, headers) => {
         accept: 'application/json',
         'x-api-key': headers['x-api-key'],
       },
-      url: `v3/bsv/transaction/${hash}`,
+      url: `v3/bcash/transaction/${hash}`,
     });
     return response.data;
   } catch (e) {
@@ -365,7 +352,7 @@ module.exports = {
   broadcastBch,
   broadcastBsv,
   getFeeXrp,
-  getBsvTx,
+  getBchTx,
   getAccountXrp,
   getAccountXlm,
   getBnbAccount,
@@ -374,7 +361,6 @@ module.exports = {
   deployErc20,
   getUTXOLtc,
   getUTXOBtc,
-  getUTXOBch,
   getTxByAddressBtc,
   getTxByAddressLtc,
   storeErc20Address,

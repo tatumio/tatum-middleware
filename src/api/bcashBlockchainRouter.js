@@ -5,7 +5,7 @@ const BigNumber = require('bignumber.js');
 const router = express.Router();
 const {TBCH, BCH} = require('../constants');
 const commonService = require('../service/commonService');
-const {getUTXOBch, broadcastBch} = require('../service/coreService');
+const {broadcastBch, getBchTx} = require('../service/coreService');
 const bchService = require('../service/bcashService');
 
 const chain = process.env.MODE === 'MAINNET' ? BCH : TBCH;
@@ -27,34 +27,20 @@ router.post('/wallet/priv', ({body}, res) => {
 router.post('/transaction', async ({body, headers}, res) => {
   const network = (chain === TBCH) ? 'testnet' : 'mainnet';
   const bitbox = new BITBOX({restURL: chain === TBCH ? TREST_URL : REST_URL});
-  const {fromUTXO, fromAddress, to} = body;
-  if ((!fromAddress && !fromUTXO) || (fromUTXO && fromAddress)) {
-    res.send(400).json({error: 'Either UTXO, or addresses must be present.', code: 'bitcoin.transaction.invalid.body'});
-    return;
-  }
+  const {fromUTXO, to} = body;
 
   const transactionBuilder = new bitbox.TransactionBuilder(network);
   const privateKeysToSign = [];
   const amountToSign = [];
-  if (fromAddress) {
-    for (const item of fromAddress) {
-      const utxo = await getUTXOBch(item.address, headers);
-      for (const u of utxo.utxos) {
-        if (u.confirmations < 6) {
-          continue;
-        }
-        transactionBuilder.addInput(u.txid, u.vout);
-        privateKeysToSign.push(item.privateKey);
-        amountToSign.push(u.satoshis);
-      }
-    }
-  } else if (fromUTXO) {
-    const txs = await bitbox.Transaction.details(fromUTXO.map(u => u.txHash));
-    for (const [i, item] of fromUTXO.entries()) {
-      transactionBuilder.addInput(item.txHash, item.index);
-      privateKeysToSign.push(item.privateKey);
-      amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
-    }
+  const txsPromises = [];
+  for (const utxo of fromUTXO) {
+    txsPromises.push(getBchTx(utxo.txHash, headers));
+  }
+  const txs = await Promise.all[txsPromises];
+  for (const [i, item] of fromUTXO.entries()) {
+    transactionBuilder.addInput(item.txHash, item.index);
+    privateKeysToSign.push(item.privateKey);
+    amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   }
   for (const item of to) {
     transactionBuilder.addOutput(item.address, Number(new BigNumber(item.value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
@@ -69,7 +55,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     txData = transactionBuilder.build().toHex();
   } catch (e) {
     console.log(e);
-    res.status(400).json({error: e.message, code: 'bcash.transaction.invalid.body'});
+    res.status(403).json({error: e.message, code: 'bcash.transaction.invalid.body'});
     return;
   }
   await broadcastBch({txData}, res, headers);
