@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.1.6",
+  "version": "3.1.7",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a client to Tatum API.",
   "repository": {
@@ -57,6 +57,7 @@
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-import": "^2.18.2",
     "markdown-swagger": "^1.0.4",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "nodemon": "^2.0.4"
   }
 }

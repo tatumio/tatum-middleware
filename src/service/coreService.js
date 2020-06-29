@@ -257,9 +257,10 @@ const broadcast = async (data, id, res, headers) => {
       data,
     });
     if (response.data.completed) {
-      return res.json({...response.data});
+      return res.json({...response.data, id});
     }
     res.status(200).json({
+      id,
       ...response.data,
       error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
       code: 'withdrawal.not.completed',
