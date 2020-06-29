@@ -123,7 +123,7 @@ const getBnbAccount = async (address, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -147,7 +147,7 @@ const broadcastBlockchain = async (endpoint, data, res, headers, finish = true) 
       return response.data;
     }
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -200,7 +200,7 @@ const getFeeXrp = async (res, headers) => {
     });
     return new BigNumber(response.data.drops.base_fee).dividedBy(1000000).toString();
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -219,7 +219,7 @@ const getAccountXrp = async (accountId, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -238,7 +238,7 @@ const getAccountXlm = async (accountId, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -257,16 +257,15 @@ const broadcast = async (data, id, res, headers) => {
       data,
     });
     if (response.data.completed) {
-      return res.json({txId: response.data.txId});
+      return res.json({...response.data});
     }
     res.status(200).json({
-      txId: response.data.txId,
-      id,
+      ...response.data,
       error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
       code: 'withdrawal.not.completed',
     });
   } catch (e) {
-    console.error(e.response);
+    console.error(e.response.data);
     throw e;
   }
 };
@@ -307,7 +306,7 @@ const deployErc20 = async (data, res, headers) => {
       data,
     });
   } catch (e) {
-    console.error(e);
+    console.error(e.response.data);
     res.status(e.response.status).json(e.response.data);
     throw e;
   }
@@ -329,6 +328,7 @@ const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
       code: 'withdrawal.hex.cancelled',
     });
   } catch (err) {
+    console.error(err.response.data);
     res.status(err.response.status).json({
       data: err.response.data,
       error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
