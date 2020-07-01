@@ -36,7 +36,7 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
   tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   if (mnemonic) {
     const {xpub} = generateWallet(chain, mnemonic);
-    tx.addOutput(calculateAddress(xpub, chain, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   } else if (keyPair && changeAddress) {
     tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   } else {
@@ -47,16 +47,17 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     if (input.vIn === '-1') {
       return;
     }
+    const value = Number(data[i].amount) * 100000000;
     if (mnemonic) {
       const privateKey = calculatePrivateKey(chain, mnemonic, input.address && input.address.derivationKey ? input.address.derivationKey : 0);
-      const ecPair = bitbox.ECPair.fromWIF(privateKey.key);
-      tx.sign(i, ecPair, undefined, tx.hashTypes.SIGHASH_ALL, Number(data[i].amount), tx.signatureAlgorithms.SCHNORR);
+      const ecPair = bitbox.ECPair.fromWIF(privateKey);
+      tx.sign(i, ecPair, undefined, tx.hashTypes.SIGHASH_ALL, value, tx.signatureAlgorithms.SCHNORR);
     } else if (keyPair) {
       // @ts-ignore
       const privateKey = keyPair.find(k => k.address === input.address.address);
       if (privateKey) {
         const ecPair = bitbox.ECPair.fromWIF(privateKey.private);
-        tx.sign(i, ecPair, undefined, tx.hashTypes.SIGHASH_ALL, Number(data[i].amount), tx.signatureAlgorithms.SCHNORR);
+        tx.sign(i, ecPair, undefined, tx.hashTypes.SIGHASH_ALL, value, tx.signatureAlgorithms.SCHNORR);
       }
     }
   });
