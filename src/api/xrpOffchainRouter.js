@@ -82,10 +82,12 @@ router.post('/transfer', async ({headers, body}, res) => {
         counterparty: issuerAccount,
         value: amount,
       },
-      tag: parseInt(withdrawal.attr),
     },
   };
 
+  if (withdrawal.attr) {
+    payment.destination.tag = parseInt(withdrawal.attr);
+  }
   let signedTransaction;
   try {
     const prepared = await offlineApi.preparePayment(account, payment, {

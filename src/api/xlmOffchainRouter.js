@@ -17,10 +17,9 @@ if (process.env.MODE === 'MAINNET') {
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {
-    account, secret,
+    secret,
     token,
     issuerAccount,
-    initialize,
     ...withdrawal
   } = body;
 
@@ -43,7 +42,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   withdrawal.fee = '0.00001';
   let acc;
   try {
-    acc = await getAccountXlm(account, res, headers)
+    acc = await getAccountXlm(StellarSDK.Keypair.fromSecret(secret).publicKey(), res, headers)
   } catch (e) {
     console.error(e);
     return res.status(e.response.status).json(e.response.data);

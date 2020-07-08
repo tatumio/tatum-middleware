@@ -91,7 +91,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     });
     return;
   }
-  tx.gasLimit = gasLimit;
+  tx.gas = gasLimit;
   withdrawal.fee = new BigNumber(web3.utils.fromWei(new BigNumber(gasLimit).multipliedBy(gasPrice).toString(), 'ether')).toString();
 
   let txData;
@@ -205,7 +205,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   try {
     txData = await web3.eth.accounts.signTransaction({
       from: 0,
-      gasLimit,
+      gas: gasLimit,
       gasPrice,
       data: deploy.encodeABI(),
       nonce,
@@ -270,7 +270,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     });
     return;
   }
-  tx.gasLimit = gasLimit;
+  tx.gas = gasLimit;
   let txData;
   try {
     txData = await web3.eth.accounts.signTransaction(tx, fromPriv);
