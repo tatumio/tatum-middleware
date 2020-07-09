@@ -46,6 +46,19 @@ const getAccountById = async (index, headers) => {
   return response.data;
 };
 
+const getVirtualCurrencyByName = async (name, headers) => {
+  const response = await axios({
+    method: 'GET',
+    headers: {
+      'content-type': headers['content-type'] || 'application/json',
+      accept: 'application/json',
+      'x-api-key': headers['x-api-key'],
+    },
+    url: `v3/ledger/virtualCurrency/${name}`,
+  });
+  return response.data;
+};
+
 const getUTXOLtc = async (hash, index, headers) => {
   const response = await axios({
     method: 'GET',
@@ -343,6 +356,7 @@ const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
 module.exports = {
   storeWithdrawal,
   broadcast,
+  getVirtualCurrencyByName,
   broadcastBtc,
   broadcastLtc,
   broadcastEth,

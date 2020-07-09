@@ -3,7 +3,8 @@ const axios = require('axios');
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 const {
-  cancelWithdrawal, storeWithdrawal, broadcast, deployErc20, broadcastEth,
+  cancelWithdrawal, storeWithdrawal, broadcast, deployErc20, broadcastEth, getAccountById,
+  getVirtualCurrencyByName,
 } = require('../service/coreService');
 
 const tokenABI = require('../contracts/token_abi');
@@ -32,7 +33,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   const {
     mnemonic, index, privateKey, nonce, data, ...withdrawal
   } = body;
-  const {amount, address, currency} = withdrawal;
+  const {amount, address} = withdrawal;
 
   let fromPriv;
   if (mnemonic && index !== undefined) {
@@ -45,14 +46,21 @@ router.post('/transfer', async ({body, headers}, res) => {
     return;
   }
 
+  let senderAccount;
+  try {
+    senderAccount = await getAccountById(withdrawal.senderAccountId, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
+
   const gasPrice = await getGasPriceInWei(res);
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
   withdrawal.senderBlockchainAddress = web3.eth.accounts.wallet[0].address;
-
   let tx;
-  if (currency === 'ETH') {
+  if (senderAccount.currency === 'ETH') {
     tx = {
       from: 0,
       to: address.trim(),
@@ -62,19 +70,19 @@ router.post('/transfer', async ({body, headers}, res) => {
       nonce,
     };
   } else {
-    if (!Object.keys(CONTRACT_ADDRESSES).includes(currency)) {
+    if (!Object.keys(CONTRACT_ADDRESSES).includes(senderAccount.currency)) {
       res.status(400).json({
         error: 'Unsupported ETH ERC20 blockchain.',
         code: 'eth.erc20.unsupported',
       });
       return;
     }
-    const contract = new web3.eth.Contract(tokenABI, CONTRACT_ADDRESSES[currency]);
+    const contract = new web3.eth.Contract(tokenABI, CONTRACT_ADDRESSES[senderAccount.currency]);
 
     tx = {
       from: 0,
-      to: CONTRACT_ADDRESSES[currency],
-      data: contract.methods.transfer(address.trim(), new BigNumber(amount).multipliedBy(10).pow(CONTRACT_DECIMALS[currency]).toString(16)).encodeABI(),
+      to: CONTRACT_ADDRESSES[senderAccount.currency],
+      data: contract.methods.transfer(address.trim(), new BigNumber(amount).multipliedBy(10).pow(CONTRACT_DECIMALS[senderAccount.currency]).toString(16)).encodeABI(),
       gasPrice,
       nonce,
     };
@@ -119,7 +127,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     await broadcast({
       txData: txData.rawTransaction,
       withdrawalId: id,
-      currency,
+      currency: 'ETH',
     }, id, res, headers);
     return;
   } catch (err) {
@@ -177,8 +185,8 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   });
   const deploy = contract.deploy({
     arguments: [
-      erc20.name,
-      erc20.name,
+      erc20.symbol,
+      erc20.symbol,
       response.data.address,
       18,
       `0x${new BigNumber(erc20.supply).multipliedBy(new BigNumber(10).pow(18)).toString(16)}`,
@@ -223,16 +231,16 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     const r = await broadcastEth({
       txData: txData.rawTransaction,
     }, res, headers, false);
-    res.status(200).json({txId: r.txId, id: response.data.accountId})
+    res.status(200).json({txId: r.txId, id: response.data.accountId});
   } catch (_) {
   }
 });
 
 router.post('/erc20/transfer', async ({body, headers}, res) => {
   const {
-    mnemonic, index, tokenAddress, privateKey, nonce, ...withdrawal
+    mnemonic, index, privateKey, nonce, ...withdrawal
   } = body;
-  const {amount, address, currency} = withdrawal;
+  const {amount, address} = withdrawal;
 
   let fromPriv;
   if (mnemonic && index !== undefined) {
@@ -248,12 +256,29 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
   withdrawal.senderBlockchainAddress = web3.eth.accounts.wallet[0].address;
-  const contract = new web3.eth.Contract(tokenABI, tokenAddress);
+
+  let senderAccount;
+  try {
+    senderAccount = await getAccountById(withdrawal.senderAccountId, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
+
+  let vc;
+  try {
+    vc = await getVirtualCurrencyByName(senderAccount.currency, headers);
+  } catch (e) {
+    console.error(e);
+    return res.status(e.response.status).json(e.response.data);
+  }
+
+  const contract = new web3.eth.Contract(tokenABI, vc.erc20Address);
   const gasPrice = await getGasPriceInWei(res);
 
   const tx = {
     from: 0,
-    to: tokenAddress.trim(),
+    to: vc.erc20Address.trim(),
     data: contract.methods.transfer(address.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString(16)}`).encodeABI(),
     gasPrice,
     nonce,
@@ -296,7 +321,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     await broadcast({
       txData: txData.rawTransaction,
       withdrawalId: id,
-      currency,
+      currency: 'ETH',
     }, id, res, headers);
     return;
   } catch (err) {
