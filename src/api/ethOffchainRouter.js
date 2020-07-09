@@ -31,7 +31,7 @@ const getGasPriceInWei = async (res) => {
 
 router.post('/transfer', async ({body, headers}, res) => {
   const {
-    mnemonic, index, privateKey, nonce, data, ...withdrawal
+    mnemonic, index, privateKey, nonce, data, fee, ...withdrawal
   } = body;
   const {amount, address} = withdrawal;
 
@@ -54,8 +54,8 @@ router.post('/transfer', async ({body, headers}, res) => {
     return res.status(e.response.status).json(e.response.data);
   }
 
-  const gasPrice = await getGasPriceInWei(res);
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
   withdrawal.senderBlockchainAddress = web3.eth.accounts.wallet[0].address;
@@ -90,7 +90,7 @@ router.post('/transfer', async ({body, headers}, res) => {
 
   let gasLimit;
   try {
-    gasLimit = await web3.eth.estimateGas(tx);
+    gasLimit = fee ? fee.gasLimit : await web3.eth.estimateGas(tx);
   } catch (e) {
     console.error(e);
     res.status(403).json({
@@ -238,7 +238,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
 
 router.post('/erc20/transfer', async ({body, headers}, res) => {
   const {
-    mnemonic, index, privateKey, nonce, ...withdrawal
+    mnemonic, index, privateKey, nonce, fee, ...withdrawal
   } = body;
   const {amount, address} = withdrawal;
 
@@ -274,7 +274,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   }
 
   const contract = new web3.eth.Contract(tokenABI, vc.erc20Address);
-  const gasPrice = await getGasPriceInWei(res);
+  const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
 
   const tx = {
     from: 0,
@@ -286,7 +286,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
 
   let gasLimit;
   try {
-    gasLimit = await web3.eth.estimateGas(tx);
+    gasLimit = fee ? fee.gasLimit : await web3.eth.estimateGas(tx);
   } catch (e) {
     console.error(e);
     res.status(403).json({
@@ -307,7 +307,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     });
     return;
   }
-  withdrawal.fee = new BigNumber(web3.utils.fromWei(new BigNumber(tx.gasLimit).multipliedBy(tx.gasPrice).toString(), 'ether')).toString();
+  withdrawal.fee = new BigNumber(web3.utils.fromWei(new BigNumber(gasLimit).multipliedBy(gasPrice).toString(), 'ether')).toString();
   let resp;
   try {
     resp = await storeWithdrawal(withdrawal, res, headers);
