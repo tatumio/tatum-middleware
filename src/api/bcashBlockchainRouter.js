@@ -40,10 +40,10 @@ router.post('/transaction', async ({body, headers}, res) => {
   for (const [i, item] of fromUTXO.entries()) {
     transactionBuilder.addInput(item.txHash, item.index);
     privateKeysToSign.push(item.privateKey);
-    amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    amountToSign.push(Number(new BigNumber(txs[i].vout[item.index].value).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   }
   for (const item of to) {
-    transactionBuilder.addOutput(item.address, Number(new BigNumber(item.value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    transactionBuilder.addOutput(item.address, Number(new BigNumber(item.value).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   }
 
   for (let i = 0; i < privateKeysToSign.length; i++) {

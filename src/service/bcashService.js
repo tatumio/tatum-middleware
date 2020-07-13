@@ -33,12 +33,12 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     }
   });
 
-  tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   if (mnemonic) {
     const {xpub} = generateWallet(chain, mnemonic);
-    tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   } else if (keyPair && changeAddress) {
-    tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   } else {
     throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');
   }
@@ -47,7 +47,7 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     if (input.vIn === '-1') {
       return;
     }
-    const value = Number(data[i].amount) * 100000000;
+    const value = Number(new BigNumber(data[i].amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR));
     if (mnemonic) {
       const privateKey = calculatePrivateKey(chain, mnemonic, input.address && input.address.derivationKey ? input.address.derivationKey : 0);
       const ecPair = bitbox.ECPair.fromWIF(privateKey);
