@@ -262,21 +262,42 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     return res.status(e.response.status).json(e.response.data);
   }
 
-  let vc;
-  try {
-    vc = await getVirtualCurrencyByName(senderAccount.currency, headers);
-  } catch (e) {
-    console.error(e);
-    return res.status(e.response.status).json(e.response.data);
+  let erc20Address = '';
+  let erc20Decimals = 18;
+  switch (senderAccount.currency) {
+    case 'USDT':
+    case 'LEO':
+    case 'LINK':
+    case 'FREE':
+    case 'MKR':
+    case 'USDC':
+    case 'BAT':
+    case 'TUSD':
+    case 'PAX':
+    case 'PAXG':
+    case 'PLTC':
+    case 'MMY':
+    case 'XCON':
+      erc20Address = CONTRACT_ADDRESSES[senderAccount.currency];
+      erc20Decimals = CONTRACT_DECIMALS[senderAccount.currency];
+      break;
+    default:
+      try {
+        const vc = await getVirtualCurrencyByName(senderAccount.currency, headers);
+        erc20Address = vc.erc20Address;
+      } catch (e) {
+        console.error(e);
+        return res.status(e.response.status).json(e.response.data);
+      }
   }
 
-  const contract = new web3.eth.Contract(tokenABI, vc.erc20Address);
+  const contract = new web3.eth.Contract(tokenABI, erc20Address);
   const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
 
   const tx = {
     from: 0,
-    to: vc.erc20Address.trim(),
-    data: contract.methods.transfer(address.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString(16)}`).encodeABI(),
+    to: erc20Address.trim(),
+    data: contract.methods.transfer(address.trim(), `0x${new BigNumber(amount).multipliedBy(new BigNumber(10).pow(erc20Decimals)).toString(16)}`).encodeABI(),
     gasPrice,
     nonce,
   };
