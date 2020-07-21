@@ -168,9 +168,6 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
   erc20.chain = 'ETH';
-  if (mnemonic) {
-    erc20.xpub = ethService.generateWallet(chain, mnemonic).xpub;
-  }
   const gasPrice = await getGasPriceInWei(res);
 
   let response;

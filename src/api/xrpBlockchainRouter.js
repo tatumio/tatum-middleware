@@ -37,7 +37,7 @@ router.post('/transaction', async ({headers, body}, res) => {
   const currency = token || 'XRP';
   const payment = {
     source: {
-      address: account,
+      address: fromAccount,
       maxAmount: {
         currency,
         counterparty: issuerAccount,
