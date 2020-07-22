@@ -18,20 +18,26 @@ router.post('/transfer', async ({headers, body}, res) => {
 
   if (keyPair && mnemonic) {
     res.send(400).json({
-      error: 'Either keyPair or mnemonic must be present, not both.',
-      code: 'transaction.mnemonic.keyPair.both',
+      message: 'Either keyPair or mnemonic must be present, not both.',
+      statusCode: 400,
+      errorCode: 'transaction.mnemonic.keyPair.both',
     });
     return;
   }
   if (!keyPair && !mnemonic && !attr) {
     res.send(400).json({
-      error: 'Either keyPair and attr or mnemonic must be present.',
-      code: 'transaction.mnemonic.keyPair.missing',
+      message: 'Either keyPair and attr or mnemonic must be present.',
+      statusCode: 400,
+      errorCode: 'transaction.mnemonic.keyPair.missing',
     });
     return;
   }
   if (!mnemonic && (!keyPair || !attr)) {
-    res.send(400).json({error: 'Keypair and attr must be present.', code: 'transaction.attr.keyPair.missing'});
+    res.send(400).json({
+      message: 'Keypair and attr must be present.',
+      statusCode: 400,
+      errorCode: 'transaction.attr.keyPair.missing'
+    });
     return;
   }
 
@@ -71,15 +77,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers);
-    if (r) {
-      res.status(r.status).json({
-        data: r.data,
-        error: r.error,
-        code: r.code,
-        id,
-      });
-    }
+    await cancelWithdrawal(id, res, headers, 'true', r);
   } catch (_) {
   }
 });

@@ -67,8 +67,9 @@ router.post('/transaction', async ({headers, body}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).send({
-      error: 'Unable to sign transaction.',
-      code: 'xrp.sign.failed',
+      message: 'Unable to sign transaction.',
+      statusCode: 403,
+      errorCode: 'xrp.sign.failed',
     });
     return;
   }
@@ -113,8 +114,9 @@ router.post('/trust', async ({headers, body}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).send({
-      error: 'Unable to sign transaction.',
-      code: 'xrp.sign.failed',
+      message: 'Unable to sign transaction.',
+      statusCode: 403,
+      errorCode: 'xrp.sign.failed',
     });
     return;
   }
@@ -137,8 +139,9 @@ router.post('/account/settings', async ({headers, body}, res) => {
 
   if (requireDestinationTag !== undefined && rippling !== undefined) {
     res.status(403).send({
-      error: 'It is possible to set 1 parameter at a time.',
-      code: 'xrp.settings.multiple',
+      message: 'It is possible to set 1 parameter at a time.',
+      statusCode: 403,
+      errorCode: 'xrp.settings.multiple',
     });
     return;
   }
@@ -161,8 +164,9 @@ router.post('/account/settings', async ({headers, body}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).send({
-      error: 'Unable to sign transaction.',
-      code: 'xrp.sign.failed',
+      message: 'Unable to sign transaction.',
+      statusCode: 403,
+      errorCode: 'xrp.sign.failed',
     });
     return;
   }

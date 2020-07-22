@@ -37,8 +37,9 @@ const blockchainTransaction = async (amount, to, privKey, fee, client, res, head
     } catch (e) {
       console.error(e);
       res.status(403).json({
-        error: 'Unable to calculate gas limit for transaction.',
-        code: 'vet.transaction.gas',
+        message: 'Unable to calculate gas limit for transaction.',
+        statusCode: 403,
+        errorCode: 'vet.transaction.gas',
       });
       throw e;
     }
@@ -46,8 +47,9 @@ const blockchainTransaction = async (amount, to, privKey, fee, client, res, head
   const rawTransaction = (await client.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
   if (!rawTransaction) {
     res.status(403).json({
-      error: 'Unable to calculate transaction hash.',
-      code: 'vet.transaction.hash',
+      message: 'Unable to calculate transaction hash.',
+      statusCode: 403,
+      errorCode: 'vet.transaction.hash',
     });
     throw new Error();
   }

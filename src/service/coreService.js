@@ -275,8 +275,9 @@ const broadcast = async (data, id, res, headers) => {
     res.status(200).json({
       id,
       ...response.data,
-      error: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
-      code: 'withdrawal.not.completed',
+      message: 'Withdrawal submitted to blockchain but not completed, wait until it is completed automatically in next block or complete it manually.',
+      statusCode: 200,
+      errorCode: 'withdrawal.not.completed',
     });
   } catch (e) {
     console.error(e.response.data);
@@ -300,8 +301,9 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
     console.error(error);
     res.status(error.response.status).json({
       ...responseData,
-      error: 'Unable to set contract address for ERC20 symbol to Tatum, manual update is necessary.',
-      code: 'erc20.not.completed',
+      message: 'Unable to set contract address for ERC20 symbol to Tatum, manual update is necessary.',
+      statusCode: error.response.status,
+      errorCode: 'erc20.not.completed',
     });
     throw error;
   }
@@ -326,7 +328,7 @@ const deployErc20 = async (data, res, headers) => {
   }
 };
 
-const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
+const cancelWithdrawal = async (id, res, headers, revert = 'true', response) => {
   try {
     await axios({
       method: 'DELETE',
@@ -337,18 +339,17 @@ const cancelWithdrawal = async (id, res, headers, revert = 'true') => {
       },
       url: `v3/offchain/withdrawal/${id}?revert=${revert}`,
     });
-    res.status(500).json({
-      error: 'Unable to broadcast transaction, withdrawal cancelled.',
-      code: 'withdrawal.hex.cancelled',
+    if (response) {
+      return res.status(response.status).json(response.data);
+    }
+    res.status(403).json({
+      statusCode: 403,
+      message: 'Unable to broadcast transaction, withdrawal cancelled.',
+      errorCode: 'withdrawal.hex.cancelled',
     });
   } catch (err) {
     console.error(err.response.data);
-    res.status(err.response.status).json({
-      data: err.response.data,
-      error: 'Unable to broadcast transaction, and impossible to cancel withdrawal. ID is attached, cancel it manually.',
-      code: 'withdrawal.hex.not.cancelled',
-      id,
-    });
+    res.status(err.response.status).json(err.response.data);
     throw err;
   }
 };

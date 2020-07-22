@@ -24,7 +24,7 @@ const getGasPriceInWei = async (res) => {
     return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
   } catch (e) {
     console.error(e);
-    res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+    res.status(403).send({statusCode: 403, errorCode: 'gas.price.failed', message: 'Unable to estimate gas price.'});
     throw e;
   }
 };
@@ -42,7 +42,11 @@ router.post('/transfer', async ({body, headers}, res) => {
   } else if (privateKey) {
     fromPriv = privateKey;
   } else {
-    res.status(400).json({error: 'Either mnemonic or private key must be present.', code: 'private.mnemonic.missing'});
+    res.status(400).json({
+      message: 'Either mnemonic or private key must be present.',
+      statusCode: 400,
+      errorCode: 'private.mnemonic.missing'
+    });
     return;
   }
 
@@ -72,8 +76,9 @@ router.post('/transfer', async ({body, headers}, res) => {
   } else {
     if (!Object.keys(CONTRACT_ADDRESSES).includes(senderAccount.currency)) {
       res.status(400).json({
-        error: 'Unsupported ETH ERC20 blockchain.',
-        code: 'eth.erc20.unsupported',
+        message: 'Unsupported ETH ERC20 blockchain.',
+        statusCode: 400,
+        errorCode: 'eth.erc20.unsupported',
       });
       return;
     }
@@ -94,8 +99,9 @@ router.post('/transfer', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to calculate gas limit for transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to calculate gas limit for transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -108,8 +114,9 @@ router.post('/transfer', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to sign transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -135,15 +142,7 @@ router.post('/transfer', async ({body, headers}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers);
-    if (r) {
-      res.status(r.status).json({
-        data: r.data,
-        error: r.error,
-        code: r.code,
-        id,
-      });
-    }
+    await cancelWithdrawal(id, res, headers, 'true', r);
   } catch (_) {
   }
 });
@@ -160,7 +159,11 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } else if (privateKey) {
     fromPriv = privateKey;
   } else {
-    res.status(400).json({error: 'Either mnemonic or private key must be present.', code: 'private.mnemonic.missing'});
+    res.status(400).json({
+      message: 'Either mnemonic or private key must be present.',
+      statusCode: 400,
+      errorCode: 'private.mnemonic.missing'
+    });
     return;
   }
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
@@ -200,8 +203,9 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to calculate gas limit for transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to calculate gas limit for transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -218,8 +222,9 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction for contract creation.',
-      code: 'eth.erc20.sign',
+      message: 'Unable to sign transaction for contract creation.',
+      statusCode: 403,
+      errorCode: 'eth.erc20.sign',
     });
     return;
   }
@@ -246,7 +251,11 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   } else if (privateKey) {
     fromPriv = privateKey;
   } else {
-    res.status(400).json({error: 'Either mnemonic or private key must be present.', code: 'private.mnemonic.missing'});
+    res.status(400).json({
+      message: 'Either mnemonic or private key must be present.',
+      statusCode: 400,
+      errorCode: 'private.mnemonic.missing'
+    });
     return;
   }
   const web3 = new Web3(`https://${chain}.infura.io/v3/${INFURA_KEY}`);
@@ -308,8 +317,9 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to calculate gas limit for transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to calculate gas limit for transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -320,8 +330,9 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction',
-      code: 'eth.transaction.sign',
+      message: 'Unable to sign transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.sign',
     });
     return;
   }
@@ -347,15 +358,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers, 'false');
-    if (r) {
-      res.status(r.status).json({
-        data: r.data,
-        error: r.error,
-        code: r.code,
-        id,
-      });
-    }
+    await cancelWithdrawal(id, res, headers, 'false', r);
   } catch (_) {
   }
 });

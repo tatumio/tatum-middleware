@@ -42,7 +42,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   withdrawal.fee = '0.00001';
   let acc;
   try {
-    acc = await getAccountXlm(StellarSDK.Keypair.fromSecret(secret).publicKey(), res, headers)
+    acc = await getAccountXlm(StellarSDK.Keypair.fromSecret(secret).publicKey(), res, headers);
   } catch (e) {
     console.error(e);
     return res.status(e.response.status).json(e.response.data);
@@ -105,15 +105,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers);
-    if (r) {
-      res.status(r.status).json({
-        data: r.data,
-        error: r.error,
-        code: r.code,
-        id,
-      });
-    }
+    await cancelWithdrawal(id, res, headers, 'true', r);
   } catch (_) {
   }
 });

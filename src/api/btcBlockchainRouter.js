@@ -27,7 +27,11 @@ router.post('/wallet/priv', ({body}, res) => {
 router.post('/transaction', async ({body, headers}, res) => {
   const {fromUTXO, fromAddress, to} = body;
   if ((!fromAddress && !fromUTXO) || (fromUTXO && fromAddress)) {
-    res.send(400).json({error: 'Either UTXO, or addresses must be present.', code: 'bitcoin.transaction.invalid.body'});
+    res.send(400).json({
+      message: 'Either UTXO, or addresses must be present.',
+      statusCode: 400,
+      errorCode: 'bitcoin.transaction.invalid.body'
+    });
     return;
   }
   const network = (chain === TBTC) ? bitcoin.networks.testnet : bitcoin.networks.bitcoin;
@@ -71,7 +75,11 @@ router.post('/transaction', async ({body, headers}, res) => {
   try {
     txData = tx.build().toHex();
   } catch (e) {
-    res.status(400).json({error: 'No spendable inputs.', code: 'bitcoin.transaction.invalid.body'});
+    res.status(400).json({
+      message: 'No spendable inputs.',
+      statusCode: 400,
+      errorCode: 'bitcoin.transaction.invalid.body'
+    });
     return;
   }
   await broadcastBtc({txData}, res, headers);

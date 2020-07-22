@@ -62,8 +62,9 @@ router.post('/transaction', async ({body, headers}, res) => {
   } else {
     if (!Object.keys(CONTRACT_ADDRESSES).includes(currency)) {
       res.status(400).json({
-        error: 'Unsupported ETH ERC20 blockchain.',
-        code: 'eth.erc20.unsupported',
+        message: 'Unsupported ETH ERC20 blockchain.',
+        statusCode: 400,
+        errorCode: 'eth.erc20.unsupported',
       });
       return;
     }
@@ -152,8 +153,9 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to calculate gas limit for transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to calculate gas limit for transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -170,8 +172,9 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction for contract creation.',
-      code: 'eth.erc20.sign',
+      message: 'Unable to sign transaction for contract creation.',
+      statusCode: 403,
+      errorCode: 'eth.erc20.sign',
     });
     return;
   }
@@ -213,8 +216,9 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to calculate gas limit for transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to calculate gas limit for transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }
@@ -231,8 +235,9 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction for contract creation.',
-      code: 'eth.erc20.sign',
+      message: 'Unable to sign transaction for contract creation.',
+      statusCode: 403,
+      errorCode: 'eth.erc20.sign',
     });
     return;
   }

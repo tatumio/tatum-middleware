@@ -22,7 +22,7 @@ const getGasPriceInWei = async (res) => {
     return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
   } catch (e) {
     console.error(e);
-    res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+    res.status(403).send({statusCode: 403, errorCode: 'gas.price.failed', message: 'Unable to estimate gas price.'});
     throw e;
   }
 };
@@ -59,7 +59,7 @@ const scCall = async (web3, res, privKey, contractAddress, nonce, fee, methodABI
       tx.gas = await web3.eth.estimateGas(tx);
     } catch (e) {
       console.error(e);
-      res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+      res.status(403).send({statusCode: 403, errorCode: 'gas.price.failed', message: 'Unable to estimate gas price.'});
       throw e;
     }
   }
@@ -67,7 +67,11 @@ const scCall = async (web3, res, privKey, contractAddress, nonce, fee, methodABI
     return (await web3.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
   } catch (e) {
     console.error(e);
-    res.status(403).send({code: 'eth.transaction.hash', message: 'Unable to calculate transaction hash.'});
+    res.status(403).send({
+      statusCode: 403,
+      errorCode: 'eth.transaction.hash',
+      message: 'Unable to calculate transaction hash.'
+    });
     throw e;
   }
 };
@@ -89,7 +93,7 @@ const erc721Transaction = async (web3, res, privKey, to, data, nonce, fee) => {
       tx.gas = await web3.eth.estimateGas(tx);
     } catch (e) {
       console.error(e);
-      res.status(403).send({code: 'gas.price.failed', message: 'Unable to estimate gas price.'});
+      res.status(403).send({statusCode: 403, errorCode: 'gas.price.failed', message: 'Unable to estimate gas price.'});
       throw e;
     }
   }
@@ -97,7 +101,11 @@ const erc721Transaction = async (web3, res, privKey, to, data, nonce, fee) => {
     return (await web3.eth.accounts.signTransaction(tx, privKey)).rawTransaction;
   } catch (e) {
     console.error(e);
-    res.status(403).send({code: 'eth.transaction.hash', message: 'Unable to calculate transaction hash.'});
+    res.status(403).send({
+      statusCode: 403,
+      errorCode: 'eth.transaction.hash',
+      message: 'Unable to calculate transaction hash.'
+    });
     throw e;
   }
 };
@@ -112,8 +120,9 @@ const blockchainTransaction = async (fee, transaction, fromPriv, web3, res, head
     } catch (e) {
       console.error(e);
       res.status(403).json({
-        error: 'Unable to calculate gas limit for transaction',
-        code: 'eth.transaction.gas',
+        message: 'Unable to calculate gas limit for transaction',
+        statusCode: 403,
+        errorCode: 'eth.transaction.gas',
       });
       return;
     }
@@ -124,8 +133,9 @@ const blockchainTransaction = async (fee, transaction, fromPriv, web3, res, head
   } catch (e) {
     console.error(e);
     res.status(403).json({
-      error: 'Unable to sign transaction',
-      code: 'eth.transaction.gas',
+      message: 'Unable to sign transaction',
+      statusCode: 403,
+      errorCode: 'eth.transaction.gas',
     });
     return;
   }

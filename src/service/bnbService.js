@@ -38,7 +38,7 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
     account = await getBnbAccount(addressFrom, res, headers);
   } catch (e) {
     console.error(e);
-    res.status(400).json({error: 'Unable to get BNB account.', code: 'bnb.account.not.exists'});
+    res.status(403).json({message: 'Unable to get BNB account.', statusCode: 403, errorCode: 'bnb.account.not.exists'});
     return;
   }
 
@@ -47,7 +47,7 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
     toAccCode = decodeAddress(to);
   } catch (e) {
     console.error(e);
-    res.status(400).json({error: 'Unable to decode target address.', code: 'bnb.to.mismatch'});
+    res.status(403).json({message: 'Unable to decode target address.', statusCode: 403, errorCode: 'bnb.to.mismatch'});
     return;
   }
 
@@ -94,7 +94,11 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
     return tx.sign(fromPrivateKey, signMsg).serialize();
   } catch (e) {
     console.error(e);
-    res.status(400).json({error: 'Unable to sing transaction.', code: 'bnb.transaction.invalid.body'});
+    res.status(403).json({
+      message: 'Unable to sing transaction.',
+      statusCode: 403,
+      errorCode: 'bnb.transaction.invalid.body'
+    });
     throw e;
   }
 };

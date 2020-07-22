@@ -55,7 +55,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     txData = transactionBuilder.build().toHex();
   } catch (e) {
     console.log(e);
-    res.status(403).json({error: e.message, code: 'bcash.transaction.invalid.body'});
+    res.status(403).json({message: e.message, statusCode: 403, errorCode: 'bcash.transaction.invalid.body'});
     return;
   }
   await broadcastBch({txData}, res, headers);

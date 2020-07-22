@@ -24,7 +24,8 @@ router.post('/transaction', async ({body}, res) => {
     console.error(e);
     res.status(403).json({
       error: `Unable to transfer assets. ${e}`,
-      code: 'neo.transaction.failed',
+      statusCode: 403,
+      errorCode: 'neo.transaction.failed',
     });
   }
 });
@@ -38,7 +39,8 @@ router.post('/claim', async ({body}, res) => {
     console.error(e);
     res.status(403).json({
       error: `Unable to claim gas. ${e}`,
-      code: 'neo.gas.failed',
+      statusCode: 403,
+      errorCode: 'neo.gas.failed',
     });
   }
 });
@@ -63,7 +65,8 @@ router.post('/invoke', async ({body}, res) => {
     console.error(e);
     res.status(403).json({
       error: `Unable to transfer assets. ${e}`,
-      code: 'neo.contract.failed',
+      statusCode: 403,
+      errorCode: 'neo.contract.failed',
     });
   }
 });

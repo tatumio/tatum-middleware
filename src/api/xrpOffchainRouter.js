@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
 const {
@@ -17,8 +18,9 @@ router.post('/transfer', async ({headers, body}, res) => {
 
   if (withdrawal.attr && isNaN(parseInt(withdrawal.attr))) {
     res.status(403).send({
-      error: 'Wrong attr of withdrawal, should be of uint32 type.',
-      code: 'attr.wrong.format',
+      message: 'Wrong attr of withdrawal, should be of uint32 type.',
+      statusCode: 403,
+      errorCode: 'attr.wrong.format',
     });
     return;
   }
@@ -117,15 +119,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   }
 
   try {
-    await cancelWithdrawal(id, res, headers);
-    if (r) {
-      res.status(r.status).json({
-        data: r.data,
-        error: r.error,
-        code: r.code,
-        id,
-      });
-    }
+    await cancelWithdrawal(id, res, headers, 'true', r);
   } catch (_) {
   }
 });
