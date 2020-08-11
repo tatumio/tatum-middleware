@@ -55,7 +55,7 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
       tx.sign(i, ecPair);
     } else {
       const privateKey = keyPair.find(k => k.address === input.address.address);
-      const ecPair = bitcoin.ECPair.fromWIF(privateKey.private, network);
+      const ecPair = bitcoin.ECPair.fromWIF(privateKey.privateKey, network);
       tx.sign(i, ecPair);
     }
   });
