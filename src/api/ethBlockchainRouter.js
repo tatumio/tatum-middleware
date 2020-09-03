@@ -42,7 +42,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     data,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -93,7 +93,7 @@ router.post('/erc20/transaction', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -124,7 +124,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
@@ -196,7 +196,7 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
@@ -261,7 +261,7 @@ router.post('/smartcontract', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   if (methodABI.stateMutability === 'view') {
     // @ts-ignore
     const contract = new web3.eth.Contract([methodABI], contractAddress);
@@ -288,7 +288,7 @@ router.post('/erc721/transaction', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -316,7 +316,7 @@ router.post('/erc721/mint', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -342,7 +342,7 @@ router.post('/erc721/mint/batch', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -367,7 +367,7 @@ router.post('/erc721/burn', async ({body, headers}, res) => {
     nonce,
   } = body;
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.clear();
   web3.eth.accounts.wallet.add(fromPrivateKey);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;

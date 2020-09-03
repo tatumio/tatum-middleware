@@ -58,7 +58,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     return res.status(e.response.status).json(e.response.data);
   }
 
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   const gasPrice = fee ? web3.utils.toWei(fee.gasPrice, 'gwei') : await getGasPriceInWei(res);
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
@@ -166,7 +166,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     });
     return;
   }
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
 
@@ -258,7 +258,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     });
     return;
   }
-  const web3 = new Web3(`https://api.tatum.io/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
+  const web3 = new Web3(`${process.env.API_URL}/v3/ethereum/web3/${process.env.TATUM_API_KEY}`);
   web3.eth.accounts.wallet.add(fromPriv);
   web3.eth.defaultAccount = web3.eth.accounts.wallet[0].address;
   withdrawal.senderBlockchainAddress = web3.eth.accounts.wallet[0].address;

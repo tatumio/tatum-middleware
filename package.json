@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a client to Tatum API.",
   "repository": {
@@ -15,7 +15,7 @@
     "start": "node src/index.js",
     "docker": "docker build . --tag tatumio/tatum-middleware:latest",
     "lint": "eslint --fix src",
-    "dev": "API_URL=http://127.0.0.1:3000 MODE=TESTNET nodemon src/index.js",
+    "dev": "API_URL=http://127.0.0.1:3000 MODE=TESTNET TATUM_API_KEY=testnet nodemon src/index.js",
     "test": "API_URL=test MODE=TESTNET mocha"
   },
   "keywords": [
