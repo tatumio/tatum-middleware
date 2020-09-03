@@ -23,8 +23,6 @@ const LTC_DERIVATION_PATH = 'm/44\'/2\'/0\'/0';
 const BNB_DERIVATION_PATH = 'm/44\'/714\'/0\'/0';
 const TESTNET_DERIVATION_PATH = 'm/44\'/1\'/0\'/0';
 
-const INFURA_KEY = process.env.INFURA_KEY || '0d81f0f1a8274699be73135db15af8a3';
-
 const LTC_NETWORK_TESTNET = {
   messagePrefix: '\x18Litecoin Signed Message:\n',
   bech32: '',
@@ -122,7 +120,6 @@ module.exports = {
   LTC,
   TLTC,
   TESTNET_DERIVATION_PATH,
-  INFURA_KEY,
   XRP,
   XLM,
   VET,

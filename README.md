@@ -17,15 +17,14 @@ Tatum Middleware Docker container must/can be run with following environment var
   * MODE - Mode of Tatum API that Tatum Middleware will communicate with.<br/>
     For testnet installation, use `TESTNET`.<br/>
     For production installation, use `MAINNET`.<br/>
-  * INFURA_KEY - API key to Infura to communicate with Ethereum blockchain. Defaults to Tatum internal key.<br/>
-  <b>It is highly recommended to change this value.</b>
+  * TATUM_API_KEY - API key to communicate with Tatum API.<br/>
 <p>
 Tatum Middleware Docker container exposes port `6543`, on which REST API server listens for incoming HTTP requests.
 In order to publish exposed port outside of the docker container, `-p` flag should be used with defined mapping.
 </p>
 
 #### Example script to start docker container<br/>
-```docker run -e API_URL=https://api.tatum.io -e MODE=MAINNET -p 6543:6543/tcp tatumio/tatum-middleware```
+```docker run -e API_URL=https://api.tatum.io -e MODE=MAINNET -e TATUM_API_KEY=12345 -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps Tatum API.<br/>
