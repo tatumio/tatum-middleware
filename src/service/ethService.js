@@ -18,7 +18,7 @@ const generateWallet = (chain, mnemonic) => {
 
 const getGasPriceInWei = async (res) => {
   try {
-    const {data} = await axios.get('https://ethgasstation.info/json/ethgasAPI.json');
+    const {data} = await axios.get('https://ethgasstation.info/json/ethgasAPI.json?apiKey=494f9c3a5b3a85d8651e14100558bb6db57ffa5f1120f28dfd1f4f6c7c2a');
     return Web3.utils.toWei(new BigNumber(data.fast).dividedBy(10).toString(), 'gwei');
   } catch (e) {
     console.error(e);
