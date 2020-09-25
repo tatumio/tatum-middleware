@@ -275,6 +275,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     case 'USDT':
     case 'LEO':
     case 'LINK':
+    case 'UNI':
     case 'FREE':
     case 'MKR':
     case 'USDC':
