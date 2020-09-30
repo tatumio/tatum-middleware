@@ -13,7 +13,7 @@ Tatum Middleware docker image is available in Docker HUB under `tatumio/tatum-mi
 ## Run docker image
 Tatum Middleware Docker container must/can be run with following environment variables:
   * API_URL - URL of Tatum API that Tatum Middleware will communicate with.<br/>
-    Use `https://api.tatum.io`.<br/>
+    Use `https://api-eu1.tatum.io`.<br/>
   * MODE - Mode of Tatum API that Tatum Middleware will communicate with.<br/>
     For testnet installation, use `TESTNET`.<br/>
     For production installation, use `MAINNET`.<br/>
@@ -24,7 +24,7 @@ In order to publish exposed port outside of the docker container, `-p` flag shou
 </p>
 
 #### Example script to start docker container<br/>
-```docker run -e API_URL=https://api.tatum.io -e MODE=MAINNET -e TATUM_API_KEY=12345 -p 6543:6543/tcp tatumio/tatum-middleware```
+```docker run -e API_URL=https://api-eu1.tatum.io -e MODE=MAINNET -e TATUM_API_KEY=12345 -p 6543:6543/tcp tatumio/tatum-middleware```
 
 ## Usage
 Tatum Middleware wraps Tatum API.<br/>
