@@ -12,7 +12,7 @@ const generateWallet = (chain, mnem) => {
   const rootSeedBuffer = bitbox.Mnemonic.toSeed(mnemonic);
   const hdNode = bitbox.HDNode.fromSeed(rootSeedBuffer, chain === BCH ? 'mainnet' : 'testnet');
   const path = bitbox.HDNode.derivePath(hdNode, BCH_DERIVATION_PATH);
-  return {mnemonic, xpub: bitbox.HDNode.toXPub(path), xpriv: bitbox.HDNode.toXPriv(path)};
+  return {mnemonic, xpub: bitbox.HDNode.toXPub(path)};
 };
 
 const calculateAddress = (xpub, index) => {

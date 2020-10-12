@@ -10,7 +10,7 @@ const generateWallet = (chain, mnemonic) => {
   const path = chain === TVET ? TESTNET_DERIVATION_PATH : VET_DERIVATION_PATH;
   const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
   const derivePath = hdwallet.derivePath(path);
-  return {xpub: derivePath.publicExtendedKey(), xpriv: derivePath.privateExtendedKey()};
+  return {xpub: derivePath.publicExtendedKey()};
 };
 
 const calculatePrivateKey = (chain, mnemonic, i) => {

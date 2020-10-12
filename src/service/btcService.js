@@ -19,7 +19,7 @@ const generateWallet = (chain, mnemonic) => {
   }
 
   const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic), versions);
-  return hdwallet.derive(path).toJSON();
+  return {xpub: hdwallet.derive(path).toJSON().xpub};
 };
 
 const calculateAddress = (xpub, chain, index) => {

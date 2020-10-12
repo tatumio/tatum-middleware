@@ -13,7 +13,7 @@ const generateWallet = (chain, mnemonic) => {
   const path = chain === ROPSTEN ? TESTNET_DERIVATION_PATH : ETH_DERIVATION_PATH;
   const hdwallet = hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic));
   const derivePath = hdwallet.derivePath(path);
-  return {xpub: derivePath.publicExtendedKey(), xpriv: derivePath.privateExtendedKey()};
+  return {xpub: derivePath.publicExtendedKey()};
 };
 
 const getGasPriceInWei = async (res) => {

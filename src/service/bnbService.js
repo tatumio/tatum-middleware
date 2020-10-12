@@ -17,7 +17,6 @@ const generateWallet = (chain, mnemonic) => {
   const derivePath = hdwallet.derivePath(BNB_DERIVATION_PATH);
   return {
     xpub: derivePath.neutered().toBase58(),
-    xpriv: derivePath.privateKey.toString('hex'),
     mnemonic,
   };
 };
