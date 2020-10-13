@@ -1,34 +1,24 @@
-const {fromBase58, fromSeed} = require('bip32');
 const Transaction = require('@binance-chain/javascript-sdk/lib/tx').default;
-const {networks} = require('bitcoinjs-lib');
 const BigNumber = require('bignumber.js');
-const {mnemonicToSeed} = require('bip39');
 const {
-  decodeAddress, getAddressFromPublicKey, getAddressFromPrivateKey, getPrivateKeyFromMnemonic,
+  decodeAddress, generatePrivateKey, getAddressFromPrivateKey,
 } = require('@binance-chain/javascript-sdk/lib/crypto');
 const {getBnbAccount} = require('../service/coreService');
 
 const {
-  TBNB, BNB_DERIVATION_PATH,
+  TBNB,
 } = require('../constants');
 
-const generateWallet = (chain, mnemonic) => {
-  const hdwallet = fromSeed(mnemonicToSeed(mnemonic), chain === TBNB ? networks.testnet : undefined);
-  const derivePath = hdwallet.derivePath(BNB_DERIVATION_PATH);
+const generateWallet = (chain) => {
+  const privateKey = generatePrivateKey();
+  const prefix = chain === TBNB ? 'tbnb' : 'bnb';
   return {
-    xpub: derivePath.neutered().toBase58(),
-    mnemonic,
+    address: getAddressFromPrivateKey(privateKey, prefix),
+    privateKey,
   };
 };
 
-const calculateAddress = (xpub, chain, index) => {
-  const w = fromBase58(xpub, chain === TBNB ? networks.testnet : undefined).derive(index);
-  return getAddressFromPublicKey(w.publicKey.toString('hex'), chain.toLowerCase());
-};
-
 const calculateAddressFromPrivateKey = (chain, privateKey) => getAddressFromPrivateKey(privateKey, chain.toLowerCase());
-
-const calculatePrivateKey = (chain, mnemonic, i) => ({key: getPrivateKeyFromMnemonic(mnemonic, true, i)});
 
 const prepareTransaction = async (chain, addressFrom, res, to, currency, amount, message = '', fromPrivateKey, headers) => {
   let account;
@@ -96,7 +86,7 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
     res.status(403).json({
       message: 'Unable to sing transaction.',
       statusCode: 403,
-      errorCode: 'bnb.transaction.invalid.body'
+      errorCode: 'bnb.transaction.invalid.body',
     });
     throw e;
   }
@@ -104,8 +94,6 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
 
 module.exports = {
   generateWallet,
-  calculateAddress,
-  calculatePrivateKey,
   calculateAddressFromPrivateKey,
   prepareTransaction,
 };

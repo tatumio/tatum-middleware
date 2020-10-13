@@ -20,7 +20,6 @@ const BTC_DERIVATION_PATH = 'm/44\'/0\'/0\'/0';
 const BCH_DERIVATION_PATH = 'm/44\'/145\'/0\'/0';
 const BSV_DERIVATION_PATH = 'm/44\'/236\'/0\'/0';
 const LTC_DERIVATION_PATH = 'm/44\'/2\'/0\'/0';
-const BNB_DERIVATION_PATH = 'm/44\'/714\'/0\'/0';
 const TESTNET_DERIVATION_PATH = 'm/44\'/1\'/0\'/0';
 
 const LTC_NETWORK_TESTNET = {
@@ -113,7 +112,6 @@ module.exports = {
   BNB,
   TBNB,
   ETH_DERIVATION_PATH,
-  BNB_DERIVATION_PATH,
   BTC_DERIVATION_PATH,
   BCH_DERIVATION_PATH,
   LTC_DERIVATION_PATH,

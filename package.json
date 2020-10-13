@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.2.6",
+  "version": "3.3.0",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a client to Tatum API.",
   "repository": {
@@ -27,7 +27,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "@binance-chain/javascript-sdk": "^2.16.4",
+    "@binance-chain/javascript-sdk": "^4.0.0",
     "@cityofzion/neon-js": "^4.7.1",
     "axios": "^0.18.1",
     "bignumber.js": "^9.0.0",

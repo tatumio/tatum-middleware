@@ -15,6 +15,7 @@ const vetBlockchainRouter = require('./api/vetBlockchainRouter');
 const ethBlockchainRouter = require('./api/ethBlockchainRouter');
 const ethOffchainRouter = require('./api/ethOffchainRouter');
 const bnbBlockchainRouter = require('./api/bnbBlockchainRouter');
+const bnbOffchainRouter = require('./api/bnbOffchainRouter');
 const btcBlockchainRouter = require('./api/btcBlockchainRouter');
 const btcOffchainRouter = require('./api/btcOffchainRouter');
 const bcashBlockchainRouter = require('./api/bcashBlockchainRouter');
@@ -34,6 +35,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/v3/bnb', bnbBlockchainRouter);
+app.use('/v3/offchain/bnb', bnbOffchainRouter);
 app.use('/v3/vet', vetBlockchainRouter);
 app.use('/v3/ethereum', ethBlockchainRouter);
 app.use('/v3/offchain/ethereum', ethOffchainRouter);

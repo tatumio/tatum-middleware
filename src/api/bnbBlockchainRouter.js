@@ -1,6 +1,5 @@
 const express = require('express');
 const {broadcastBnb} = require('../service/coreService');
-const commonService = require('../service/commonService');
 const bnbService = require('../service/bnbService');
 
 const router = express.Router();
@@ -11,15 +10,9 @@ const {
 
 const chain = process.env.MODE === 'MAINNET' ? BNB : TBNB;
 
-router.get('/wallet', (req, res) => {
-  const mnemonic = commonService.generateMnemonic(req.query.mnemonic);
-  const wallet = bnbService.generateWallet(chain, mnemonic);
-  res.json({mnemonic, ...wallet});
-});
-
-router.post('/wallet/priv', ({body}, res) => {
-  const {index, mnemonic} = body;
-  res.json(bnbService.calculatePrivateKey(chain, mnemonic, parseInt(index)));
+router.get('/account', (req, res) => {
+  const wallet = bnbService.generateWallet(chain);
+  res.json(wallet);
 });
 
 router.post('/transaction', async ({body, headers}, res) => {
@@ -39,7 +32,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     res.status(400).json({
       message: 'Unable to calculate address from private key.',
       statusCode: 400,
-      errorCode: 'bnb.private.key.mismatch'
+      errorCode: 'bnb.private.key.mismatch',
     });
     return;
   }
