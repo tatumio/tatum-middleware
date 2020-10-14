@@ -1,3 +1,4 @@
+const {AminoPrefix} = require('@binance-chain/javascript-sdk/lib/types');
 const Transaction = require('@binance-chain/javascript-sdk/lib/tx').default;
 const BigNumber = require('bignumber.js');
 const {
@@ -54,7 +55,7 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
       address: toAccCode,
       coins: [coin],
     }],
-    msgType: Transaction.TxTypes.MsgSend,
+    aminoPrefix: AminoPrefix.MsgSend,
   };
 
   const signMsg = {
@@ -69,13 +70,11 @@ const prepareTransaction = async (chain, addressFrom, res, to, currency, amount,
   };
 
   const options = {
-    account_number: parseInt(account.account_number),
-    chain_id: chain === TBNB ? 'Binance-Chain-Nile' : 'Binance-Chain-Tigris',
+    accountNumber: parseInt(account.account_number),
+    chainId: chain === TBNB ? 'Binance-Chain-Ganges' : 'Binance-Chain-Tigris',
     memo: message,
     msg,
     sequence: parseInt(account.sequence),
-    source: 0,
-    type: msg.msgType,
   };
 
   const tx = new Transaction(options);
