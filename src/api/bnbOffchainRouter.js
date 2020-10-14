@@ -26,7 +26,7 @@ router.post('/transfer', async ({headers, body}, res) => {
     return res.status(e.response.status).json(e.response.data);
   }
 
-  if (senderAccount.currency === BNB) {
+  if (senderAccount.currency !== BNB) {
     return res.status(403).json({
       message: 'Unsupported account currency.',
       statusCode: 403,
