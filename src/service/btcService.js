@@ -30,11 +30,12 @@ const calculateAddress = (xpub, chain, index) => {
 const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeAddress) => {
   const network = chain === BTC ? bitcoin.networks.bitcoin : bitcoin.networks.testnet;
   const tx = new bitcoin.TransactionBuilder(network);
-  data.forEach((input) => {
+  for (const input of data) {
+    console.log(input.vIn);
     if (input.vIn !== '-1') {
       tx.addInput(input.vIn, input.vInIndex);
     }
-  });
+  }
 
   tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   if (mnemonic) {
@@ -45,20 +46,20 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
   } else {
     throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');
   }
-  data.forEach((input, i) => {
+  for (let i = 0; i < data.length; i++) {
     // when there is no address field present, input is pool transfer to 0
-    if (input.vIn === '-1') {
-      return;
+    if (data[i].vIn === '-1') {
+      continue;
     }
     if (mnemonic) {
-      const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(chain, mnemonic, input.address ? input.address.derivationKey : 0), network);
+      const ecPair = bitcoin.ECPair.fromWIF(calculatePrivateKey(chain, mnemonic, data[i].address ? data[i].address.derivationKey : 0), network);
       tx.sign(i, ecPair);
     } else {
-      const privateKey = keyPair.find(k => k.address === input.address.address);
+      const privateKey = keyPair.find(k => k.address === data[i].address.address);
       const ecPair = bitcoin.ECPair.fromWIF(privateKey.privateKey, network);
       tx.sign(i, ecPair);
     }
-  });
+  }
 
   return tx.build().toHex();
 };

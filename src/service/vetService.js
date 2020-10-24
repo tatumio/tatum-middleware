@@ -70,7 +70,7 @@ const estimateGas = async (data, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }

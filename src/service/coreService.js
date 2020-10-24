@@ -14,7 +14,7 @@ const storeWithdrawal = async (data, res, headers) => {
       data,
     });
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -136,7 +136,7 @@ const getBnbAccount = async (address, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -160,7 +160,7 @@ const broadcastBlockchain = async (endpoint, data, res, headers, finish = true) 
       return response.data;
     }
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -213,7 +213,7 @@ const getFeeXrp = async (res, headers) => {
     });
     return new BigNumber(response.data.drops.base_fee).dividedBy(1000000).toString();
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -232,7 +232,7 @@ const getAccountXrp = async (accountId, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -251,7 +251,7 @@ const getAccountXlm = async (accountId, res, headers) => {
     });
     return response.data;
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).send(e.response.data);
     throw e;
   }
@@ -280,7 +280,7 @@ const broadcast = async (data, id, res, headers) => {
       errorCode: 'withdrawal.not.completed',
     });
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     throw e;
   }
 };
@@ -322,7 +322,7 @@ const deployErc20 = async (data, res, headers) => {
       data,
     });
   } catch (e) {
-    console.error(e.response.data);
+    console.error(JSON.stringify(e.response.data));
     res.status(e.response.status).json(e.response.data);
     throw e;
   }

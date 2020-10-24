@@ -22,7 +22,7 @@ router.post('/transfer', async ({headers, body}, res) => {
   try {
     senderAccount = await getAccountById(withdrawal.senderAccountId, headers);
   } catch (e) {
-    console.error(e);
+    console.error(JSON.stringify(e.response.data));
     return res.status(e.response.status).json(e.response.data);
   }
 
