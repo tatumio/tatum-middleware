@@ -32,7 +32,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     res.send(400).json({
       message: 'Either UTXO, or addresses must be present.',
       statusCode: 400,
-      errorCode: 'bitcoin.transaction.invalid.body'
+      errorCode: 'bitcoin.transaction.invalid.body',
     });
     return;
   }
@@ -80,7 +80,7 @@ router.post('/transaction', async ({body, headers}, res) => {
     res.status(400).json({
       message: 'No spendable inputs.',
       statusCode: 400,
-      errorCode: 'bitcoin.transaction.invalid.body'
+      errorCode: 'bitcoin.transaction.invalid.body',
     });
     return;
   }

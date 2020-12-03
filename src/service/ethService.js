@@ -70,7 +70,7 @@ const scCall = async (web3, res, privKey, contractAddress, nonce, fee, methodABI
     res.status(403).send({
       statusCode: 403,
       errorCode: 'eth.transaction.hash',
-      message: 'Unable to calculate transaction hash.'
+      message: 'Unable to calculate transaction hash.',
     });
     throw e;
   }
@@ -104,7 +104,7 @@ const erc721Transaction = async (web3, res, privKey, to, data, nonce, fee) => {
     res.status(403).send({
       statusCode: 403,
       errorCode: 'eth.transaction.hash',
-      message: 'Unable to calculate transaction hash.'
+      message: 'Unable to calculate transaction hash.',
     });
     throw e;
   }

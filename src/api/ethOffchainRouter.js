@@ -45,7 +45,7 @@ router.post('/transfer', async ({body, headers}, res) => {
     res.status(400).json({
       message: 'Either mnemonic or private key must be present.',
       statusCode: 400,
-      errorCode: 'private.mnemonic.missing'
+      errorCode: 'private.mnemonic.missing',
     });
     return;
   }
@@ -161,7 +161,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
     res.status(400).json({
       message: 'Either mnemonic or private key must be present.',
       statusCode: 400,
-      errorCode: 'private.mnemonic.missing'
+      errorCode: 'private.mnemonic.missing',
     });
     return;
   }
@@ -253,7 +253,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
     res.status(400).json({
       message: 'Either mnemonic or private key must be present.',
       statusCode: 400,
-      errorCode: 'private.mnemonic.missing'
+      errorCode: 'private.mnemonic.missing',
     });
     return;
   }

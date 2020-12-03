@@ -36,7 +36,7 @@ router.post('/transfer', async ({headers, body}, res) => {
     res.send(400).json({
       message: 'Keypair and attr must be present.',
       statusCode: 400,
-      errorCode: 'transaction.attr.keyPair.missing'
+      errorCode: 'transaction.attr.keyPair.missing',
     });
     return;
   }

@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.3.4",
+  "version": "3.3.5",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a client to Tatum API.",
   "repository": {
@@ -44,7 +44,7 @@
     "hdkey": "1.1.1",
     "lodash": "^4.17.15",
     "ripple-lib": "^1.6.4",
-    "stellar-sdk": "^3.3.0",
+    "stellar-sdk": "^7.0.0",
     "swagger-ui-express": "^4.0.2",
     "thorify": "^1.4.0",
     "web3": "^1.2.0",
