@@ -37,10 +37,10 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
   });
 
   tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
-  if (mnemonic) {
+  if (mnemonic && !changeAddress) {
     const {xpub} = generateWallet(chain, mnemonic);
     tx.addOutput(calculateAddress(xpub, chain, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
-  } else if (keyPair && changeAddress) {
+  } else if (changeAddress) {
     tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
   } else {
     throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');

@@ -32,14 +32,6 @@ router.post('/transfer', async ({headers, body}, res) => {
     });
     return;
   }
-  if (!mnemonic && (!keyPair || !attr)) {
-    res.send(400).json({
-      message: 'Keypair and attr must be present.',
-      statusCode: 400,
-      errorCode: 'transaction.attr.keyPair.missing',
-    });
-    return;
-  }
 
   let resp;
   try {
