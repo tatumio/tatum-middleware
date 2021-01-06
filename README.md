@@ -1,5 +1,5 @@
 # Tatum Middleware 
-Tatum Middleware is a client to Tatum API.
+Tatum Middleware is a proxy client to Tatum API.
 
 ## Where to start
 In order to start work with Tatum API, please contact us at <a target="_blank" href="mailto:hello@tatum.io">hello@tatum.io</a> in order to obtain access API key.

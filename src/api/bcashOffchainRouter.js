@@ -42,12 +42,12 @@ router.post('/transfer', async ({headers, body}, res) => {
   const {id, data} = resp.data;
 
   const {
-    amount, address,
+    amount, address, multipleAmounts,
   } = withdrawal;
 
   let txData;
   try {
-    txData = bcashService.prepareTransaction(data, address, chain, amount, mnemonic, keyPair, attr);
+    txData = bcashService.prepareTransaction(data, address, chain, amount, mnemonic, keyPair, attr, multipleAmounts);
   } catch (e) {
     console.error(e);
     try {

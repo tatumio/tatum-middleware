@@ -25,7 +25,7 @@ const calculatePrivateKey = (chain, mnemonic, i) => {
   return bitbox.HDNode.toWIF(hdNode);
 };
 
-const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeAddress) => {
+const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeAddress, multipleAmounts) => {
   const tx = new bitbox.TransactionBuilder(chain === BCH ? 'mainnet' : 'testnet');
   data.forEach((input) => {
     if (input.vIn !== '-1') {
@@ -33,7 +33,13 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     }
   });
 
-  tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
+  if (multipleAmounts?.length) {
+    for (const [i, multipleAmount] of multipleAmounts.entries()) {
+      tx.addOutput(out.split(',')[i], Number(new BigNumber(multipleAmount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    }
+  } else {
+    tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
+  }
   if (mnemonic && !changeAddress) {
     const {xpub} = generateWallet(chain, mnemonic);
     tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));

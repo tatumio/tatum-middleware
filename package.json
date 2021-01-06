@@ -1,8 +1,8 @@
 {
   "name": "tatum-middleware",
-  "version": "3.3.6",
+  "version": "3.3.7",
   "author": "Tatum, hello@tatum.io",
-  "description": "Tatum Middleware is a client to Tatum API.",
+  "description": "Tatum Middleware is a proxy client to Tatum API.",
   "repository": {
     "type": "git",
     "url": "https://github.com/tatumio/tatum-middleware.git"
