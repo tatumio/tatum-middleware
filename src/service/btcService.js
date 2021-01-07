@@ -37,7 +37,7 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     }
   }
 
-  if (multipleAmounts?.length) {
+  if (multipleAmounts && multipleAmounts.length) {
     for (const [i, multipleAmount] of multipleAmounts.entries()) {
       tx.addOutput(out.split(',')[i], Number(new BigNumber(multipleAmount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
     }
