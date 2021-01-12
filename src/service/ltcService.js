@@ -36,12 +36,16 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
     }
   });
 
-  if (multipleAmounts && multipleAmounts.length) {
-    for (const [i, multipleAmount] of multipleAmounts.entries()) {
-      tx.addOutput(out.split(',')[i], Number(new BigNumber(multipleAmount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  try {
+    if (multipleAmounts && multipleAmounts.length) {
+      for (const [i, multipleAmount] of multipleAmounts.entries()) {
+        tx.addOutput(out.split(',')[i], Number(new BigNumber(multipleAmount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+      }
+    } else {
+      tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
     }
-  } else {
-    tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+  } catch (e) {
+    throw new Error(`Wrong output address. ${process.env.MODE === 'MAINNET' ? 'Supported LTC address should start with M or L.' : ''}`);
   }
   if (mnemonic && !changeAddress) {
     const {xpub} = generateWallet(chain, mnemonic);

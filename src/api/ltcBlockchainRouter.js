@@ -66,7 +66,16 @@ router.post('/transaction', async ({body, headers}, res) => {
     }
   }
   for (const item of to) {
-    tx.addOutput(item.address, Number(new BigNumber(item.value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    try {
+      tx.addOutput(item.address, Number(new BigNumber(item.value).multipliedBy(100000000).toFixed(8, BigNumber.ROUND_FLOOR)));
+    } catch (e) {
+      res.status(403).json({
+        message: `Wrong output address. ${process.env.MODE === 'MAINNET' ? 'Supported LTC address should start with M or L.' : ''}`,
+        statusCode: 403,
+        errorCode: 'wrong.address',
+      });
+      return;
+    }
   }
 
   for (let i = 0; i < privateKeysToSign.length; i++) {
