@@ -273,6 +273,7 @@ router.post('/erc20/transfer', async ({body, headers}, res) => {
   let erc20Decimals = 18;
   switch (senderAccount.currency) {
     case 'USDT':
+    case 'WBTC':
     case 'LEO':
     case 'LINK':
     case 'UNI':
