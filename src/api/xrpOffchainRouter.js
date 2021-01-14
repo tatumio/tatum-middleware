@@ -3,7 +3,7 @@ const express = require('express');
 const Xrp = require('ripple-lib').RippleAPI;
 const {
   storeWithdrawal, cancelWithdrawal, broadcast, getFeeXrp,
-  getAccountXrp, getAccountById,
+  getAccountXrp, getAccountById, getVirtualCurrencyByName,
 } = require('../service/coreService');
 
 const offlineApi = new Xrp();
@@ -13,7 +13,7 @@ const {XRP} = require('../constants');
 
 router.post('/transfer', async ({headers, body}, res) => {
   const {
-    account, secret, token, issuerAccount, sourceTag, ...withdrawal
+    account, secret, sourceTag, ...withdrawal
   } = body;
 
   if (withdrawal.attr && isNaN(parseInt(withdrawal.attr))) {
@@ -33,12 +33,17 @@ router.post('/transfer', async ({headers, body}, res) => {
     return res.status(e.response.status).json(e.response.data);
   }
 
-  if ((senderAccount.currency === XRP && token) || (senderAccount.currency !== XRP && !token)) {
-    return res.status(403).json({
-      message: 'Unsupported account currency.',
-      statusCode: 403,
-      errorCode: 'account.currency',
-    });
+  let vc;
+  if (senderAccount.currency !== XRP) {
+    try {
+      vc = (await getVirtualCurrencyByName(senderAccount.currency, headers));
+    } catch (e) {
+      return res.status(403).json({
+        message: 'Unsupported account currency.',
+        statusCode: 403,
+        errorCode: 'account.currency',
+      });
+    }
   }
 
   let acc;
@@ -66,13 +71,13 @@ router.post('/transfer', async ({headers, body}, res) => {
   const {id} = resp.data;
   const {amount, fee, address} = withdrawal;
 
-  const currency = token || 'XRP';
+  const currency = vc ? vc.name : 'XRP';
   const payment = {
     source: {
       address: account,
       maxAmount: {
         currency,
-        counterparty: issuerAccount,
+        counterparty: vc ? vc.issuerAccount : undefined,
         value: amount,
       },
       tag: sourceTag,
@@ -81,7 +86,7 @@ router.post('/transfer', async ({headers, body}, res) => {
       address,
       amount: {
         currency,
-        counterparty: issuerAccount,
+        counterparty: vc ? vc.issuerAccount : undefined,
         value: amount,
       },
     },

@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.4.3",
+  "version": "3.4.4",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a proxy client to Tatum API.",
   "repository": {
