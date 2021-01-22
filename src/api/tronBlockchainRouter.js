@@ -9,7 +9,6 @@ router.get('/wallet', async (req, res) => {
 
 router.post('/transaction', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.sendTronTransaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);
@@ -23,7 +22,6 @@ router.post('/transaction', async ({body, headers}, res) => {
 
 router.post('/trc10/transaction', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.sendTronTrc10Transaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);
@@ -37,7 +35,6 @@ router.post('/trc10/transaction', async ({body, headers}, res) => {
 
 router.post('/trc20/transaction', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.sendTronTrc20Transaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);
@@ -51,7 +48,6 @@ router.post('/trc20/transaction', async ({body, headers}, res) => {
 
 router.post('/trc10/deploy', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.createTronTrc10Transaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);
@@ -65,7 +61,6 @@ router.post('/trc10/deploy', async ({body, headers}, res) => {
 
 router.post('/trc20/deploy', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.createTronTrc20Transaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);
@@ -79,7 +74,6 @@ router.post('/trc20/deploy', async ({body, headers}, res) => {
 
 router.post('/freezeBalance', async ({body, headers}, res) => {
   try {
-    process.env.TATUM_API_KEY = headers['x-api-key'];
     res.status(200).json(await tatum.freezeTronTransaction(process.env.MODE !== 'MAINNET', body));
   } catch (e) {
     console.error(e);

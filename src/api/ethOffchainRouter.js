@@ -3,7 +3,7 @@ const axios = require('axios');
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 const {
-  cancelWithdrawal, storeWithdrawal, broadcast, deployErc20, broadcastEth, getAccountById,
+  cancelWithdrawal, storeWithdrawal, broadcast, registerErc20, broadcastEth, getAccountById,
   getVirtualCurrencyByName,
 } = require('../service/coreService');
 
@@ -174,7 +174,7 @@ router.post('/erc20/deploy', async ({body, headers}, res) => {
 
   let response;
   try {
-    response = await deployErc20(erc20, res, headers);
+    response = await registerErc20(erc20, res, headers);
   } catch (e) {
     return;
   }

@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.4.4",
+  "version": "3.4.5",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a proxy client to Tatum API.",
   "repository": {
@@ -15,7 +15,7 @@
     "start": "node src/index.js",
     "docker": "docker build . --tag tatumio/tatum-middleware:latest",
     "lint": "eslint --fix src",
-    "dev": "API_URL=http://127.0.0.1:3000 MODE=TESTNET TATUM_API_KEY=testnet nodemon src/index.js",
+    "dev": "API_URL=http://127.0.0.1:3000 TATUM_API_URL=http://127.0.0.1:3000 MODE=TESTNET TATUM_API_KEY=testnet nodemon src/index.js",
     "test": "API_URL=test MODE=TESTNET mocha"
   },
   "keywords": [
@@ -29,7 +29,7 @@
   "dependencies": {
     "@binance-chain/javascript-sdk": "^4.0.0",
     "@cityofzion/neon-js": "^4.7.1",
-    "@tatumio/tatum": "^1.4.51",
+    "@tatumio/tatum": "^1.5.7",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.0",
     "bip32": "^2.0.4",

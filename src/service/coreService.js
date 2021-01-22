@@ -166,39 +166,25 @@ const broadcastBlockchain = async (endpoint, data, res, headers, finish = true) 
   }
 };
 
-const broadcastBtc = async (data, res, headers) => {
-  await broadcastBlockchain('bitcoin', data, res, headers);
-};
+const broadcastBtc = async (data, res, headers) => broadcastBlockchain('bitcoin', data, res, headers);
 
-const broadcastBch = async (data, res, headers) => {
-  await broadcastBlockchain('bcash', data, res, headers);
-};
+const broadcastBch = async (data, res, headers) => broadcastBlockchain('bcash', data, res, headers);
 
-const broadcastBsv = async (data, res, headers) => {
-  await broadcastBlockchain('bsv', data, res, headers);
-};
+const broadcastBsv = async (data, res, headers) => broadcastBlockchain('bsv', data, res, headers);
 
-const broadcastLtc = async (data, res, headers) => {
-  await broadcastBlockchain('litecoin', data, res, headers);
-};
+const broadcastLtc = async (data, res, headers) => broadcastBlockchain('litecoin', data, res, headers);
 
 const broadcastEth = async (data, res, headers, finish = true) => broadcastBlockchain('ethereum', data, res, headers, finish);
 
-const broadcastVet = async (data, res, headers) => {
-  await broadcastBlockchain('vet', data, res, headers);
-};
+const broadcastTron = async (data, res, headers, finish = true) => broadcastBlockchain('tron', data, res, headers, finish);
 
-const broadcastBnb = async (data, res, headers) => {
-  await broadcastBlockchain('bnb', data, res, headers);
-};
+const broadcastVet = async (data, res, headers) => broadcastBlockchain('vet', data, res, headers);
 
-const broadcastXrp = async (data, res, headers) => {
-  await broadcastBlockchain('xrp', data, res, headers);
-};
+const broadcastBnb = async (data, res, headers) => broadcastBlockchain('bnb', data, res, headers);
 
-const broadcastXlm = async (data, res, headers) => {
-  await broadcastBlockchain('xlm', data, res, headers);
-};
+const broadcastXrp = async (data, res, headers) => broadcastBlockchain('xrp', data, res, headers);
+
+const broadcastXlm = async (data, res, headers) => broadcastBlockchain('xlm', data, res, headers);
 
 const getFeeXrp = async (res, headers) => {
   try {
@@ -309,7 +295,7 @@ const storeErc20Address = async (symbol, address, responseData, res, headers) =>
   }
 };
 
-const deployErc20 = async (data, res, headers) => {
+const registerErc20 = async (data, res, headers) => {
   try {
     return await axios({
       method: 'POST',
@@ -319,6 +305,25 @@ const deployErc20 = async (data, res, headers) => {
         'x-api-key': headers['x-api-key'],
       },
       url: `v3/offchain/ethereum/erc20/`,
+      data,
+    });
+  } catch (e) {
+    console.error(JSON.stringify(e.response.data));
+    res.status(e.response.status).json(e.response.data);
+    throw e;
+  }
+};
+
+const registerTrc = async (data, res, headers) => {
+  try {
+    return await axios({
+      method: 'POST',
+      headers: {
+        'content-type': headers['content-type'] || 'application/json',
+        accept: 'application/json',
+        'x-api-key': headers['x-api-key'],
+      },
+      url: `v3/offchain/tron/trc`,
       data,
     });
   } catch (e) {
@@ -367,6 +372,7 @@ module.exports = {
   broadcastBnb,
   broadcastBch,
   broadcastBsv,
+  broadcastTron,
   getFeeXrp,
   getBchTx,
   getAccountXrp,
@@ -374,7 +380,8 @@ module.exports = {
   getBnbAccount,
   getAccountById,
   cancelWithdrawal,
-  deployErc20,
+  registerErc20,
+  registerTrc,
   getUTXOLtc,
   getUTXOBtc,
   getTxByAddressBtc,
