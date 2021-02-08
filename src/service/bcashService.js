@@ -40,13 +40,16 @@ const prepareTransaction = (data, out, chain, amount, mnemonic, keyPair, changeA
   } else {
     tx.addOutput(out, Number(new BigNumber(amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
   }
-  if (mnemonic && !changeAddress) {
-    const {xpub} = generateWallet(chain, mnemonic);
-    tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
-  } else if (changeAddress) {
-    tx.addOutput(changeAddress, Number(new BigNumber(data.find(d => d.vIn === '-1').amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
-  } else {
-    throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');
+  const find = data.find(d => d.vIn === '-1');
+  if (new BigNumber(find.amount).isGreaterThan(0)) {
+    if (mnemonic && !changeAddress) {
+      const {xpub} = generateWallet(chain, mnemonic);
+      tx.addOutput(calculateAddress(xpub, 0), Number(new BigNumber(find.amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
+    } else if (changeAddress) {
+      tx.addOutput(changeAddress, Number(new BigNumber(find.amount).multipliedBy(100000000).toFixed(0, BigNumber.ROUND_FLOOR)));
+    } else {
+      throw new Error('Impossible to prepare transaction. Either mnemonic or keyPair and attr must be present.');
+    }
   }
   data.forEach((input, i) => {
     // when there is no address field present, input is pool transfer to 0
