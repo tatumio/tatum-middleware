@@ -1,3 +1,4 @@
+
 pragma solidity ^0.5.0;
 
 import "./ERC721.sol";
@@ -29,6 +30,10 @@ contract TatumErc721 is ERC721, ERC721Enumerable, ERC721Metadata, MinterRole {
     _mint(to, tokenId);
     _setTokenURI(tokenId, tokenURI);
     return true;
+  }
+
+  function tokensOfOwner(address owner) public view returns (uint256[] memory) {
+    return _tokensOfOwner(owner);
   }
 
   function mintMultipleWithoutTokenURI(address[] memory to, uint256[] memory tokenId) public onlyMinter returns (bool) {
