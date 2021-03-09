@@ -28,6 +28,7 @@ const xlmBlockchainRouter = require('./api/xlmBlockchainRouter');
 const xlmOffchainRouter = require('./api/xlmOffchainRouter');
 const neoBlockchainRouter = require('./api/neoBlockchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
+const celoBlockchainRouter = require('./api/celoBlockchainRouter');
 const xrpOffchainRouter = require('./api/xrpOffchainRouter');
 
 const serverPort = 6543;
@@ -52,6 +53,7 @@ app.use('/v3/offchain/litecoin', ltcOffchainRouter);
 app.use('/v3/xlm', xlmBlockchainRouter);
 app.use('/v3/offchain/xlm', xlmOffchainRouter);
 app.use('/v3/neo', neoBlockchainRouter);
+app.use('/v3/celo', celoBlockchainRouter);
 app.use('/v3/xrp', xrpBlockchainRouter);
 app.use('/v3/offchain/xrp', xrpOffchainRouter);
 

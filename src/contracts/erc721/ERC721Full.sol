@@ -1,22 +1,20 @@
+pragma solidity ^0.8.0;
+pragma experimental ABIEncoderV2;
 
-pragma solidity ^0.5.0;
-
-import "./ERC721.sol";
-import "./ERC721Enumerable.sol";
-import "./ERC721Metadata.sol";
-import "../../access/roles/MinterRole.sol";
-
+import "./extensions/ERC721Enumerable.sol";
+import "./extensions/ERC721URIStorage.sol";
+import "../../access/AccessControlEnumerable.sol";
 
 /**
- * @title Full ERC721 Token
- * @dev This implementation includes all the required and some optional functionality of the ERC721 standard
- * Moreover, it includes approve all functionality using operator terminology.
- *
- * See https://eips.ethereum.org/EIPS/eip-721
- */
-contract TatumErc721 is ERC721, ERC721Enumerable, ERC721Metadata, MinterRole {
-  constructor (string memory name, string memory symbol) public ERC721Enumerable() ERC721() ERC721Metadata(name, symbol) {
-    // solhint-disable-previous-line no-empty-blocks
+ * Used from OpenZeppelin library, commit 29ffe6f426730036a664e0ed2f5a114744e56585
+*/
+contract Tatum721 is ERC721Enumerable, ERC721URIStorage, AccessControlEnumerable {
+
+  bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+
+  constructor (string memory name_, string memory symbol_) ERC721(name_, symbol_) {
+    _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    _setupRole(MINTER_ROLE, _msgSender());
   }
 
   /**
@@ -26,30 +24,45 @@ contract TatumErc721 is ERC721, ERC721Enumerable, ERC721Metadata, MinterRole {
    * @param tokenURI The token URI of the minted token.
    * @return A boolean that indicates if the operation was successful.
    */
-  function mintWithTokenURI(address to, uint256 tokenId, string memory tokenURI) public onlyMinter returns (bool) {
+  function mintWithTokenURI(address to, uint256 tokenId, string memory tokenURI) public returns (bool) {
+    require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
     _mint(to, tokenId);
     _setTokenURI(tokenId, tokenURI);
     return true;
   }
 
-  function tokensOfOwner(address owner) public view returns (uint256[] memory) {
-    return _tokensOfOwner(owner);
+  function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerable, ERC721, ERC721Enumerable) returns (bool) {
+    return super.supportsInterface(interfaceId);
   }
 
-  function mintMultipleWithoutTokenURI(address[] memory to, uint256[] memory tokenId) public onlyMinter returns (bool) {
+  function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
+    return ERC721URIStorage.tokenURI(tokenId);
+  }
+
+  function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721, ERC721Enumerable) {
+    super._beforeTokenTransfer(from, to, tokenId);
+  }
+
+  function _burn(uint256 tokenId) internal virtual override(ERC721, ERC721URIStorage) {
+    return ERC721URIStorage._burn(tokenId);
+  }
+
+  function mintMultiple(address[] memory to, uint256[] memory tokenId, string[] memory tokenURI) public returns (bool) {
+    require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
     for (uint i = 0; i < to.length; i++) {
       _mint(to[i], tokenId[i]);
+      _setTokenURI(tokenId[i], tokenURI[i]);
     }
     return true;
   }
 
-  function safeTransfer(address to, uint256 tokenId) public {
-    safeTransferFrom(_msgSender(), to, tokenId, "");
-  }
-
-  function burn(uint256 tokenId) public {
+  function burn(uint256 tokenId) public virtual {
     //solhint-disable-next-line max-line-length
     require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721Burnable: caller is not owner nor approved");
     _burn(tokenId);
+  }
+
+  function safeTransfer(address to, uint256 tokenId) public {
+    safeTransferFrom(_msgSender(), to, tokenId, "");
   }
 }

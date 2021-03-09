@@ -182,6 +182,8 @@ const broadcastVet = async (data, res, headers) => broadcastBlockchain('vet', da
 
 const broadcastBnb = async (data, res, headers) => broadcastBlockchain('bnb', data, res, headers);
 
+const broadcastCelo = async (data, res, headers) => broadcastBlockchain('celo', data, res, headers);
+
 const broadcastXrp = async (data, res, headers) => broadcastBlockchain('xrp', data, res, headers);
 
 const broadcastXlm = async (data, res, headers) => broadcastBlockchain('xlm', data, res, headers);
@@ -370,6 +372,7 @@ module.exports = {
   broadcastXlm,
   broadcastVet,
   broadcastBnb,
+  broadcastCelo,
   broadcastBch,
   broadcastBsv,
   broadcastTron,
