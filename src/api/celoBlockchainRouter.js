@@ -37,6 +37,7 @@ router.post('/transaction', async ({body}, res) => {
 router.post('/erc721/deploy', async ({body, headers}, res) => {
   let txData;
   try {
+    body.chain = Currency.CELO;
     txData = await prepareCeloDeployErc721SignedTransaction(process.env.MODE !== 'MAINNET', body);
   } catch (e) {
     console.error(e);
@@ -56,6 +57,7 @@ router.post('/erc721/deploy', async ({body, headers}, res) => {
 router.post('/erc721/transaction', async ({body, headers}, res) => {
   let txData;
   try {
+    body.chain = Currency.CELO;
     txData = await prepareCeloTransferErc721SignedTransaction(process.env.MODE !== 'MAINNET', body);
   } catch (e) {
     console.error(e);
@@ -75,6 +77,7 @@ router.post('/erc721/transaction', async ({body, headers}, res) => {
 router.post('/erc721/mint', async ({body, headers}, res) => {
   let txData;
   try {
+    body.chain = Currency.CELO;
     txData = await prepareCeloMintErc721SignedTransaction(process.env.MODE !== 'MAINNET', body);
   } catch (e) {
     console.error(e);
@@ -94,6 +97,7 @@ router.post('/erc721/mint', async ({body, headers}, res) => {
 router.post('/erc721/mint/batch', async ({body, headers}, res) => {
   let txData;
   try {
+    body.chain = Currency.CELO;
     txData = await prepareCeloMintMultipleErc721SignedTransaction(process.env.MODE !== 'MAINNET', body);
   } catch (e) {
     console.error(e);
@@ -113,6 +117,7 @@ router.post('/erc721/mint/batch', async ({body, headers}, res) => {
 router.post('/erc721/burn', async ({body, headers}, res) => {
   let txData;
   try {
+    body.chain = Currency.CELO;
     txData = await prepareCeloBurnErc721SignedTransaction(process.env.MODE !== 'MAINNET', body);
   } catch (e) {
     console.error(e);

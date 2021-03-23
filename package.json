@@ -1,6 +1,6 @@
 {
   "name": "tatum-middleware",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "author": "Tatum, hello@tatum.io",
   "description": "Tatum Middleware is a proxy client to Tatum API.",
   "repository": {
@@ -29,7 +29,7 @@
   "dependencies": {
     "@binance-chain/javascript-sdk": "^4.0.0",
     "@cityofzion/neon-js": "^4.7.1",
-    "@tatumio/tatum": "^1.6.10",
+    "@tatumio/tatum": "^1.8.2",
     "axios": "^0.21.1",
     "bignumber.js": "^9.0.0",
     "bip32": "^2.0.4",

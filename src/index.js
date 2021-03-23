@@ -29,6 +29,8 @@ const xlmOffchainRouter = require('./api/xlmOffchainRouter');
 const neoBlockchainRouter = require('./api/neoBlockchainRouter');
 const xrpBlockchainRouter = require('./api/xrpBlockchainRouter');
 const celoBlockchainRouter = require('./api/celoBlockchainRouter');
+const bscBlockchainRouter = require('./api/bscBlockchainRouter');
+const nftRouter = require('./api/nftRouter');
 const xrpOffchainRouter = require('./api/xrpOffchainRouter');
 
 const serverPort = 6543;
@@ -37,6 +39,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/v3/bsc', bscBlockchainRouter);
 app.use('/v3/bnb', bnbBlockchainRouter);
 app.use('/v3/offchain/bnb', bnbOffchainRouter);
 app.use('/v3/vet', vetBlockchainRouter);
