@@ -44,7 +44,7 @@
     "ethers": "^5.0.31",
     "express": "4.16.4",
     "hdkey": "1.1.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "ripple-lib": "^1.6.4",
     "stellar-sdk": "^7.0.0",
     "swagger-ui-express": "^4.0.2",
