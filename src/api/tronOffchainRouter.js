@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post('/transfer', async ({body}, res) => {
   try {
-    const result = await sendTronOffchainTransaction(true, body);
+    const result = await sendTronOffchainTransaction(process.env.MODE !== 'MAINNET', body);
     res.status(200).json(result);
   } catch (e) {
     console.error(e);

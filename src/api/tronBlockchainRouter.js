@@ -4,7 +4,7 @@ const tatum = require('@tatumio/tatum');
 const router = express.Router();
 
 router.get('/wallet', async (req, res) => {
-  res.json(await tatum.generateTronWallet());
+  res.json(await tatum.generateTronWallet(req.query.mnemonic));
 });
 
 router.post('/transaction', async ({body, headers}, res) => {

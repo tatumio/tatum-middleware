@@ -36,7 +36,7 @@ router.post('/transaction', async ({body, headers}, res) => {
   for (const utxo of fromUTXO) {
     txsPromises.push(getBchTx(utxo.txHash, headers));
   }
-  const txs = await Promise.all[txsPromises];
+  const txs = await Promise.all(txsPromises);
   for (const [i, item] of fromUTXO.entries()) {
     transactionBuilder.addInput(item.txHash, item.index);
     privateKeysToSign.push(item.privateKey);
