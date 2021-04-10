@@ -17,9 +17,6 @@ router.get('/wallet', async (req, res) => {
 router.post('/wallet/priv', async ({body}, res) => {
   const {index, mnemonic} = body;
   const i = parseInt(index);
-
-  // TODO nejde
-
   try {
     res.json({key: await tatum.generatePrivateKeyFromMnemonic(tatum.Currency.DOGE, testnet, mnemonic, i)});
   } catch (e) {
