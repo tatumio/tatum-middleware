@@ -1,6 +1,8 @@
 # Tatum Middleware 
 Tatum Middleware is a proxy client to Tatum API.
 
+**Tatum Middleware is deprecated. Please use client libraries like (Tatum JS)[https://github.com/tatumio/tatum-js] with combination of (Tatum KMS)[https://github.com/tatumio/tatum-js].**
+
 ## Where to start
 In order to start work with Tatum API, please contact us at <a target="_blank" href="mailto:hello@tatum.io">hello@tatum.io</a> in order to obtain access API key.
 
